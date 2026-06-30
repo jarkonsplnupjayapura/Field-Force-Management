@@ -596,36 +596,6 @@ body {
   </div>
 </div>
 
-<!-- ══ MODAL: FASE ABSENSI (PERJALANAN / AKTIF / SELESAI) ══ -->
-<div class="modal-backdrop" id="modal-fase">
-  <div class="modal-sheet">
-    <div class="modal-header">
-      <h3 id="modal-fase-title">Absensi Perjalanan</h3>
-      <button class="modal-close" onclick="tutupModalFase()">✕</button>
-    </div>
-    <div style="font-size:12.5px;color:var(--text-2);margin-bottom:14px;line-height:1.7" id="modal-fase-desc">
-      Wajib foto selfie untuk mencatat perpindahan fase.
-    </div>
-    <!-- Selfie di modal fase -->
-    <div class="camera-box" id="modal-fase-cam-box">
-      <div class="cam-placeholder" id="modal-fase-ph"><span class="cam-icon">📷</span>Ambil selfie untuk konfirmasi fase</div>
-      <video id="modal-fase-video" playsinline autoplay muted style="display:none"></video>
-      <img id="modal-fase-preview" style="display:none">
-      <div class="cam-badge" id="modal-fase-gps-badge" style="display:none">📍 GPS · <span id="modal-fase-gps-val">—</span></div>
-    </div>
-    <div class="camera-actions" style="margin-bottom:14px">
-      <button class="btn btn-ghost btn-sm"    id="mf-btn-cam"    onclick="bukaKameraFase()">📷 Buka Kamera</button>
-      <button class="btn btn-primary btn-sm"  id="mf-btn-shoot"  onclick="ambilFotoFase()" style="display:none">📸 Ambil</button>
-      <button class="btn btn-ghost btn-sm"    id="mf-btn-retake" onclick="ulangFotoFase()" style="display:none">↺ Ulangi</button>
-    </div>
-    <canvas id="modal-fase-canvas" style="display:none"></canvas>
-    <div class="error-box" id="modal-fase-err" style="margin-bottom:12px"></div>
-    <div id="modal-fase-progress" style="font-size:11px;color:var(--text-2);text-align:center;margin-bottom:10px;display:none"></div>
-    <button class="btn" id="modal-fase-submit" style="background:var(--pln-yellow);color:var(--ink-900)" onclick="submitModalFase()">
-      <span id="modal-fase-submit-icon">✓</span> <span id="modal-fase-submit-text">Konfirmasi Fase</span>
-    </button>
-  </div>
-</div>
 
 <!-- ══ MODAL: SELESAI BERTUGAS ══ -->
 <div class="modal-backdrop" id="modal-selesai">
@@ -703,7 +673,6 @@ let tugasSelesai = 0;
 let absenStream = null, absenPos = null, absenFotoUrl = null;
 let laporFotoBefore = null, laporFotoAfter = null;
 let laporKameraTarget = null, laporStream = null, laporFotoSementara = null;
-let faseStream = null, faseFotoUrl = null;
 let selesaiStream = null, selesaiFotoUrl = null;
 
 try {
@@ -969,93 +938,6 @@ window.pilihLokasi = function(lok) {
   if(map[lok]) document.getElementById(map[lok]).classList.add('selected');
 };
 
-// ════════════════════════════════════════════
-// FASE MODAL (Perjalanan/Aktif dari tracking screen)
-// ════════════════════════════════════════════
-let pendingFaseIdx = null;
-
-window.bukaModalFase = function(idx) {
-  // idx: 1=Perjalanan, 2=Aktif Bekerja (0-based: fase 1,2)
-  pendingFaseIdx=idx;
-  const labels=['Standby','Perjalanan','Aktif Bekerja','Selesai'];
-  const descs=['','Kamu dalam perjalanan menuju lokasi kerja','Kamu sudah aktif bekerja di lokasi',''];
-  document.getElementById('modal-fase-title').textContent='Absensi '+labels[idx];
-  document.getElementById('modal-fase-desc').textContent=descs[idx]||'Konfirmasi fase dengan foto selfie.';
-  faseFotoUrl=null;
-  document.getElementById('modal-fase-ph').style.display='block';
-  document.getElementById('modal-fase-preview').style.display='none';
-  document.getElementById('modal-fase-video').style.display='none';
-  document.getElementById('mf-btn-cam').style.display='block';
-  document.getElementById('mf-btn-shoot').style.display='none';
-  document.getElementById('mf-btn-retake').style.display='none';
-  document.getElementById('modal-fase-err').style.display='none';
-  document.getElementById('modal-fase-submit-text').textContent='Konfirmasi '+labels[idx];
-  document.getElementById('modal-fase').classList.add('active');
-};
-window.tutupModalFase = function() {
-  if(faseStream){faseStream.getTracks().forEach(t=>t.stop());faseStream=null;}
-  document.getElementById('modal-fase').classList.remove('active');
-};
-window.bukaKameraFase = async function() {
-  try {
-    faseStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});
-    const v=document.getElementById('modal-fase-video');
-    v.srcObject=faseStream; v.style.display='block';
-    document.getElementById('modal-fase-ph').style.display='none';
-    document.getElementById('mf-btn-cam').style.display='none';
-    document.getElementById('mf-btn-shoot').style.display='block';
-  } catch(e){addLog('Kamera modal gagal','err');}
-};
-window.ambilFotoFase = function() {
-  const v=document.getElementById('modal-fase-video'),c=document.getElementById('modal-fase-canvas');
-  c.width=v.videoWidth||480; c.height=v.videoHeight||640;
-  const ctx=c.getContext('2d'); ctx.translate(c.width,0); ctx.scale(-1,1);
-  ctx.drawImage(v,0,0,c.width,c.height);
-  faseFotoUrl=c.toDataURL('image/jpeg',0.7);
-  const img=document.getElementById('modal-fase-preview');
-  img.src=faseFotoUrl; img.style.display='block';
-  v.style.display='none';
-  if(faseStream){faseStream.getTracks().forEach(t=>t.stop());faseStream=null;}
-  document.getElementById('mf-btn-shoot').style.display='none';
-  document.getElementById('mf-btn-retake').style.display='block';
-  if(lastPos){document.getElementById('modal-fase-gps-badge').style.display='block'; document.getElementById('modal-fase-gps-val').textContent=lastPos.coords.latitude.toFixed(4)+', '+lastPos.coords.longitude.toFixed(4);}
-};
-window.ulangFotoFase = function() {
-  faseFotoUrl=null;
-  document.getElementById('modal-fase-preview').style.display='none';
-  document.getElementById('mf-btn-retake').style.display='none';
-  bukaKameraFase();
-};
-window.submitModalFase = async function() {
-  const errEl=document.getElementById('modal-fase-err');
-  const btn=document.getElementById('modal-fase-submit');
-  if(!faseFotoUrl){errEl.textContent='Selfie wajib diambil.';errEl.style.display='block';return;}
-  errEl.style.display='none'; btn.disabled=true;
-  document.getElementById('modal-fase-progress').textContent='Menyimpan...'; document.getElementById('modal-fase-progress').style.display='block';
-
-  let foto=null;
-  try{foto=await compressToBase64(faseFotoUrl,800,0.65);}catch(e){}
-  const waktu=Date.now();
-  const faseName=FASE_LIST[pendingFaseIdx];
-  const entry={fase:faseName,waktu,lat:lastPos?.coords.latitude||null,lng:lastPos?.coords.longitude||null,acc:lastPos?Math.round(lastPos.coords.accuracy):null,fotoBase64:foto};
-  faseLog.push(entry);
-
-  if(db&&currentUser){
-    const payload={nama:currentUser.nama,nip:currentUser.nip,regu:currentUser.regu,ulp:currentUser.ulp,fase:faseName,waktu,lat:entry.lat,lng:entry.lng,acc:entry.acc,fotoBase64:foto};
-    try{
-      await set(ref(db,'absensi/'+currentUser.id+'_fase'+pendingFaseIdx+'_'+waktu),payload);
-      await set(ref(db,'absensiLog/'+currentUser.id+'/fase'+pendingFaseIdx),payload);
-    }catch(e){addLog('Simpan fase gagal','err');}
-  }
-  faseCurrent=Math.max(faseCurrent,pendingFaseIdx);
-  updateTrackingFase();
-  addLog('✓ Fase ['+faseName+'] tercatat','ok');
-  document.getElementById('modal-fase-progress').style.display='none';
-  btn.disabled=false;
-  tutupModalFase();
-  // update status GPS
-  setStatus(faseName==='Perjalanan'?'Perjalanan':'Aktif Bekerja');
-};
 
 // ════════════════════════════════════════════
 // GPS TRACKING + AUTO-DETECT PERJALANAN
