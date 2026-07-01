@@ -277,6 +277,8 @@ body {
 .loc-card .loc-name { font-size:12px; font-weight:700; color:var(--text-2); }
 .loc-card.selected { border-color:var(--pln-blue); background:var(--info-bg); }
 .loc-card.selected .loc-name { color:var(--pln-blue); }
+.loc-card.locked { opacity:0.45; cursor:not-allowed; filter:grayscale(55%); pointer-events:none; position:relative; }
+.loc-card.locked::after { content:'🔒'; position:absolute; top:6px; right:8px; font-size:12px; }
 
 /* SCROLLBAR */
 ::-webkit-scrollbar { width:5px; height:5px; }
@@ -380,6 +382,9 @@ body {
     </div>
     <div id="loc-hint" style="font-size:11px;color:var(--text-3);margin-top:10px;line-height:1.6;text-align:center">
       🏢 <b>Kantor</b>: status mulai dari Standby — Perjalanan &amp; Aktif Bekerja terdeteksi otomatis via GPS saat berangkat.
+    </div>
+    <div id="loc-locked-note" style="display:none;font-size:11px;color:var(--warn);margin-top:8px;line-height:1.6;text-align:center;background:var(--warn-bg);border:1px solid var(--warn-border);border-radius:var(--radius-xs);padding:8px 10px">
+      🔒 Absensi Kantor sudah pernah dilakukan sebelumnya. Mulai sekarang absensi selalu dari <b>Lapangan</b>.
     </div>
   </div>
 
@@ -686,6 +691,7 @@ const FB_CONFIG = {
 let app, db;
 let watchId = null, sendCount = 0;
 let currentUser = null;
+let sudahPernahKantor = false; // true = NIP ini sudah pernah absen Standby dari Kantor sebelumnya (lintas hari, via localStorage)
 let currentStatus = 'Standby';
 let sendTimer = null;
 let lastPos = null;
@@ -923,7 +929,27 @@ window.doLogin = function() {
   updateFaseHero();
   const badge0 = document.getElementById('lokasi-mode-badge');
   if (badge0) { badge0.style.display='none'; badge0.textContent=''; }
-  pilihLokasi('Kantor');
+
+  // ── Kunci lokasi absen ke Lapangan kalau petugas ini SUDAH PERNAH
+  //    absen Standby dari Kantor sebelumnya. Sekali sudah absen Kantor,
+  //    absensi berikutnya (login/hari lain) otomatis mulai dari Lapangan
+  //    dan tombol Kantor tidak bisa dipilih lagi. ──
+  sudahPernahKantor = localStorage.getItem('ffm_kantorDone_'+nip) === '1';
+  const locKantorEl = document.getElementById('loc-kantor');
+  const lockedNote   = document.getElementById('loc-locked-note');
+  const normalHint   = document.getElementById('loc-hint');
+  if (sudahPernahKantor) {
+    locKantorEl.classList.add('locked');
+    pilihLokasi('Lapangan');
+    if (lockedNote) lockedNote.style.display = 'block';
+    if (normalHint) normalHint.style.display = 'none';
+  } else {
+    locKantorEl.classList.remove('locked');
+    if (lockedNote) lockedNote.style.display = 'none';
+    if (normalHint) normalHint.style.display = 'block';
+    pilihLokasi('Kantor');
+  }
+
   showScreen('absensi');
   startAbsensiGPS();
   addLog('Login: '+nama+' ('+regu+')', 'ok');
@@ -1114,6 +1140,11 @@ try {
   } else {
     // Standby dari Kantor → alur normal: Perjalanan & Aktif Bekerja
     // diatur otomatis oleh deteksi GPS, tidak perlu absensi foto lagi.
+    // Tandai NIP ini sudah pernah absen Kantor — absensi berikutnya
+    // (login/hari lain) otomatis dikunci ke Lapangan.
+    if (currentUser?.nip) {
+      try { localStorage.setItem('ffm_kantorDone_'+currentUser.nip, '1'); } catch(e){}
+    }
     faseCurrent = 1;
     updateTrackingFase();
     showScreen('tracking');
@@ -1125,6 +1156,9 @@ try {
 // ── Lokasi pilihan ────────────────────────────────────────
 let absenLokasi = 'Kantor';
 window.pilihLokasi = function(lok) {
+  // Kalau sudah pernah absen Kantor sebelumnya, tombol Kantor terkunci —
+  // tidak bisa dipilih lagi walau ada percobaan panggil fungsi ini langsung.
+  if (lok === 'Kantor' && sudahPernahKantor) return;
   absenLokasi=lok;
   document.querySelectorAll('.loc-card').forEach(c=>c.classList.remove('selected'));
   const map={'Kantor':'loc-kantor','Lapangan':'loc-lapangan'};
