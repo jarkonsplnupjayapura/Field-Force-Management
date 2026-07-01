@@ -654,38 +654,47 @@ body {
 
 
 <!-- ══ MODAL: SELESAI BERTUGAS ══ -->
-<div class="modal-backdrop" id="modal-selesai">
-  <div class="modal-sheet">
-    <div class="modal-header">
-      <h3>🏁 Selesai Bertugas</h3>
-      <button class="modal-close" onclick="tutupModalSelesai()">✕</button>
+<!-- ══ SCREEN: SELESAI BERTUGAS — copy struktur dari screen Standby ══ -->
+<div class="screen" id="screen-selesai">
+
+  <div class="fase-hero">
+    <div class="fase-hero-title">🏁 Selesai Bertugas</div>
+    <div class="fase-hero-sub">Foto selfie akhir tugas — laporan harian otomatis terbuat</div>
+    <div class="fase-track">
+      <div class="fase-step done"   id="slfs-1"><div class="fase-dot">✓</div><div class="fase-label">Standby<br><span style="opacity:0.65;font-weight:600">(Foto)</span></div></div>
+      <div class="fase-step done"   id="slfs-2"><div class="fase-dot">✓</div><div class="fase-label">Perjalanan<br><span style="opacity:0.65;font-weight:600">(Auto GPS)</span></div></div>
+      <div class="fase-step done"   id="slfs-3"><div class="fase-dot">✓</div><div class="fase-label">Aktif<br><span style="opacity:0.65;font-weight:600">(Foto)</span></div></div>
+      <div class="fase-step active" id="slfs-4"><div class="fase-dot">4</div><div class="fase-label">Selesai<br><span style="opacity:0.65;font-weight:600">(Foto)</span></div></div>
     </div>
-    <div style="font-size:12.5px;color:var(--text-2);margin-bottom:14px;line-height:1.7">
-      Ambil foto selfie akhir tugas. Laporan harian otomatis terbuat.
-    </div>
-    <div class="camera-box" id="selesai-cam-box">
+  </div>
+
+  <!-- Selfie -->
+  <div class="card">
+    <div class="card-title">📷 Selfie Akhir Tugas</div>
+    <div class="camera-box">
       <div class="cam-placeholder" id="selesai-ph"><span class="cam-icon">📷</span>Selfie akhir tugas</div>
       <video id="selesai-video" playsinline autoplay muted style="display:none"></video>
       <img id="selesai-preview" style="display:none">
       <div class="cam-badge" id="selesai-gps-badge" style="display:none">📍 GPS · <span id="selesai-gps-val">—</span></div>
     </div>
-    <div class="camera-actions" style="margin-bottom:14px">
+    <div class="camera-actions">
       <button class="btn btn-ghost btn-sm"    id="sl-btn-cam"    onclick="bukaKameraSelesai()">📷 Buka Kamera</button>
       <button class="btn btn-primary btn-sm"  id="sl-btn-shoot"  onclick="ambilFotoSelesai()" style="display:none">📸 Ambil</button>
       <button class="btn btn-ghost btn-sm"    id="sl-btn-retake" onclick="ulangFotoSelesai()" style="display:none">↺ Ulangi</button>
     </div>
     <canvas id="selesai-canvas" style="display:none"></canvas>
-
-    <!-- Ringkasan laporan akhir -->
-    <div id="selesai-ringkasan" style="display:none;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px;margin-bottom:14px">
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-3);margin-bottom:10px">Ringkasan Hari Ini</div>
-      <div id="selesai-ringkasan-content" style="font-size:12.5px;line-height:1.9;color:var(--text-1)"></div>
-    </div>
-
-    <div class="error-box" id="selesai-err" style="margin-bottom:12px"></div>
-    <div id="selesai-progress" style="font-size:11px;color:var(--text-2);text-align:center;margin-bottom:10px;display:none"></div>
-    <button class="btn btn-red" id="selesai-btn-submit" onclick="submitSelesai()"><span>🏁</span> Konfirmasi Selesai & Kirim Laporan Akhir</button>
   </div>
+
+  <!-- Ringkasan laporan akhir -->
+  <div class="card" id="selesai-ringkasan" style="display:none">
+    <div class="card-title">Ringkasan Hari Ini</div>
+    <div id="selesai-ringkasan-content" style="font-size:12.5px;line-height:1.9;color:var(--text-1)"></div>
+  </div>
+
+  <div class="error-box" id="selesai-err"></div>
+  <div id="selesai-progress" style="font-size:11px;color:var(--text-2);text-align:center;margin-bottom:4px;display:none"></div>
+  <button class="btn btn-red" id="selesai-btn-submit" onclick="submitSelesai()"><span>🏁</span> Konfirmasi Selesai & Kirim Laporan Akhir</button>
+  <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="batalSelesaiKembaliTracking()">← Batal, Kembali</button>
 </div>
 
 <!-- FOTO FULLSCREEN -->
@@ -1706,11 +1715,11 @@ window.mulaiSelesaiBertugas = function() {
     `<b>Fase Absensi:</b> `+faseLog.map(f=>`${f.fase} (${new Date(f.waktu).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})})`).join(' → ')+'<br>'+
     `<b>Laporan:</b> `+(laporTugasList.map(l=>l.rincian).join(', ')||'<span style="color:var(--crit);font-weight:700">Tidak ada laporan</span>');
   document.getElementById('selesai-ringkasan').style.display='block';
-  document.getElementById('modal-selesai').classList.add('active');
+  showScreen('selesai');
 };
-window.tutupModalSelesai = function() {
+window.batalSelesaiKembaliTracking = function() {
   if(selesaiStream){selesaiStream.getTracks().forEach(t=>t.stop());selesaiStream=null;}
-  document.getElementById('modal-selesai').classList.remove('active');
+  showScreen('tracking');
 };
 window.bukaKameraSelesai = async function() {
   try{
@@ -1784,7 +1793,7 @@ window.submitSelesai = async function() {
   addLog('✓ Selesai bertugas. '+tugasSelesai+' tugas dilaporkan.','ok');
   document.getElementById('selesai-progress').style.display='none';
   btn.disabled=false;
-  tutupModalSelesai();
+  if(selesaiStream){selesaiStream.getTracks().forEach(t=>t.stop());selesaiStream=null;}
   stopGPS();
 
   // Reset
