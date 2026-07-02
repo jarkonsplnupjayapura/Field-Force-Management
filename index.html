@@ -2347,7 +2347,7 @@ function listenPetugas() {
               <div class="popup-title">👷 ${p.nama||'—'}</div>
               <span class="popup-jenis jtm">${p.regu||'—'}</span>
             </div>
-            <div class="popup-row"><span class="popup-key">NIP</span><span class="popup-val">${p.nip||'—'}</span></div>
+            <div class="popup-row"><span class="popup-key">ID Petugas</span><span class="popup-val">${p.nip||'—'}</span></div>
             <div class="popup-row"><span class="popup-key">ULP</span><span class="popup-val">${p.ulp||'—'}</span></div>
             <div class="popup-row"><span class="popup-key">Status</span><span class="popup-val"><span class="popup-urgensi" style="background:#1A8C3C">${p.status||'—'}</span></span></div>
             <div class="popup-row"><span class="popup-key">Akurasi</span><span class="popup-val">${p.acc||'—'} m</span></div>
@@ -2420,15 +2420,17 @@ function renderAbsensiTable(todayEntries) {
   const byPetugas = {};
   todayEntries.forEach(([id, a]) => {
     const key = a.nip || a.nama || id;
-    if (!byPetugas[key]) byPetugas[key] = { nama: a.nama||'—', nip: a.nip||'—', regu: a.regu||'—', ulp: a.ulp||'—', fases: {} };
+    if (!byPetugas[key]) byPetugas[key] = { nama: a.nama||'—', nip: a.nip||'—', regu: a.regu||'—', ulp: a.ulp||'—', fases: {}, lastWaktu: 0 };
     const fase = a.fase || a.lokasi || 'Standby';
     if (!byPetugas[key].fases[fase] || (byPetugas[key].fases[fase].waktu||0) < (a.waktu||0)) {
       byPetugas[key].fases[fase] = a;
     }
+    if ((a.waktu||0) > byPetugas[key].lastWaktu) byPetugas[key].lastWaktu = a.waktu||0;
   });
 
   const container = document.getElementById('absensi-log-cards');
-  const entries = Object.values(byPetugas);
+  // Petugas dengan aktivitas absen terbaru tampil paling atas.
+  const entries = Object.values(byPetugas).sort((a, b) => b.lastWaktu - a.lastWaktu);
   document.getElementById('absensiCount').textContent = entries.length + ' petugas';
 
   if (entries.length === 0) {
@@ -2462,7 +2464,7 @@ function renderAbsensiTable(todayEntries) {
         <div style="width:36px;height:36px;border-radius:var(--radius-xs);background:linear-gradient(150deg,var(--pln-blue),var(--pln-blue-mid));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">👷</div>
         <div style="flex:1">
           <div style="font-size:13px;font-weight:700;color:var(--text-1)">${p.nama}</div>
-          <div style="font-size:11px;color:var(--text-2);margin-top:1px">${p.regu} · ${p.ulp} · NIP ${p.nip}</div>
+          <div style="font-size:11px;color:var(--text-2);margin-top:1px">${p.regu} · ${p.ulp} · ID Petugas ${p.nip}</div>
         </div>
         <span class="badge" style="background:${lc.bg};color:${lc.color};border:1px solid ${lc.border}">${lc.icon} ${lastFase}</span>
       </div>
