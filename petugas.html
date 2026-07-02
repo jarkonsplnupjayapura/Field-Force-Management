@@ -75,12 +75,13 @@ body {
 }
 .header-logo {
   width: 34px; height: 34px;
-  background: var(--pln-yellow);
+  background: #fff;
   border-radius: 9px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 18px; flex-shrink: 0;
+  flex-shrink: 0; overflow: hidden;
   box-shadow: 0 2px 8px rgba(255,184,0,0.4);
 }
+.header-logo img { width: 100%; height: 100%; object-fit: cover; }
 .header-title { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: -0.2px; }
 .header-sub   { font-size: 10.5px; color: rgba(255,255,255,0.55); margin-top: 1px; }
 
@@ -144,13 +145,13 @@ body {
 }
 .login-brand-icon {
   width: 48px; height: 48px;
-  background: var(--pln-yellow);
+  background: #fff;
   border-radius: 13px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 24px;
   box-shadow: 0 4px 14px rgba(255,184,0,0.45);
-  flex-shrink: 0;
+  flex-shrink: 0; overflow: hidden;
 }
+.login-brand-icon img { width: 100%; height: 100%; object-fit: cover; }
 .login-brand-text .lb-title { font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.4px; line-height:1.1; }
 .login-brand-text .lb-sub   { font-size: 12px; color: rgba(255,255,255,0.55); margin-top: 3px; }
 .login-tagline { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.6; }
@@ -597,7 +598,7 @@ body {
 
 <!-- HEADER -->
 <div class="header">
-  <div class="header-logo">⚡</div>
+  <div class="header-logo"><img src="./icon-192.png" alt="Logo FFM"></div>
   <div>
     <div class="header-title">FFM Petugas</div>
     <div class="header-sub">PLN UP3 Jayapura · Field Force</div>
@@ -614,7 +615,7 @@ body {
   <!-- Banner atas -->
   <div class="login-banner">
     <div class="login-brand">
-      <div class="login-brand-icon">⚡</div>
+      <div class="login-brand-icon"><img src="./icon-192.png" alt="Logo FFM"></div>
       <div class="login-brand-text">
         <div class="lb-title">FFM Petugas</div>
         <div class="lb-sub">PLN UP3 Jayapura · Field Force</div>
