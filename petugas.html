@@ -1483,23 +1483,90 @@ function applyOfflineOverride(isOff) {
 }
 
 // ── GPS ───────────────────────────────────────────────
-function startGPS() {
-  if (!navigator.geolocation) {
-    addLog('GPS tidak didukung di browser ini', 'err');
-    document.getElementById('gps-status').textContent = 'GPS tidak tersedia';
-    return;
-  }
-  document.getElementById('gps-status').textContent = 'Meminta izin GPS...';
-  watchId = navigator.geolocation.watchPosition(onPos, onPosErr, {
-    enableHighAccuracy: true, maximumAge: 10000, timeout: 15000
-  });
-  sendTimer = setInterval(() => { if (lastPos) pushLocation(lastPos); }, 15000);
-  addLog('GPS tracking dimulai', 'ok');
+// Di app native (Android via Capacitor) kita pakai plugin
+// @capacitor-community/background-geolocation supaya tracking tetap
+// jalan lewat foreground service Android walau app di-swipe dari
+// recent apps. Di browser biasa (mode testing di laptop/HP tanpa
+// install APK) kita fallback ke Web Geolocation API biasa.
+let bgWatcherId = null; // id watcher dari plugin background-geolocation
+
+function isNativeApp() {
+  return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
 }
 
-function stopGPS() {
+async function startGPS() {
+  document.getElementById('gps-status').textContent = 'Meminta izin GPS...';
+
+  const BG = isNativeApp() && window.Capacitor.Plugins && window.Capacitor.Plugins.BackgroundGeolocation;
+
+  if (BG) {
+    try {
+      bgWatcherId = await BG.addWatcher(
+        {
+          backgroundMessage: 'Tracking lokasi petugas sedang aktif',
+          backgroundTitle: 'FFM Petugas — GPS Aktif',
+          requestPermissions: true,
+          stale: false,
+          distanceFilter: 15 // meter — update tiap petugas bergerak >=15m
+        },
+        (location, error) => {
+          if (error) {
+            if (error.code === 'NOT_AUTHORIZED') {
+              addLog('Izin GPS "Selalu Izinkan" belum aktif. Buka Setelan HP > Aplikasi > FFM Petugas > Izin > Lokasi > pilih "Izinkan sepanjang waktu"', 'err');
+              document.getElementById('gps-status').textContent = 'Izin GPS background ditolak';
+            } else {
+              addLog('GPS error: ' + (error.message || error.code), 'err');
+            }
+            return;
+          }
+          onPosNative(location);
+        }
+      );
+      addLog('GPS tracking (background service) dimulai', 'ok');
+    } catch (e) {
+      addLog('Gagal mulai background GPS: ' + e.message, 'err');
+      document.getElementById('gps-status').textContent = 'Gagal mulai GPS';
+    }
+  } else {
+    // Fallback browser biasa (bukan app native) — tidak tahan background,
+    // dipakai cuma untuk testing di laptop/HP lewat browser.
+    if (!navigator.geolocation) {
+      addLog('GPS tidak didukung di browser ini', 'err');
+      document.getElementById('gps-status').textContent = 'GPS tidak tersedia';
+      return;
+    }
+    watchId = navigator.geolocation.watchPosition(onPos, onPosErr, {
+      enableHighAccuracy: true, maximumAge: 10000, timeout: 15000
+    });
+    addLog('GPS tracking (mode browser) dimulai', 'ok');
+  }
+
+  sendTimer = setInterval(() => { if (lastPos) pushLocation(lastPos); }, 15000);
+}
+
+async function stopGPS() {
+  const BG = isNativeApp() && window.Capacitor.Plugins && window.Capacitor.Plugins.BackgroundGeolocation;
+  if (bgWatcherId !== null && BG) {
+    try { await BG.removeWatcher({ id: bgWatcherId }); } catch (e) { /* abaikan */ }
+    bgWatcherId = null;
+  }
   if (watchId !== null) { navigator.geolocation.clearWatch(watchId); watchId = null; }
   if (sendTimer) { clearInterval(sendTimer); sendTimer = null; }
+}
+
+// Menyamakan bentuk data dari plugin native (location.latitude, dst)
+// jadi bentuk pos.coords.* seperti Web Geolocation API, supaya onPos()
+// dan pushLocation() di bawah tidak perlu diubah sama sekali.
+function onPosNative(location) {
+  onPos({
+    coords: {
+      latitude: location.latitude,
+      longitude: location.longitude,
+      accuracy: location.accuracy,
+      heading: location.bearing || 0,
+      speed: location.speed || 0
+    }
+  });
 }
 
 function onPos(pos) {
