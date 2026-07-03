@@ -19,6 +19,9 @@
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
 <style>
 /* ════════════════════════════════════════════════════════════
    DESIGN TOKENS — "Grid Operasional"
@@ -368,6 +371,17 @@ body {
   font-family: var(--font); transition: all 0.18s var(--ease);
 }
 .btn-reset:hover { border-color: var(--pln-blue); color: var(--pln-blue); background: var(--info-bg); }
+.btn-export {
+  background: none; border: 1px solid var(--line);
+  border-radius: var(--radius-xs); padding: 6px 14px; font-size: 12px; font-weight: 700;
+  color: var(--text-2); cursor: pointer; height: 35px;
+  font-family: var(--font); transition: all 0.18s var(--ease);
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+}
+.btn-export.xlsx:hover { border-color: #1d7d4c; color: #1d7d4c; background: rgba(29,125,76,0.08); }
+.btn-export.pdf:hover  { border-color: #c0392b; color: #c0392b; background: rgba(192,57,43,0.08); }
+.btn-export:disabled   { opacity: 0.5; cursor: not-allowed; }
+.export-group { display: flex; gap: 8px; }
 .tab-bar { display: flex; gap: 6px; margin-left: auto; }
 .tab-btn {
   border: 1px solid var(--line); border-radius: var(--radius-xs);
@@ -1167,7 +1181,13 @@ td.truncate  { max-width: 160px; overflow: hidden; text-overflow: ellipsis; whit
           <div class="card-title" style="font-size:16px">📝 Laporan Pekerjaan</div>
           <div style="font-size:12px;color:var(--text-secondary);margin-top:3px">Before &amp; After dari petugas lapangan</div>
         </div>
-        <span id="laporanCount" class="card-count">0 laporan</span>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span id="laporanCount" class="card-count">0 laporan</span>
+          <div class="export-group">
+            <button class="btn-export xlsx" onclick="exportLaporanExcel()" title="Export semua laporan ke Excel">📥 Excel</button>
+            <button class="btn-export pdf" onclick="exportLaporanPDF()" title="Export semua laporan ke PDF">📄 PDF</button>
+          </div>
+        </div>
       </div>
       <div id="laporanGrid" style="margin-top:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;">
         <div style="text-align:center;color:var(--text-muted);padding:40px;font-size:13px;grid-column:1/-1">Menunggu data Firebase...</div>
@@ -1220,10 +1240,14 @@ td.truncate  { max-width: 160px; overflow: hidden; text-overflow: ellipsis; whit
           <div class="card-title" style="font-size:16px">📊 Rekap Laporan Pekerjaan</div>
           <div style="font-size:12px;color:var(--text-secondary);margin-top:3px">Ringkasan target & realisasi · Dari laporan terverifikasi</div>
         </div>
-        <div style="display:flex;gap:8px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
           <button class="tab-btn active" id="rekap-tab-hari" onclick="setRekapPeriode('hari',this)">Hari Ini</button>
           <button class="tab-btn" id="rekap-tab-minggu" onclick="setRekapPeriode('minggu',this)">Minggu Ini</button>
           <button class="tab-btn" id="rekap-tab-bulan" onclick="setRekapPeriode('bulan',this)">Bulan Ini</button>
+          <div class="export-group">
+            <button class="btn-export xlsx" onclick="exportRekapExcel()" title="Export rekap periode ini ke Excel">📥 Excel</button>
+            <button class="btn-export pdf" onclick="exportRekapPDF()" title="Export rekap periode ini ke PDF">📄 PDF</button>
+          </div>
         </div>
       </div>
 
@@ -2561,6 +2585,112 @@ function listenLaporan() {
   });
 }
 
+// ── Export Laporan Pekerjaan (Excel & PDF) ─────────────────
+function laporanStatusLabel(l) {
+  if (l.statusVerifikasi === 'Terverifikasi') return 'Terverifikasi';
+  if (l.statusVerifikasi === 'Perlu Revisi')  return 'Perlu Revisi';
+  return 'Menunggu Verifikasi';
+}
+function laporanCapaianPct(l) {
+  if (l.target && l.realisasi && +l.target > 0) return Math.round(+l.realisasi / +l.target * 100);
+  return null;
+}
+function fmtWaktuFull(ts) {
+  return ts ? new Date(ts).toLocaleString('id-ID', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
+}
+function fmtFileStamp() {
+  const d = new Date();
+  const p = n => String(n).padStart(2,'0');
+  return `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}`;
+}
+// Susun baris data laporan jadi format tabel siap pakai (dipakai bareng oleh Excel & PDF)
+function buildLaporanRows(entries) {
+  return entries.map(([, l], i) => ({
+    'No': i + 1,
+    'Waktu': fmtWaktuFull(l.waktu),
+    'Nama Petugas': l.nama || '—',
+    'NIP': l.nip || '—',
+    'Regu': l.regu || '—',
+    'ULP': l.ulp || '—',
+    'No Tiket': l.nomorTiket || '—',
+    'Rincian Pekerjaan': l.rincian || '—',
+    'Material': l.material || '—',
+    'Target': l.target || '—',
+    'Realisasi': l.realisasi || '—',
+    'Capaian (%)': laporanCapaianPct(l) !== null ? laporanCapaianPct(l) : '—',
+    'Status Verifikasi': laporanStatusLabel(l),
+    'Diverifikasi Oleh': l.verifOleh || '—',
+    'Waktu Verifikasi': fmtWaktuFull(l.verifWaktu),
+    'Catatan Verifikasi': l.verifCatatan || '—',
+    'Foto Before': l.fotoBeforeUrl || (l.fotoBeforeBase64 ? '(tersimpan lokal, belum ada URL)' : '—'),
+    'Foto After': l.fotoAfterUrl || (l.fotoAfterBase64 ? '(tersimpan lokal, belum ada URL)' : '—')
+  }));
+}
+
+window.exportLaporanExcel = function() {
+  const entries = lastLaporanEntries || [];
+  if (!entries.length) { showToast('Belum ada data laporan untuk di-export.', 'warn'); return; }
+  if (typeof XLSX === 'undefined') { showToast('Gagal memuat modul Excel. Cek koneksi internet lalu coba lagi.', 'err'); return; }
+  try {
+    const rows = buildLaporanRows(entries);
+    const ws = XLSX.utils.json_to_sheet(rows);
+    ws['!cols'] = [
+      {wch:4},{wch:16},{wch:20},{wch:12},{wch:10},{wch:10},{wch:14},{wch:35},{wch:20},
+      {wch:9},{wch:9},{wch:11},{wch:16},{wch:14},{wch:16},{wch:24},{wch:30},{wch:30}
+    ];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Laporan Pekerjaan');
+    XLSX.writeFile(wb, `Laporan_Pekerjaan_FFM_${fmtFileStamp()}.xlsx`);
+    showToast('Export Excel berhasil.', 'ok');
+  } catch (e) {
+    showToast('Gagal export Excel: ' + e.message, 'err');
+  }
+};
+
+window.exportLaporanPDF = function() {
+  const entries = lastLaporanEntries || [];
+  if (!entries.length) { showToast('Belum ada data laporan untuk di-export.', 'warn'); return; }
+  if (typeof window.jspdf === 'undefined') { showToast('Gagal memuat modul PDF. Cek koneksi internet lalu coba lagi.', 'err'); return; }
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+    doc.setFontSize(13);
+    doc.text('Laporan Pekerjaan — Field Force Management PLN UP3 Jayapura', 40, 32);
+    doc.setFontSize(9);
+    doc.setTextColor(110);
+    doc.text('Dicetak: ' + new Date().toLocaleString('id-ID') + '  ·  Total: ' + entries.length + ' laporan', 40, 47);
+
+    const body = entries.map(([, l], i) => [
+      i + 1,
+      fmtWaktuFull(l.waktu),
+      l.nama || '—',
+      l.regu || '—',
+      l.ulp || '—',
+      l.nomorTiket || '—',
+      l.rincian || '—',
+      l.target || '—',
+      l.realisasi || '—',
+      laporanCapaianPct(l) !== null ? laporanCapaianPct(l) + '%' : '—',
+      laporanStatusLabel(l)
+    ]);
+
+    doc.autoTable({
+      startY: 58,
+      head: [['No','Waktu','Nama','Regu','ULP','No Tiket','Rincian Pekerjaan','Target','Realisasi','%','Status']],
+      body,
+      styles: { fontSize: 7.5, cellPadding: 4, overflow: 'linebreak' },
+      headStyles: { fillColor: [0, 71, 133], textColor: 255, fontStyle: 'bold' },
+      columnStyles: { 6: { cellWidth: 180 } },
+      margin: { left: 40, right: 40 }
+    });
+
+    doc.save(`Laporan_Pekerjaan_FFM_${fmtFileStamp()}.pdf`);
+    showToast('Export PDF berhasil.', 'ok');
+  } catch (e) {
+    showToast('Gagal export PDF: ' + e.message, 'err');
+  }
+};
+
 // ── Edit Laporan (Supervisor/Admin) — #8: edit pasca-verifikasi wajib verifikasi ulang ──
 let currentEditLaporanId = null;
 let editLaporanWasVerified = false;
@@ -3176,6 +3306,148 @@ function listenRekap() {
     renderRekap(Object.entries(data));
   });
 }
+
+// ── Export Rekap Laporan (Excel & PDF) — ikut periode aktif (Hari/Minggu/Bulan) ──
+function computeRekapExportData() {
+  const { start, label } = getDateRange(rekapPeriode);
+  const filtered = (allLaporanCache || []).filter(([,l]) => (l.waktu||0) >= start);
+
+  const total   = filtered.length;
+  const verif   = filtered.filter(([,l]) => l.statusVerifikasi === 'Terverifikasi').length;
+  const pending = filtered.filter(([,l]) => !l.statusVerifikasi).length;
+  const withPct = filtered.filter(([,l]) => l.target && l.realisasi && +l.target > 0);
+  const avgPct  = withPct.length
+    ? Math.round(withPct.reduce((s,[,l]) => s + Math.min(100, Math.round(+l.realisasi / +l.target * 100)), 0) / withPct.length)
+    : 0;
+
+  function aggBy(keyFn) {
+    const map = {};
+    filtered.forEach(([,l]) => {
+      const k = keyFn(l) || '—';
+      if (!map[k]) map[k] = { count:0, target:0, realisasi:0 };
+      map[k].count++;
+      map[k].target    += +(l.target||0);
+      map[k].realisasi += +(l.realisasi||0);
+    });
+    return Object.entries(map).sort((a,b) => b[1].realisasi - a[1].realisasi);
+  }
+  const byTim = aggBy(l => l.regu);
+  const byUlp = aggBy(l => l.ulp);
+
+  return { label, filtered, total, verif, pending, avgPct, byTim, byUlp };
+}
+
+window.exportRekapExcel = function() {
+  const { label, filtered, total, verif, pending, avgPct, byTim, byUlp } = computeRekapExportData();
+  if (!total) { showToast('Belum ada data laporan pada periode ini untuk di-export.', 'warn'); return; }
+  if (typeof XLSX === 'undefined') { showToast('Gagal memuat modul Excel. Cek koneksi internet lalu coba lagi.', 'err'); return; }
+  try {
+    const wb = XLSX.utils.book_new();
+
+    // Sheet Ringkasan
+    const wsRingkasan = XLSX.utils.aoa_to_sheet([
+      ['Rekap Laporan Pekerjaan — Field Force Management PLN UP3 Jayapura'],
+      ['Periode', label],
+      ['Dicetak', new Date().toLocaleString('id-ID')],
+      [],
+      ['Total Laporan', total],
+      ['Terverifikasi', verif],
+      ['Menunggu Verifikasi', pending],
+      ['Rata-rata Realisasi (%)', avgPct]
+    ]);
+    wsRingkasan['!cols'] = [{wch:26},{wch:30}];
+    XLSX.utils.book_append_sheet(wb, wsRingkasan, 'Ringkasan');
+
+    // Sheet Per Tim
+    const wsTim = XLSX.utils.json_to_sheet(byTim.map(([tim,d]) => ({
+      'Tim / Regu': tim, 'Jumlah Laporan': d.count, 'Target': d.target, 'Realisasi': d.realisasi,
+      'Capaian (%)': d.target > 0 ? Math.round(d.realisasi / d.target * 100) : '—'
+    })));
+    wsTim['!cols'] = [{wch:18},{wch:14},{wch:10},{wch:10},{wch:11}];
+    XLSX.utils.book_append_sheet(wb, wsTim, 'Per Tim-Regu');
+
+    // Sheet Per ULP
+    const wsUlp = XLSX.utils.json_to_sheet(byUlp.map(([ulp,d]) => ({
+      'ULP': ulp, 'Jumlah Laporan': d.count, 'Target': d.target, 'Realisasi': d.realisasi,
+      'Capaian (%)': d.target > 0 ? Math.round(d.realisasi / d.target * 100) : '—'
+    })));
+    wsUlp['!cols'] = [{wch:18},{wch:14},{wch:10},{wch:10},{wch:11}];
+    XLSX.utils.book_append_sheet(wb, wsUlp, 'Per ULP');
+
+    // Sheet Detail
+    const wsDetail = XLSX.utils.json_to_sheet(buildLaporanRows(filtered.sort((a,b)=>(b[1].waktu||0)-(a[1].waktu||0))));
+    wsDetail['!cols'] = [
+      {wch:4},{wch:16},{wch:20},{wch:12},{wch:10},{wch:10},{wch:14},{wch:35},{wch:20},
+      {wch:9},{wch:9},{wch:11},{wch:16},{wch:14},{wch:16},{wch:24},{wch:30},{wch:30}
+    ];
+    XLSX.utils.book_append_sheet(wb, wsDetail, 'Detail Laporan');
+
+    XLSX.writeFile(wb, `Rekap_Laporan_FFM_${rekapPeriode}_${fmtFileStamp()}.xlsx`);
+    showToast('Export Excel berhasil.', 'ok');
+  } catch (e) {
+    showToast('Gagal export Excel: ' + e.message, 'err');
+  }
+};
+
+window.exportRekapPDF = function() {
+  const { label, filtered, total, verif, pending, avgPct, byTim, byUlp } = computeRekapExportData();
+  if (!total) { showToast('Belum ada data laporan pada periode ini untuk di-export.', 'warn'); return; }
+  if (typeof window.jspdf === 'undefined') { showToast('Gagal memuat modul PDF. Cek koneksi internet lalu coba lagi.', 'err'); return; }
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+
+    doc.setFontSize(13);
+    doc.text('Rekap Laporan Pekerjaan — Field Force Management PLN UP3 Jayapura', 40, 32);
+    doc.setFontSize(9);
+    doc.setTextColor(110);
+    doc.text('Periode: ' + label + '  ·  Dicetak: ' + new Date().toLocaleString('id-ID'), 40, 47);
+    doc.setTextColor(0);
+    doc.setFontSize(9.5);
+    doc.text(`Total Laporan: ${total}   |   Terverifikasi: ${verif}   |   Menunggu: ${pending}   |   Rata-rata Realisasi: ${avgPct}%`, 40, 62);
+
+    doc.autoTable({
+      startY: 74,
+      head: [['Tim / Regu','Laporan','Target','Realisasi','%']],
+      body: byTim.map(([tim,d]) => [tim, d.count, d.target||'—', d.realisasi||'—', d.target>0?Math.round(d.realisasi/d.target*100)+'%':'—']),
+      styles: { fontSize: 8, cellPadding: 4 },
+      headStyles: { fillColor: [0, 71, 133], textColor: 255, fontStyle: 'bold' },
+      margin: { left: 40, right: 420 },
+      tableWidth: 350
+    });
+    const timEndY = doc.lastAutoTable.finalY;
+
+    doc.autoTable({
+      startY: 74,
+      head: [['ULP','Laporan','Target','Realisasi','%']],
+      body: byUlp.map(([ulp,d]) => [ulp, d.count, d.target||'—', d.realisasi||'—', d.target>0?Math.round(d.realisasi/d.target*100)+'%':'—']),
+      styles: { fontSize: 8, cellPadding: 4 },
+      headStyles: { fillColor: [0, 71, 133], textColor: 255, fontStyle: 'bold' },
+      margin: { left: 440, right: 40 },
+      tableWidth: 350
+    });
+    const ulpEndY = doc.lastAutoTable.finalY;
+
+    doc.autoTable({
+      startY: Math.max(timEndY, ulpEndY) + 20,
+      head: [['Waktu','Petugas','Regu','ULP','No Tiket','Pekerjaan','Target','Realisasi','%','Status']],
+      body: filtered.sort((a,b)=>(b[1].waktu||0)-(a[1].waktu||0)).map(([,l]) => [
+        fmtWaktuFull(l.waktu), l.nama||'—', l.regu||'—', l.ulp||'—', l.nomorTiket||'—',
+        l.rincian||'—', l.target||'—', l.realisasi||'—',
+        laporanCapaianPct(l) !== null ? laporanCapaianPct(l)+'%' : '—', laporanStatusLabel(l)
+      ]),
+      styles: { fontSize: 7.5, cellPadding: 4, overflow: 'linebreak' },
+      headStyles: { fillColor: [0, 71, 133], textColor: 255, fontStyle: 'bold' },
+      columnStyles: { 5: { cellWidth: 170 } },
+      margin: { left: 40, right: 40 }
+    });
+
+    doc.save(`Rekap_Laporan_FFM_${rekapPeriode}_${fmtFileStamp()}.pdf`);
+    showToast('Export PDF berhasil.', 'ok');
+  } catch (e) {
+    showToast('Gagal export PDF: ' + e.message, 'err');
+  }
+};
 
 // ══════════════════════════════════════
 // PROGRES PROGRAM
