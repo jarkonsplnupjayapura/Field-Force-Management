@@ -914,6 +914,7 @@ body {
     </div>
     <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--pln-blue);margin-bottom:6px">Foto Before / After</div>
     <div style="font-size:10.5px;color:var(--text-muted);margin-bottom:10px;line-height:1.5">Ambil langsung dengan kamera, atau ketuk ikon 🖼️ untuk pilih dari galeri. Foto yang sudah diambil otomatis tersimpan di HP walau aplikasi ditutup, jadi tidak hilang saat lanjut kerja sebelum ambil foto After.</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:10.5px;color:var(--green);font-weight:600;margin-bottom:10px;background:var(--green-dim);border:1px solid var(--green-border);border-radius:8px;padding:7px 10px">🔒 Setiap foto otomatis diberi watermark waktu &amp; koordinat GPS langsung di gambar — bukan cuma metadata.</div>
     <div class="photo-pair">
       <div class="photo-slot" id="slot-before" onclick="bukaKameraLapor('before')">
         <button type="button" class="slot-gallery-btn" onclick="event.stopPropagation(); document.getElementById('file-before').click()">🖼️</button>
@@ -1170,7 +1171,56 @@ try {
 // 1GB storage, 10GB/bulan transfer). Kompresi ADAPTIF: kalau hasil masih lebih besar dari
 // maxBytes, otomatis diulang dengan kualitas/lebar lebih kecil (maks 4 percobaan) supaya
 // ukuran akhir konsisten kecil walau kontennya detail/kontras tinggi.
-function compressToBase64(dataUrl, maxWidth = 800, quality = 0.65, maxBytes = 320000) {
+// ══════════════════════════════════════
+// WATERMARK FOTO — anti-kecurangan (poin #3): timestamp + koordinat GPS
+// digambar LANGSUNG ke piksel foto (bukan cuma EXIF/metadata) supaya foto
+// tidak bisa dipakai ulang / dicontek dari laporan lain. Dipanggil otomatis
+// dari compressToBase64 & compressFileToBase64, jadi SEMUA foto (absen,
+// absen cepat, lapor before/after — baik dari kamera maupun galeri) pasti
+// kena watermark tanpa perlu diubah satu-satu di tiap alur.
+// ══════════════════════════════════════
+function drawWatermark(canvas) {
+  try {
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width, h = canvas.height;
+    if (!w || !h) return;
+
+    const lat = lastPos ? lastPos.coords.latitude  : null;
+    const lng = lastPos ? lastPos.coords.longitude : null;
+    const acc = lastPos ? lastPos.coords.accuracy  : null;
+    const gpsLine = (lat != null && lng != null)
+      ? 'GPS ' + lat.toFixed(6) + ', ' + lng.toFixed(6) + (acc ? '  (±' + Math.round(acc) + 'm)' : '')
+      : 'GPS tidak tersedia';
+    const timeLine = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'medium' });
+    const who = currentUser ? (currentUser.nama + (currentUser.regu ? ' · ' + currentUser.regu : '')) : '';
+    const lines = who ? [timeLine, gpsLine, who] : [timeLine, gpsLine];
+
+    const fontSize = Math.max(11, Math.round(w * 0.032));
+    const lineH    = Math.round(fontSize * 1.4);
+    const padX     = Math.round(w * 0.025);
+    const barH     = lineH * lines.length + Math.round(fontSize * 0.8);
+
+    const grad = ctx.createLinearGradient(0, h - barH, 0, h);
+    grad.addColorStop(0, 'rgba(0,0,0,0)');
+    grad.addColorStop(0.4, 'rgba(0,0,0,0.55)');
+    grad.addColorStop(1, 'rgba(0,0,0,0.75)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, h - barH, w, barH);
+
+    ctx.textBaseline = 'bottom';
+    ctx.font = fontSize + 'px monospace, "Courier New"';
+    let y = h - Math.round(fontSize * 0.5);
+    for (let i = lines.length - 1; i >= 0; i--) {
+      ctx.fillStyle = 'rgba(0,0,0,0.85)';
+      ctx.fillText(lines[i], padX + 1, y + 1);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillText(lines[i], padX, y);
+      y -= lineH;
+    }
+  } catch (e) { /* watermark gagal digambar — jangan gagalkan upload foto */ }
+}
+
+function compressToBase64(dataUrl, maxWidth = 800, quality = 0.65, maxBytes = 320000, watermark = true) {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
@@ -1181,6 +1231,7 @@ function compressToBase64(dataUrl, maxWidth = 800, quality = 0.65, maxBytes = 32
         canvas.width  = Math.round(img.width  * scale);
         canvas.height = Math.round(img.height * scale);
         canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        if (watermark) drawWatermark(canvas);
         result = canvas.toDataURL('image/jpeg', q);
         const approxBytes = result.length * 0.75; // perkiraan ukuran biner dari panjang base64
         if (approxBytes <= maxBytes || (w <= 480 && q <= 0.4)) break;
@@ -1198,7 +1249,7 @@ function compressToBase64(dataUrl, maxWidth = 800, quality = 0.65, maxBytes = 32
 // HP asli (bukan hasil kamera in-app) dibaca & dikoreksi otomatis — mengatasi foto galeri yang
 // sebelumnya bisa muncul miring/terbalik saat digambar ke canvas. Fallback ke cara lama kalau
 // browser tidak mendukung opsi tersebut.
-async function compressFileToBase64(file, maxWidth = 800, quality = 0.65, maxBytes = 320000) {
+async function compressFileToBase64(file, maxWidth = 800, quality = 0.65, maxBytes = 320000, watermark = true) {
   try {
     const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
     let w = maxWidth, q = quality, result = '';
@@ -1208,6 +1259,7 @@ async function compressFileToBase64(file, maxWidth = 800, quality = 0.65, maxByt
       canvas.width  = Math.round(bitmap.width  * scale);
       canvas.height = Math.round(bitmap.height * scale);
       canvas.getContext('2d').drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+      if (watermark) drawWatermark(canvas);
       result = canvas.toDataURL('image/jpeg', q);
       const approxBytes = result.length * 0.75;
       if (approxBytes <= maxBytes || (w <= 480 && q <= 0.4)) break;
@@ -1223,7 +1275,7 @@ async function compressFileToBase64(file, maxWidth = 800, quality = 0.65, maxByt
       reader.onerror = () => reject(new Error('Gagal membaca file gambar'));
       reader.readAsDataURL(file);
     });
-    return compressToBase64(dataUrl, maxWidth, quality, maxBytes);
+    return compressToBase64(dataUrl, maxWidth, quality, maxBytes, watermark);
   }
 }
 
@@ -1240,6 +1292,19 @@ const CLOUDINARY_UPLOAD_URL    = `https://api.cloudinary.com/v1_1/${CLOUDINARY_C
 // Upload dataURL (hasil compressToBase64/compressFileToBase64) ke Cloudinary.
 // folder: dipakai untuk mengelompokkan foto di Cloudinary (mis. 'ffm/absensi').
 // publicIdHint: opsional, biar nama file di Cloudinary mudah ditelusuri.
+// Ubah nama petugas / rincian pekerjaan jadi teks aman buat nama file Cloudinary
+// (public_id): hilangkan spasi & karakter aneh, buang aksen, batasi panjang biar
+// nggak kepanjangan.
+function slugifyForCloudinary(str) {
+  return (str || '')
+    .toString()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .trim()
+    .replace(/[^a-zA-Z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+    .slice(0, 50) || 'petugas';
+}
+
 async function uploadToCloudinary(dataUrl, folder, publicIdHint) {
   if (!dataUrl) return null;
   const form = new FormData();
@@ -1758,7 +1823,7 @@ window.submitAbsensi = async function() {
   let fotoResult = null;
   if (btn) btn.innerHTML = '<span>⏳</span> Mengompres & mengunggah foto...';
   try {
-    fotoResult = await uploadFotoAman(absenFotoDataUrl, 'ffm/absensi', (currentUser?.id || 'petugas') + '_' + waktu);
+    fotoResult = await uploadFotoAman(absenFotoDataUrl, 'ffm/absensi', slugifyForCloudinary(currentUser?.nama) + '_' + waktu);
   } catch (e) {
     addLog('Gagal memproses foto absen: ' + e.message, 'err');
     errEl.textContent = 'Gagal memproses foto. Coba lagi.';
@@ -1937,7 +2002,7 @@ window.submitAbsenCepat = async function() {
 
   let fotoResult = null;
   try {
-    fotoResult = await uploadFotoAman(acFotoDataUrl, 'ffm/absen-cepat', (currentUser?.id || 'petugas') + '_' + waktu);
+    fotoResult = await uploadFotoAman(acFotoDataUrl, 'ffm/absen-cepat', slugifyForCloudinary(currentUser?.nama) + '_' + waktu);
   } catch (e) {
     addLog('Gagal memproses foto absen cepat: ' + e.message, 'err');
     errEl.textContent = 'Gagal memproses foto. Coba lagi.';
@@ -2246,9 +2311,12 @@ window.submitLaporan = async function() {
   try {
     progEl.textContent = 'Mengunggah foto before ke cloud...';
     btn.innerHTML = '<span>⏳</span> Memproses...';
-    fotoBeforeResult = await uploadFotoAman(laporFotoBefore, 'ffm/laporan-before', uid + '_' + waktu, { quality: 0.6 });
+    const namaSlug    = slugifyForCloudinary(currentUser ? currentUser.nama : uid);
+    const rincianSlug = slugifyForCloudinary(rincian);
+    const publicIdHint = namaSlug + '_' + rincianSlug + '_' + waktu;
+    fotoBeforeResult = await uploadFotoAman(laporFotoBefore, 'ffm/laporan-before', publicIdHint, { quality: 0.6 });
     progEl.textContent = 'Mengunggah foto after ke cloud...';
-    fotoAfterResult  = await uploadFotoAman(laporFotoAfter, 'ffm/laporan-after', uid + '_' + waktu, { quality: 0.6 });
+    fotoAfterResult  = await uploadFotoAman(laporFotoAfter, 'ffm/laporan-after', publicIdHint, { quality: 0.6 });
   } catch (e) {
     addLog('Gagal memproses foto laporan: ' + e.message, 'err');
     errEl.textContent = 'Gagal memproses foto. Coba lagi.';
