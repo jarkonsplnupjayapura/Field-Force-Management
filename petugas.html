@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>FFM Petugas — PLN UP3 Jayapura</title>
+<title>NUMBAY — PLN UP3 Jayapura</title>
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./favicon.ico">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <meta name="theme-color" content="#003D82">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="FFM Petugas">
+<meta name="apple-mobile-web-app-title" content="NUMBAY Petugas">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -408,8 +408,6 @@ body {
 .counter-num   { font-size: 26px; font-weight: 800; color: var(--pln-blue); font-variant-numeric: tabular-nums; }
 
 /* ── PROGRESS BAR (tugas selesai) ── */
-.progress-bar-wrap { background: var(--surface3); border-radius: 99px; height: 10px; overflow: hidden; }
-.progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--green), #14B86A); border-radius: 99px; transition: width 0.6s ease; }
 
 /* ── PROFILE CHIP ── */
 .profile-chip {
@@ -429,8 +427,8 @@ body {
 .profile-name { font-size: 16px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
 .profile-sub  { font-size: 11.5px; color: rgba(255,255,255,0.6); margin-top: 2px; }
 
-/* ── PHOTO PAIR ── */
-.photo-pair { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
+/* ── PHOTO TRIO (Sebelum / Progres / Sesudah) ── */
+.photo-pair { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:12px; }
 .photo-slot {
   background:var(--surface2); border:2px dashed rgba(0,61,130,0.18);
   border-radius:var(--radius-sm); aspect-ratio:1;
@@ -440,20 +438,26 @@ body {
 .photo-slot:hover { border-color:var(--pln-blue); }
 .photo-slot img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
 .photo-slot .slot-label {
-  font-size:10px; font-weight:700; color:var(--text-sec);
+  font-size:9px; font-weight:700; color:var(--text-sec);
   position:relative; z-index:1;
-  background:rgba(255,255,255,0.85); padding:2px 8px; border-radius:4px;
+  background:rgba(255,255,255,0.85); padding:2px 6px; border-radius:4px;
+  text-align:center;
 }
 .photo-slot.filled { border-color:var(--green); border-style:solid; }
-.photo-slot.filled .slot-label { position:absolute; bottom:6px; color:var(--green); }
-.photo-slot .slot-icon { font-size:22px; color:var(--text-muted); position:relative; z-index:1; }
-.slot-gallery-btn {
-  position:absolute; top:6px; right:6px; z-index:2;
-  background:rgba(0,61,130,0.85); color:#fff; border:none;
-  border-radius:8px; padding:5px 7px; font-size:11px; cursor:pointer;
-  display:flex; align-items:center; gap:3px; backdrop-filter:blur(3px);
+.photo-slot.filled .slot-label { position:absolute; bottom:5px; color:var(--green); }
+.photo-slot .slot-icon { font-size:20px; color:var(--text-muted); position:relative; z-index:1; }
+
+/* ── ANGLE GUIDE OVERLAY (bantu petugas ambil foto dengan angle sama) ── */
+.angle-guide-img {
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  opacity:0.38; pointer-events:none; z-index:2; mix-blend-mode:normal;
 }
-.slot-gallery-btn:active { transform:scale(0.94); }
+.angle-guide-badge {
+  position:absolute; top:8px; left:8px; z-index:3;
+  background:rgba(217,123,10,0.92); color:#fff; font-size:10.5px; font-weight:700;
+  padding:5px 10px; border-radius:99px; display:flex; align-items:center; gap:5px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.25);
+}
 
 /* ── TASK ITEMS ── */
 .task-item {
@@ -534,6 +538,8 @@ body {
   display:flex; align-items:center; justify-content:center;
   color:var(--text-sec); font-size:14px; cursor:pointer;
 }
+.sync-spinner { font-size:40px; display:inline-block; animation:sync-spin 1.4s linear infinite; }
+@keyframes sync-spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
 
 /* ── ONBOARDING SLIDES ── */
 .ob-slide { display:none; text-align:center; padding:4px 4px 8px; }
@@ -734,9 +740,9 @@ body {
 
 <!-- HEADER -->
 <div class="header">
-  <div class="header-logo"><img src="./icon-ffm-192.png" alt="Logo FFM" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 rx=%2722%27 fill=%27%230057B8%27/%3E%3Ctext x=%2750%27 y=%2763%27 font-size=%2742%27 font-family=%27Arial,sans-serif%27 fill=%27white%27 text-anchor=%27middle%27 font-weight=%27bold%27%3EFFM%3C/text%3E%3C/svg%3E'"></div>
+  <div class="header-logo"><img src="./icon-numbay-192.png" alt="Logo NUMBAY" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 rx=%2722%27 fill=%27%230057B8%27/%3E%3Ctext x=%2750%27 y=%2763%27 font-size=%2742%27 font-family=%27Arial,sans-serif%27 fill=%27white%27 text-anchor=%27middle%27 font-weight=%27bold%27%3ENB%3C/text%3E%3C/svg%3E'"></div>
   <div>
-    <div class="header-title">FFM Petugas</div>
+    <div class="header-title">NUMBAY Petugas</div>
     <div class="header-sub">PLN UP3 Jayapura · Field Force</div>
   </div>
   <div class="conn-pill">
@@ -752,9 +758,9 @@ body {
   <!-- Banner atas -->
   <div class="login-banner">
     <div class="login-brand">
-      <div class="login-brand-icon"><img src="./icon-ffm-192.png" alt="Logo FFM" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 rx=%2722%27 fill=%27%230057B8%27/%3E%3Ctext x=%2750%27 y=%2763%27 font-size=%2742%27 font-family=%27Arial,sans-serif%27 fill=%27white%27 text-anchor=%27middle%27 font-weight=%27bold%27%3EFFM%3C/text%3E%3C/svg%3E'"></div>
+      <div class="login-brand-icon"><img src="./icon-numbay-192.png" alt="Logo NUMBAY" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 rx=%2722%27 fill=%27%230057B8%27/%3E%3Ctext x=%2750%27 y=%2763%27 font-size=%2742%27 font-family=%27Arial,sans-serif%27 fill=%27white%27 text-anchor=%27middle%27 font-weight=%27bold%27%3ENB%3C/text%3E%3C/svg%3E'"></div>
       <div class="login-brand-text">
-        <div class="lb-title">FFM Petugas</div>
+        <div class="lb-title">NUMBAY Petugas</div>
         <div class="lb-sub">PLN UP3 Jayapura · Field Force</div>
       </div>
     </div>
@@ -770,8 +776,8 @@ body {
   <div class="card">
     <div class="card-title">Anggota Bertugas</div>
     <div class="field">
-      <label>Anggota Regu Hari Ini</label>
-      <textarea id="in-anggota" rows="2" placeholder="Nama A, Nama B, Nama C"></textarea>
+      <label>Anggota Regu Hari Ini <span style="color:var(--red)">*</span></label>
+      <textarea id="in-anggota" rows="2" placeholder="Nama A, Nama B, Nama C" required></textarea>
     </div>
   </div>
 
@@ -779,39 +785,28 @@ body {
   <div class="card">
     <div class="card-title">Penempatan</div>
     <div class="field">
-      <label>Regu / Tim</label>
-      <!-- FIX: dropdown nama regu baku (bukan ketik bebas) supaya tidak ada
-           variasi ejaan ("Tim ROW" vs "row1" vs "ROW") yang bikin dashboard
-           pecah jadi banyak entitas berbeda padahal maksudnya regu yang sama.
-           Opsi "Lainnya" tetap disediakan sebagai cadangan kalau nama regu
-           belum ada di daftar, supaya petugas tidak pernah terblokir login. -->
-      <select id="in-regu-select" onchange="toggleReguManual()">
-        <option value="">— Pilih regu/tim —</option>
-        <option>Tim ROW</option>
-        <option>Tim Gangguan</option>
-        <option>HAR 1</option>
-        <option>HAR 2</option>
-        <option>PDKB 1</option>
-        <option>PDKB 2</option>
-        <option>Yantek 1</option>
-        <option>Yantek 2</option>
-        <option>Yantek 3</option>
+      <label>Unit Kerja</label>
+      <!-- FIX: Unit Kerja dipilih LEBIH DULU. Daftar ULP diisi otomatis dari
+           ROSTER_ULP_TEAMS (lihat script). Opsi "Lainnya" disediakan sebagai
+           cadangan kalau ULP belum ada di daftar, supaya petugas tidak
+           pernah terblokir login. Begitu Unit Kerja dipilih, dropdown
+           Regu/Tim di bawah otomatis difilter hanya menampilkan tim milik
+           unit kerja itu (lihat onUlpChange()). -->
+      <select id="in-ulp" onchange="onUlpChange()">
+        <option value="">— Pilih unit kerja —</option>
         <option value="__lainnya__">➕ Lainnya (ketik manual)</option>
       </select>
-      <input type="text" id="in-regu-manual" placeholder="Ketik nama regu/tim..." autocapitalize="words" style="display:none;margin-top:8px">
+      <input type="text" id="in-ulp-manual" placeholder="Ketik nama unit kerja..." autocapitalize="words" style="display:none;margin-top:8px">
     </div>
     <div class="field">
-      <label>Unit Kerja</label>
-      <select id="in-ulp">
-        <option value="">— Pilih unit kerja —</option>
-        <option>UP3 Jayapura</option>
-        <option>ULP Jayapura</option>
-        <option>ULP Abepura</option>
-        <option>ULP Sentani</option>
-        <option>ULP Arso</option>
-        <option>ULP Sarmi</option>
-        <option>ULP Genyem</option>
+      <label>Regu / Tim</label>
+      <!-- Opsi diisi/dibatasi otomatis mengikuti Unit Kerja yang dipilih di
+           atas — dropdown ini terkunci/kosong sampai Unit Kerja dipilih. -->
+      <select id="in-regu-select" onchange="toggleReguManual()" disabled>
+        <option value="">— Pilih unit kerja dulu —</option>
       </select>
+      <input type="text" id="in-regu-manual" placeholder="Ketik nama regu/tim..." autocapitalize="words" style="display:none;margin-top:8px">
+      <div id="in-regu-hint" style="display:none;font-size:11px;color:var(--text-3);margin-top:6px"></div>
     </div>
   </div>
 
@@ -972,13 +967,11 @@ body {
 
 
   <div class="card">
-    <div class="card-title">Progres Tugas Hari Ini</div>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
-      <div style="font-size:12px;font-weight:700;color:var(--text-sec)">Progres Laporan</div>
-      <div style="font-size:12px;font-weight:800;color:var(--green)" id="progres-pct">0%</div>
+    <div class="card-title">Laporan Hari Ini</div>
+    <div style="display:flex;align-items:baseline;justify-content:center;gap:8px;padding:4px 0 2px">
+      <div style="font-size:32px;font-weight:800;color:var(--green)" id="progres-count">0</div>
+      <div style="font-size:12px;color:var(--text-muted)" id="progres-sub">laporan dikirim hari ini</div>
     </div>
-    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progres-fill" style="width:0%"></div></div>
-    <div style="font-size:10.5px;color:var(--text-muted);margin-top:6px;text-align:center" id="progres-sub">0 dari target tugas terpenuhi</div>
   </div>
 
   <div class="card">
@@ -1075,36 +1068,46 @@ body {
       <button class="modal-close" onclick="tutupModalLapor()">✕</button>
     </div>
     <div class="field">
-      <label>Nomor Tiket P0/P1 <span style="font-size:10px;color:var(--text-muted);font-weight:400">(opsional)</span></label>
-      <div style="display:flex;gap:8px;align-items:center">
-        <input type="text" id="lapor-tiket" placeholder="cth: P1-2025-0042" style="font-family:'SF Mono','Fira Code',monospace;text-transform:uppercase;flex:1" oninput="this.value=this.value.toUpperCase()" onblur="cariTiket()">
-        <button type="button" onclick="cariTiket()" style="background:var(--pln-blue);color:#fff;border:none;border-radius:10px;padding:12px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">🔍 Cari</button>
-      </div>
+      <label>Nomor Penugasan <span style="font-size:10px;color:var(--text-muted);font-weight:400">(opsional)</span></label>
+      <select id="lapor-tiket-select" onchange="onLaporTiketSelectChange()" style="width:100%">
+        <option value="">— Tanpa Penugasan (laporan bebas) —</option>
+      </select>
       <div id="tiket-info-box" style="display:none;margin-top:8px;background:var(--surface2);border:1px solid var(--border-str);border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.8;color:var(--text)"></div>
     </div>
-    <div class="field"><label>Rincian Pekerjaan</label><input type="text" id="lapor-rincian" placeholder="cth: Pemasangan Cover Anti Hewan"></div>
-    <div class="field"><label>Audit Material</label><input type="text" id="lapor-material" placeholder="cth: Cover Anti Hewan, Cable Tie"></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <div class="field"><label>Target Volume</label><input type="number" id="lapor-target" placeholder="0" inputmode="numeric"></div>
-      <div class="field"><label>Realisasi Volume</label><input type="number" id="lapor-realisasi" placeholder="0" inputmode="numeric"></div>
+
+    <div class="field"><label>Jenis Pekerjaan</label>
+      <select id="lapor-jenis-pekerjaan" style="width:100%">
+        <option value="">— Pilih —</option>
+      </select>
     </div>
-    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--pln-blue);margin-bottom:6px">Foto Before / After</div>
-    <div style="font-size:10.5px;color:var(--text-muted);margin-bottom:10px;line-height:1.5">Ambil langsung dengan kamera, atau ketuk ikon 🖼️ untuk pilih dari galeri. Foto yang sudah diambil otomatis tersimpan di HP walau aplikasi ditutup, jadi tidak hilang saat lanjut kerja sebelum ambil foto After.</div>
+    <div class="field"><label>Rincian Pekerjaan <span style="color:var(--red)">*</span></label>
+      <select id="lapor-rincian" style="width:100%">
+        <option value="">— Pilih Rincian Pekerjaan —</option>
+      </select>
+    </div>
+    <div class="field"><label>Audit Material</label><input type="text" id="lapor-material" placeholder="cth: Cover Anti Hewan, Cable Tie"></div>
+    <div class="field">
+      <label>Realisasi Volume <span style="color:var(--red)">*</span></label>
+      <input type="number" id="lapor-realisasi" placeholder="0" inputmode="numeric" required>
+      <div style="font-size:10px;color:var(--text-muted);margin-top:4px">Wajib diisi (boleh 0). Target ditentukan supervisor dari dashboard, tidak perlu diisi di sini.</div>
+    </div>
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--pln-blue);margin-bottom:6px">Foto Sebelum / Progres / Sesudah</div>
+    <div style="font-size:10.5px;color:var(--text-muted);margin-bottom:10px;line-height:1.5">Ambil 3 foto langsung dengan kamera HP dari <b>angle (sudut) yang sama</b> supaya perubahan kondisi terlihat jelas. Saat ambil foto Progres &amp; Sesudah, aplikasi menampilkan bayangan transparan dari foto Sebelum sebagai panduan angle. Foto otomatis tersimpan walau aplikasi ditutup.</div>
     <div style="display:flex;align-items:center;gap:6px;font-size:10.5px;color:var(--green);font-weight:600;margin-bottom:10px;background:var(--green-dim);border:1px solid var(--green-border);border-radius:8px;padding:7px 10px">🔒 Setiap foto otomatis diberi watermark waktu &amp; koordinat GPS langsung di gambar — bukan cuma metadata.</div>
     <div class="photo-pair">
       <div class="photo-slot" id="slot-before" onclick="bukaKameraLapor('before')">
-        <button type="button" class="slot-gallery-btn" onclick="event.stopPropagation(); document.getElementById('file-before').click()">🖼️</button>
         <span class="slot-icon">📷</span>
-        <span class="slot-label">Sebelum (Before)</span>
+        <span class="slot-label">Sebelum</span>
+      </div>
+      <div class="photo-slot" id="slot-progres" onclick="bukaKameraLapor('progres')">
+        <span class="slot-icon">📷</span>
+        <span class="slot-label">Progres</span>
       </div>
       <div class="photo-slot" id="slot-after" onclick="bukaKameraLapor('after')">
-        <button type="button" class="slot-gallery-btn" onclick="event.stopPropagation(); document.getElementById('file-after').click()">🖼️</button>
         <span class="slot-icon">📷</span>
-        <span class="slot-label">Sesudah (After)</span>
+        <span class="slot-label">Sesudah</span>
       </div>
     </div>
-    <input type="file" id="file-before" accept="image/*" style="display:none" onchange="pilihFileLapor('before', this)">
-    <input type="file" id="file-after"  accept="image/*" style="display:none" onchange="pilihFileLapor('after', this)">
     <div class="error-box" id="lapor-err" style="margin-bottom:12px"></div>
     <div id="lapor-progress" style="font-size:11px;color:var(--text-sec);text-align:center;margin-bottom:10px;display:none"></div>
     <button class="btn btn-success" id="lapor-btn-submit" onclick="submitLaporan()"><span>✓</span> Kirim Laporan</button>
@@ -1231,7 +1234,7 @@ body {
       <div style="font-size:12px;color:var(--text-sec);margin:6px 0" id="wizard-lokasi-status">Belum dicek.</div>
       <button class="btn btn-primary btn-sm" style="width:100%" onclick="wizardCekLokasi()" id="wizard-btn-lokasi">📍 Cek Izin Lokasi</button>
       <div id="wizard-lokasi-panduan" style="display:none;margin-top:10px;font-size:11.5px;color:var(--text-sec)">
-        <div class="step-path">Setelan HP → Aplikasi → FFM Petugas → Izin → Lokasi → pilih "Izinkan sepanjang waktu"</div>
+        <div class="step-path">Setelan HP → Aplikasi → NUMBAY Petugas → Izin → Lokasi → pilih "Izinkan sepanjang waktu"</div>
         <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:8px" onclick="wizardCekLokasi()">↺ Sudah Saya Ubah, Cek Ulang</button>
       </div>
     </div>
@@ -1245,7 +1248,7 @@ body {
       <div style="font-size:12px;color:var(--text-sec);margin:6px 0" id="wizard-kamera-status">Belum dicek.</div>
       <button class="btn btn-primary btn-sm" style="width:100%" onclick="wizardCekKamera()" id="wizard-btn-kamera">📷 Cek Izin Kamera</button>
       <div id="wizard-kamera-panduan" style="display:none;margin-top:10px;font-size:11.5px;color:var(--text-sec)">
-        <div class="step-path">Setelan HP → Aplikasi → FFM Petugas → Izin → Kamera → pilih "Izinkan"</div>
+        <div class="step-path">Setelan HP → Aplikasi → NUMBAY Petugas → Izin → Kamera → pilih "Izinkan"</div>
         <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:8px" onclick="wizardCekKamera()">↺ Sudah Saya Ubah, Cek Ulang</button>
       </div>
     </div>
@@ -1280,6 +1283,8 @@ body {
     </div>
     <div class="camera-box" id="lapor-camera-box">
       <video id="lapor-video" playsinline autoplay muted style="display:none"></video>
+      <img id="lapor-angle-guide" class="angle-guide-img" style="display:none">
+      <div class="angle-guide-badge" id="lapor-angle-badge" style="display:none">👻 Samakan angle dgn bayangan foto</div>
       <img id="lapor-photo-preview" style="display:none">
       <div class="cam-badge" id="lapor-gps-badge" style="display:block;background:rgba(0,61,130,0.75)">📍 GPS terkunci · <span id="lapor-time-badge">--:--</span></div>
     </div>
@@ -1323,6 +1328,25 @@ body {
     <button class="btn btn-yellow" id="ac-btn-submit" onclick="submitAbsenCepat()" style="margin-top:12px">
       <span>✓</span> Konfirmasi Absen
     </button>
+  </div>
+</div>
+
+<!-- ══════ MODAL: SINKRONISASI SEBELUM SELESAI BERTUGAS ══════
+     Muncul kalau masih ada data (GPS/absensi/laporan) yang belum berhasil
+     terkirim ke server saat petugas menutup shift. Shift TIDAK ditutup
+     (cache/sesi TIDAK dihapus) sampai semua data ini terkirim — supaya
+     tidak ada data lapangan yang hilang begitu saja. -->
+<div class="modal-backdrop" id="modal-sync-selesai">
+  <div class="modal-sheet" style="text-align:center;padding-top:32px;padding-bottom:32px">
+    <div class="sync-spinner" id="sync-spinner-icon">🕓</div>
+    <h3 style="font-size:16px;font-weight:800;color:var(--pln-blue);margin:14px 0 6px">Menyinkronkan Data</h3>
+    <div style="font-size:13px;color:var(--text-sec);line-height:1.6;margin-bottom:6px" id="sync-selesai-desc">
+      Masih ada data yang belum terkirim ke server.
+    </div>
+    <div style="font-size:13px;font-weight:700;color:var(--pln-blue);margin-bottom:18px" id="sync-selesai-count">0 data tersisa</div>
+    <div style="font-size:11.5px;color:var(--text-3);margin-bottom:18px">Pastikan sinyal internet stabil. Shift baru bisa ditutup setelah semua data ini terkirim, supaya tidak ada data lapangan yang hilang.</div>
+    <button class="btn btn-yellow" id="sync-selesai-retry" onclick="retryProsesSelesaiBertugas()">↻ Coba Kirim Lagi</button>
+    <button class="btn btn-ghost" style="margin-top:8px" onclick="batalProsesSelesaiBertugas()">Kembali ke Tracking</button>
   </div>
 </div>
 
@@ -1417,9 +1441,12 @@ let currentUser = null;
 let currentStatus = 'Standby';   // status efektif yang tampil/terkirim (bisa 'Offline' otomatis)
 let manualStatus  = 'Standby';   // status terakhir yang dipilih petugas sendiri (bukan Offline)
 let sendTimer = null;
-let tugasTarget = 0;   // bisa diisi otomatis dari data tiket
 let tugasSelesai = 0;
 let lastPos = null;
+let lastAddress = null;         // { lines: [...], lat, lng } — hasil reverse-geocoding titik GPS terakhir
+let addressFetchInFlight = false;
+let addressFetchedAt = 0;
+let addressFetchedCoord = null; // {lat,lng} terakhir yang berhasil di-reverse-geocode
 let absenAktifBekerjaDone = false; // reset tiap login — absen selfie "Aktif Bekerja" cukup sekali per shift
 let absenPerjalananDone = false;   // reset tiap login — absen selfie "Perjalanan" cukup sekali per shift
 let absensiTerakhirList = []; // riwayat kartu "Absensi Terakhir" hari ini — disimpan supaya bisa dipulihkan kalau app ditutup/di-kill
@@ -1445,7 +1472,7 @@ function persistSession() {
     localStorage.setItem(SESSION_KEY, JSON.stringify({
       tanggal: new Date().toDateString(),
       currentUser, currentStatus, manualStatus,
-      tugasTarget, tugasSelesai, laporTugasList,
+      tugasSelesai, laporTugasList,
       absenAktifBekerjaDone, absenPerjalananDone,
       sendCount, absensiTerakhirList, bgWatcherId
     }));
@@ -1489,6 +1516,7 @@ window.addEventListener('online', () => {
   updateConnUI();
   flushOfflineQueue();
   applyOfflineOverride(false);
+  if (syncSelesaiAktif) { clearTimeout(syncSelesaiTimer); jalankanSiklusSyncSelesai(); }
 });
 window.addEventListener('offline', () => {
   isOnline = false;
@@ -1591,9 +1619,9 @@ try {
 // WATERMARK FOTO — anti-kecurangan (poin #3): timestamp + koordinat GPS
 // digambar LANGSUNG ke piksel foto (bukan cuma EXIF/metadata) supaya foto
 // tidak bisa dipakai ulang / dicontek dari laporan lain. Dipanggil otomatis
-// dari compressToBase64 & compressFileToBase64, jadi SEMUA foto (absen,
-// absen cepat, lapor before/after — baik dari kamera maupun galeri) pasti
-// kena watermark tanpa perlu diubah satu-satu di tiap alur.
+// dari compressToBase64, jadi SEMUA foto (absen, absen cepat, lapor
+// before/after) yang diambil lewat kamera in-app pasti kena watermark
+// tanpa perlu diubah satu-satu di tiap alur.
 // ══════════════════════════════════════
 function drawWatermark(canvas) {
   try {
@@ -1609,17 +1637,50 @@ function drawWatermark(canvas) {
       : 'GPS tidak tersedia';
     const timeLine = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'medium' });
     const who = currentUser ? (currentUser.regu + (currentUser.anggotaHadir ? ' · ' + currentUser.anggotaHadir : '')) : '';
-    const lines = who ? [timeLine, gpsLine, who] : [timeLine, gpsLine];
 
+    // Alamat lengkap (hasil reverse-geocoding titik GPS terakhir), kalau sudah siap —
+    // ditaruh di antara baris GPS dan baris nama tim, sama seperti contoh di lapangan.
+    const alamatLines = (lastAddress && Array.isArray(lastAddress.lines)) ? lastAddress.lines : [];
+
+    const rawLines = [timeLine, gpsLine, ...alamatLines];
+    if (who) rawLines.push(who);
+
+    // ── Word-wrap tiap baris terhadap lebar foto, supaya teks (terutama daftar
+    // nama tim yang bisa panjang) TIDAK PERNAH terpotong di tepi gambar. ──
     const fontSize = Math.max(11, Math.round(w * 0.032));
-    const lineH    = Math.round(fontSize * 1.4);
-    const padX     = Math.round(w * 0.025);
-    const barH     = lineH * lines.length + Math.round(fontSize * 0.8);
+    const padX = Math.round(w * 0.025);
+    const maxTextWidth = w - padX * 2;
+    ctx.font = fontSize + 'px monospace, "Courier New"';
+
+    function wrapLine(text) {
+      const words = String(text).split(' ');
+      const out = [];
+      let cur = '';
+      for (const word of words) {
+        const test = cur ? cur + ' ' + word : word;
+        if (cur && ctx.measureText(test).width > maxTextWidth) {
+          out.push(cur);
+          cur = word;
+        } else {
+          cur = test;
+        }
+      }
+      if (cur) out.push(cur);
+      return out.length ? out : [''];
+    }
+
+    let lines = [];
+    rawLines.forEach(l => { lines = lines.concat(wrapLine(l)); });
+
+    const lineH = Math.round(fontSize * 1.35);
+    // Bar dibatasi maksimum ~62% tinggi foto supaya wajah/objek tetap kelihatan
+    // walau baris teksnya banyak (alamat panjang + banyak nama anggota tim).
+    const barH = Math.min(h * 0.62, lineH * lines.length + Math.round(fontSize * 0.9));
 
     const grad = ctx.createLinearGradient(0, h - barH, 0, h);
     grad.addColorStop(0, 'rgba(0,0,0,0)');
-    grad.addColorStop(0.4, 'rgba(0,0,0,0.55)');
-    grad.addColorStop(1, 'rgba(0,0,0,0.75)');
+    grad.addColorStop(0.35, 'rgba(0,0,0,0.55)');
+    grad.addColorStop(1, 'rgba(0,0,0,0.8)');
     ctx.fillStyle = grad;
     ctx.fillRect(0, h - barH, w, barH);
 
@@ -1632,8 +1693,79 @@ function drawWatermark(canvas) {
       ctx.fillStyle = '#FFFFFF';
       ctx.fillText(lines[i], padX, y);
       y -= lineH;
+      if (y < -lineH) break; // pengaman kalau baris kebanyakan
     }
   } catch (e) { /* watermark gagal digambar — jangan gagalkan upload foto */ }
+}
+
+// ══════════════════════════════════════
+// REVERSE GEOCODING — ubah koordinat GPS jadi alamat lengkap yang bisa
+// dibaca (Jalan .../Kelurahan/Kecamatan/Kabupaten/Provinsi), dipakai untuk
+// baris alamat di watermark foto. Pakai layanan gratis OpenStreetMap
+// Nominatim, di-throttle supaya tidak minta berulang-ulang untuk titik GPS
+// yang praktis sama (anti spam & sesuai kebijakan pemakaian wajar mereka).
+// Gagal ambil alamat TIDAK boleh mengganggu alur GPS/absen/laporan lain —
+// watermark cukup tampil tanpa baris alamat kalau memang belum siap.
+// ══════════════════════════════════════
+function jarakMeter(lat1, lng1, lat2, lng2) {
+  const R = 6371000;
+  const toRad = d => d * Math.PI / 180;
+  const dLat = toRad(lat2 - lat1), dLng = toRad(lng2 - lng1);
+  const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng/2)**2;
+  return 2 * R * Math.asin(Math.sqrt(a));
+}
+
+function susunAlamatDariNominatim(addr) {
+  if (!addr) return [];
+  const bersih = (s) => String(s || '').replace(/^(Kabupaten|Kota|Kecamatan|Provinsi)\s+/i, '').trim();
+  const lines = [];
+
+  const jalan = addr.road || addr.pedestrian || addr.footway;
+  if (jalan) lines.push(jalan);
+
+  const desa = addr.village || addr.suburb || addr.hamlet || addr.neighbourhood || addr.quarter;
+  if (desa) lines.push(desa);
+
+  const kec = addr.city_district || addr.subdistrict || addr.municipality || addr.town;
+  if (kec) lines.push('Kecamatan ' + bersih(kec));
+
+  const kab = addr.county || addr.regency || addr.city;
+  if (kab) {
+    const isKota = /^kota\b/i.test(kab);
+    lines.push((isKota ? 'Kota ' : 'Kabupaten ') + bersih(kab));
+  }
+
+  if (addr.state) lines.push(bersih(addr.state));
+
+  return lines;
+}
+
+async function perbaruiAlamatDariPosisi(lat, lng) {
+  if (lat == null || lng == null) return;
+  if (addressFetchInFlight) return;
+  const sekarang = Date.now();
+  // Throttle: jangan minta ulang kalau titik masih dekat (<25m) dari titik
+  // terakhir yang sudah berhasil di-reverse-geocode, atau baru saja diminta (<45 detik).
+  if (addressFetchedCoord && jarakMeter(lat, lng, addressFetchedCoord.lat, addressFetchedCoord.lng) < 25) return;
+  if (sekarang - addressFetchedAt < 45000) return;
+
+  addressFetchInFlight = true;
+  addressFetchedAt = sekarang;
+  try {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`;
+    const res = await fetch(url, { headers: { 'Accept-Language': 'id' } });
+    if (!res.ok) return;
+    const data = await res.json();
+    const lines = susunAlamatDariNominatim(data.address);
+    if (lines.length) {
+      lastAddress = { lines, lat, lng };
+      addressFetchedCoord = { lat, lng };
+    }
+  } catch (e) {
+    // offline / gagal fetch — biarkan, watermark tetap jalan tanpa baris alamat
+  } finally {
+    addressFetchInFlight = false;
+  }
 }
 
 function compressToBase64(dataUrl, maxWidth = 800, quality = 0.65, maxBytes = 320000, watermark = true) {
@@ -1660,41 +1792,6 @@ function compressToBase64(dataUrl, maxWidth = 800, quality = 0.65, maxBytes = 32
   });
 }
 
-// Sama seperti compressToBase64, tapi menerima File langsung dari <input type="file"> (galeri).
-// Pakai createImageBitmap({imageOrientation:'from-image'}) supaya rotasi EXIF dari foto kamera
-// HP asli (bukan hasil kamera in-app) dibaca & dikoreksi otomatis — mengatasi foto galeri yang
-// sebelumnya bisa muncul miring/terbalik saat digambar ke canvas. Fallback ke cara lama kalau
-// browser tidak mendukung opsi tersebut.
-async function compressFileToBase64(file, maxWidth = 800, quality = 0.65, maxBytes = 320000, watermark = true) {
-  try {
-    const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
-    let w = maxWidth, q = quality, result = '';
-    for (let attempt = 0; attempt < 4; attempt++) {
-      const canvas = document.createElement('canvas');
-      const scale  = Math.min(1, w / bitmap.width);
-      canvas.width  = Math.round(bitmap.width  * scale);
-      canvas.height = Math.round(bitmap.height * scale);
-      canvas.getContext('2d').drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-      if (watermark) drawWatermark(canvas);
-      result = canvas.toDataURL('image/jpeg', q);
-      const approxBytes = result.length * 0.75;
-      if (approxBytes <= maxBytes || (w <= 480 && q <= 0.4)) break;
-      if (q > 0.4) q -= 0.15; else w = Math.round(w * 0.8);
-    }
-    if (bitmap.close) bitmap.close();
-    return result;
-  } catch (e) {
-    // Fallback untuk browser lama yang belum dukung createImageBitmap + imageOrientation
-    const dataUrl = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(new Error('Gagal membaca file gambar'));
-      reader.readAsDataURL(file);
-    });
-    return compressToBase64(dataUrl, maxWidth, quality, maxBytes, watermark);
-  }
-}
-
 // ══════════════════════════════════════
 // CLOUDINARY — penyimpanan foto (menggantikan Base64 di Realtime Database)
 // Foto tetap dikompres dulu di HP (hemat kuota data & lebih cepat), baru
@@ -1705,7 +1802,7 @@ const CLOUDINARY_CLOUD_NAME    = 'xkh1fjen';
 const CLOUDINARY_UPLOAD_PRESET = 'ffm_pln_unsigned';
 const CLOUDINARY_UPLOAD_URL    = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
-// Upload dataURL (hasil compressToBase64/compressFileToBase64) ke Cloudinary.
+// Upload dataURL (hasil compressToBase64) ke Cloudinary.
 // folder: dipakai untuk mengelompokkan foto di Cloudinary (mis. 'ffm/absensi').
 // publicIdHint: opsional, biar nama file di Cloudinary mudah ditelusuri.
 // Ubah nama petugas / rincian pekerjaan jadi teks aman buat nama file Cloudinary
@@ -1745,12 +1842,6 @@ async function compressAndUploadDataUrl(dataUrl, folder, publicIdHint, opts = {}
   return uploadToCloudinary(compressed, folder, publicIdHint);
 }
 
-// Helper gabungan untuk File dari input galeri.
-async function compressAndUploadFile(file, folder, publicIdHint, opts = {}) {
-  const compressed = await compressFileToBase64(file, opts.maxWidth ?? 800, opts.quality ?? 0.7, opts.maxBytes ?? 320000);
-  return uploadToCloudinary(compressed, folder, publicIdHint);
-}
-
 // Helper "aman" dipakai di semua alur foto: kompres dulu (selalu), lalu coba upload
 // ke Cloudinary. Kalau lagi offline atau upload gagal (server Cloudinary bermasalah),
 // otomatis fallback simpan foto terkompresi sebagai Base64 langsung ke Realtime Database
@@ -1777,6 +1868,200 @@ async function uploadFotoAman(dataUrl, folder, publicIdHint, opts = {}) {
 // dropdown nama baku (FIX: sebelumnya ketik bebas, rawan typo/beda-beda
 // ejaan per petugas yang bikin dashboard mendata regu yang sama sebagai
 // banyak entitas berbeda). Opsi "Lainnya" tetap ada sebagai cadangan.
+//
+// Roster resmi (NUMBAY v2): daftar Tim per Unit Kerja. Tim yang namanya
+// sudah menyebut kota (mis. "Tim ROW PT APP Jayapura") cuma ada di 1 ULP,
+// jadi begitu dipilih, Unit Kerja otomatis terkunci ke ULP itu. Tim yang
+// generik & sama namanya di semua ULP (Pemeliharaan PLN ND, Inspeksi
+// Gardu, Mitra Konstruksi, PDKB SL 1/2) tetap butuh Unit Kerja dipilih
+// manual dari beberapa opsi yang valid untuk tim tsb.
+const ROSTER_ULP_TEAMS = {
+  'ULP Jayapura': [
+    'Tim Pemeliharaan PLN ND', 'Tim Inspeksi JTM Tier 1 Jayapura', 'Tim Inspeksi JTM Tier 2 Jayapura',
+    'Tim Inspeksi Gardu', 'Tim ROW PT APP Jayapura', 'Tim ROW PT Lau Daling',
+    'Tim Mitra Konstruksi', 'Tim PDKB SL 1', 'Tim PDKB SL 2'
+  ],
+  'ULP Abepura': [
+    'Tim Pemeliharaan PLN ND', 'Tim Inspeksi JTM Tier 1 Abepura', 'Tim Inspeksi Gardu',
+    'Tim ROW PT AKA Rifki Papua', 'Tim ROW PT Intrabes Abepura', 'Tim ROW PLN ND Abepura',
+    'Tim Mitra Konstruksi', 'Tim PDKB SL 1', 'Tim PDKB SL 2'
+  ],
+  'ULP Sentani': [
+    'Tim Pemeliharaan PLN ND', 'Tim Inspeksi JTM Tier 1 Sentani', 'Tim Inspeksi Gardu',
+    'Tim ROW PT APP Sentani', 'Tim ROW PT Dasha Gauri', 'Tim ROW PT Intrabes Sentani',
+    'Tim Mitra Konstruksi', 'Tim PDKB SL 1', 'Tim PDKB SL 2'
+  ],
+  'ULP Arso': [
+    'Tim Pemeliharaan PLN ND', 'Tim Inspeksi JTM Tier 1 Arso', 'Tim Inspeksi Gardu',
+    'Tim ROW PT APP Arso', 'Tim ROW PT Intrabes Arso', 'Tim ROW PLN ND Arso',
+    'Tim Mitra Konstruksi', 'Tim PDKB SL 1', 'Tim PDKB SL 2'
+  ],
+  'ULP Genyem': [
+    'Tim Pemeliharaan PLN ND', 'Tim Inspeksi JTM Tier 1 Genyem', 'Tim Inspeksi Gardu',
+    'Tim ROW PT APP Genyem', 'Tim ROW PLN ND Genyem',
+    'Tim Mitra Konstruksi', 'Tim PDKB SL 1', 'Tim PDKB SL 2'
+  ],
+  'ULP Sarmi': [
+    'Tim Pemeliharaan PLN ND', 'Tim Inspeksi JTM Tier 1 Sarmi', 'Tim Inspeksi Gardu',
+    'Tim ROW PT APP Sarmi', 'Tim ROW PLN ND Sarmi',
+    'Tim Mitra Konstruksi', 'Tim PDKB SL 1', 'Tim PDKB SL 2'
+  ]
+};
+
+// Reverse map: nama Tim -> daftar ULP tempat tim itu ada. Masih dipakai
+// untuk opsi "Lainnya" (Unit Kerja belum ada di daftar) supaya semua nama
+// tim tetap tersedia sebagai pilihan bebas.
+const TEAM_TO_ULPS = {};
+Object.entries(ROSTER_ULP_TEAMS).forEach(([ulp, teams]) => {
+  teams.forEach(team => {
+    if (!TEAM_TO_ULPS[team]) TEAM_TO_ULPS[team] = [];
+    TEAM_TO_ULPS[team].push(ulp);
+  });
+});
+const ALL_TEAM_NAMES = Object.keys(TEAM_TO_ULPS).sort((a, b) => a.localeCompare(b));
+const ULP_LIST = Object.keys(ROSTER_ULP_TEAMS);
+
+// ══════════════════════════════════════════════════════════════
+// RENCANA PEKERJAAN — daftar master dropdown Jenis & Rincian Pekerjaan.
+// HARUS SAMA PERSIS dengan RP_JENIS_PEKERJAAN_LIST & RP_RINCIAN_GROUPS di
+// index.html (dashboard supervisor), supaya istilah yang dipilih petugas di
+// sini konsisten dengan yang dipakai supervisor saat membuat Rencana
+// Pekerjaan (RKM) — kalau daftar di dashboard diubah, salin ulang ke sini juga.
+// ══════════════════════════════════════════════════════════════
+const RP_JENIS_PEKERJAAN_LIST = [
+  'Sempurna Proteksi', 'Sempurna Material', 'Sempurna Pembebanan',
+  'Sempurna Inspeksi', 'Sempurna Konstruksi', 'Sempurna ROW'
+];
+
+const RP_RINCIAN_GROUPS = {
+  'Umum / Bangunan / JTM Dasar': [
+    'Perbaikan Andongan', 'Perbaikan Andongan (JTR)', 'Inspeksi Kubikel', 'Pemeliharaan Kubikel',
+    'Pembersihan Halaman Bangunan', 'Pengecatan Bangunan', 'SLO PHBTM', 'Inspeksi Tier 1 JTM',
+    'Inspeksi Tier 2 JTM', 'Pengukuran Tahanan Isolasi JTM/SKTM', 'Rabas Pohon', 'Pembersihan Terminasi',
+    'Tebang Pohon', 'Pemasangan Westpex', 'Pemasangan Cover Isolator Tarik', 'Pemasangan Cover Isolator Tumpu',
+    'Pemasangan Cover LA', 'Pemasangan Cover FCO Bawah', 'Pemasangan Cover FCO Atas', 'Pemasangan IJUK',
+    'Pembersihan Corong', 'Pembersihan Jaring Layang-layang', 'Sisip Tiang', 'Perbaikan Konstruksi Schoor',
+    'Perbaikan Tiang Miring', 'Penggantian Traves', 'Penggantian Tiang Keropos/Rusak TM',
+    'Pemasangan Pondasi Tiang', 'Pemasangan Top Ties', 'Konsul Phasa S', 'Perubahan Konstruksi Segitiga',
+    'Pengecatan Tiang', 'Perbaikan Sambungan SUTM'
+  ],
+  'Switching / Proteksi / Kubikel': [
+    'Perbaikan Kawat Rantas', 'Penggantian Isolator Tarik', 'Penggantian Isolator Tumpu',
+    'Penggantian Pin Insulator menjadi Pin Post', 'Pemasangan LA Jaringan', 'Pemasangan Fault Indikator',
+    'Penggantian Baterai LBS Motorized', 'Penggantian LBS', 'Penggantian Baterai Recloser', 'Penggantian FCO',
+    'Pemeliharaan LBS', 'Pemeliharaan Recloser', 'Pemasangan Cover LBS', 'Pemasangan Cover Recloser',
+    'Relokasi LBS', 'Relokasi Recloser', 'Pemasangan DS', 'Penggantian Rectifier Rusak',
+    'Penggantian Relay Rusak (Peremajaan)', 'Integrasi Keypoint ke SCADA', 'Assesment Keypoint',
+    'Pemeliharaan berbasis PDKB', 'SLO JTM', 'Perbaikan Tiang (las tiang/dll)', 'Pemasangan Klem H'
+  ],
+  'Gardu & Trafo': [
+    'Inspeksi Tier 1', 'Inspeksi Tier 2', 'Pengukuran Beban', 'Penyeimbangan Beban', 'Manajemen/Mutasi Trafo',
+    'Menaikkan Tap Changer Trafo Distribusi', 'Penggantian PHBTR Rusak', 'Penggantian Dudukan PHBTR',
+    'Pembersihan Halaman Gardu Distribusi', 'Pengecatan Gardu', 'Penggantian In / Out Gardu',
+    'Penggantian Tiang Keropos/Rusak Gardu', 'Perbaikan LA Gardu', 'Perbaikan Grounding Gardu',
+    'Penyesuaian Rating (Fuse Link)', 'Pemasangan Cover LA & Bushing Gardu', 'Penyesuaian tegangan drop',
+    'Downrating trafo', 'Uprating Trafo', 'Pemasangan Cover Cut Out Gardu', 'SLO Gardu Distribusi',
+    'Pengecekan Pintu PHBTR', 'Pengecekan trafo rembes', 'Manuver beban gardu', 'Rehabilitasi Gardu',
+    'Pengisian Minyak trafo pada Trafo'
+  ],
+  'Jaringan JTR': [
+    'Inspeksi (JTR)', 'Perampalan Pohon (JTR)', 'Joinisasi/Perbaikan Sambungan (JTR)',
+    'Penggantian Aksesoris Tarikan (JTR)', 'Perbaikan Tiang Miring (JTR)', 'Pemasangan Grounding (JTR)',
+    'Pemasangan Schoor (JTR)', 'Pengecatan Tiang (JTR)', 'Pemasangan Kumis (JTR)',
+    'Penggantian Tiang Keropos/Rusak (JTR)', 'Penggantian Kabel Incoming/Outgoing (JTR)',
+    'Penggantian Pipa Incoming/Outgoing (JTR)', 'Penarikan Kabel JTR', 'Rekonektorisasi JTR', 'SLO JTR',
+    'Pemasangan Kabel JTR', 'Pembongkaran Kabel JTR', 'Pembongkaran tiang JTR', 'Perbaikan SR Deret',
+    'Penggantian Tap Konektor Menjadi Konektor Press', 'Pemasangan Service Wedge Clamp'
+  ],
+  'Pembangunan / Uprating': [
+    'Pembangunan Konstruksi Tiang JTM', 'Uprating SUTM', 'Uprating MVTIC', 'Uprating SKTM',
+    'Pembangunan Gardu Sisip', 'Pembangunan Gardu portal', 'Pembangunan Gardu Hubung',
+    'Pembangunan Konstruksi Tiang JTR', 'Uprating SUTR', 'Pembangunan LBS Threeway', 'Pembangunan Recloser'
+  ]
+};
+
+// Isi dropdown Jenis & Rincian Pekerjaan di form Laporan sekali saja (dipanggil saat app siap).
+function populateLaporPekerjaanDropdowns() {
+  const jenisSel = document.getElementById('lapor-jenis-pekerjaan');
+  if (jenisSel && !jenisSel.dataset.filled) {
+    jenisSel.innerHTML = '<option value="">— Pilih —</option>' +
+      RP_JENIS_PEKERJAAN_LIST.map(v => `<option value="${v}">${v}</option>`).join('');
+    jenisSel.dataset.filled = '1';
+  }
+  const rincianSel = document.getElementById('lapor-rincian');
+  if (rincianSel && !rincianSel.dataset.filled) {
+    rincianSel.innerHTML = '<option value="">— Pilih Rincian Pekerjaan —</option>' +
+      Object.entries(RP_RINCIAN_GROUPS).map(([grup, items]) =>
+        `<optgroup label="${grup}">${items.map(v => `<option value="${v}">${v}</option>`).join('')}</optgroup>`
+      ).join('');
+    rincianSel.dataset.filled = '1';
+  }
+}
+
+// Isi dropdown Unit Kerja dengan daftar ULP dari roster (opsi "Lainnya"
+// sudah ada langsung di HTML, jadi cukup sisipkan opsi ULP sebelum opsi itu).
+function populateUlpDropdown() {
+  const sel = document.getElementById('in-ulp');
+  const lainnyaOpt = sel.querySelector('option[value="__lainnya__"]');
+  ULP_LIST.forEach(ulp => {
+    const opt = document.createElement('option');
+    opt.value = ulp;
+    opt.textContent = ulp;
+    sel.insertBefore(opt, lainnyaOpt);
+  });
+}
+
+// Isi ulang dropdown Regu/Tim dengan daftar tim yang valid untuk sebuah
+// daftar nama tim tertentu (dipanggil ulang tiap kali Unit Kerja berubah).
+function populateReguOptions(teamList) {
+  const sel = document.getElementById('in-regu-select');
+  sel.innerHTML = '<option value="">— Pilih regu/tim —</option>' +
+    teamList.map(t => `<option value="${t}">${t}</option>`).join('') +
+    '<option value="__lainnya__">➕ Lainnya (ketik manual)</option>';
+}
+
+// Dipanggil begitu petugas memilih/mengganti Unit Kerja: dropdown Regu/Tim
+// difilter ulang supaya hanya menampilkan tim yang benar-benar ada di unit
+// kerja itu (sesuai roster ROSTER_ULP_TEAMS / gambar daftar tim per ULP).
+window.onUlpChange = function() {
+  const ulpSel     = document.getElementById('in-ulp');
+  const ulpManual  = document.getElementById('in-ulp-manual');
+  const reguSel    = document.getElementById('in-regu-select');
+  const reguManual = document.getElementById('in-regu-manual');
+  const hint       = document.getElementById('in-regu-hint');
+
+  const isLainnya = ulpSel.value === '__lainnya__';
+  ulpManual.style.display = isLainnya ? 'block' : 'none';
+  if (isLainnya) ulpManual.focus();
+
+  // Reset pilihan Regu/Tim tiap kali Unit Kerja berganti, supaya tidak ada
+  // tim dari ULP lama yang kebawa/kepilih untuk ULP baru.
+  reguManual.value = '';
+  reguManual.style.display = 'none';
+
+  if (!ulpSel.value) {
+    reguSel.innerHTML = '<option value="">— Pilih unit kerja dulu —</option>';
+    reguSel.disabled = true;
+    hint.style.display = 'none';
+    return;
+  }
+
+  if (isLainnya) {
+    // Unit Kerja belum ada di daftar -> semua nama tim tersedia sebagai
+    // pilihan bebas (plus opsi ketik manual).
+    populateReguOptions(ALL_TEAM_NAMES);
+    reguSel.disabled = false;
+    hint.textContent = 'Unit kerja belum ada di daftar — pilih tim yang paling sesuai atau ketik manual.';
+    hint.style.display = 'block';
+    return;
+  }
+
+  const teams = ROSTER_ULP_TEAMS[ulpSel.value] || [];
+  populateReguOptions(teams);
+  reguSel.disabled = false;
+  hint.style.display = 'none';
+};
+
 window.toggleReguManual = function() {
   const sel    = document.getElementById('in-regu-select');
   const manual = document.getElementById('in-regu-manual');
@@ -1791,20 +2076,32 @@ function getReguTerpilih() {
   return sel.value;
 }
 
+function getUlpTerpilih() {
+  const sel = document.getElementById('in-ulp');
+  if (sel.value === '__lainnya__') return document.getElementById('in-ulp-manual').value.trim();
+  return sel.value;
+}
+
 window.doLogin = function() {
+  const ulp      = getUlpTerpilih();
   const regu     = getReguTerpilih();
   const anggota  = document.getElementById('in-anggota').value.trim();
-  const ulp      = document.getElementById('in-ulp').value;
   const errEl    = document.getElementById('login-err');
 
-  if (!regu) {
-    errEl.textContent = 'Nama Regu / Tim wajib diisi.';
-    errEl.style.display = 'block';
-    return;
-  }
   if (!ulp) {
     errEl.textContent = 'Unit Kerja wajib dipilih.';
     errEl.style.display = 'block';
+    return;
+  }
+  if (!regu) {
+    errEl.textContent = 'Nama Regu / Tim wajib dipilih.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (!anggota) {
+    errEl.textContent = 'Nama Anggota Regu Hari Ini wajib diisi.';
+    errEl.style.display = 'block';
+    document.getElementById('in-anggota').focus();
     return;
   }
   errEl.style.display = 'none';
@@ -1828,32 +2125,113 @@ window.doLogout = async function() {
   if (!(await confirmDialog('Selesai bertugas dan hentikan tracking GPS?', { title: 'Selesai Bertugas', okLabel: 'Ya, Selesai' }))) return;
   // Sebelum benar-benar mengakhiri shift, wajib absen selfie + GPS dulu
   // sebagai bukti penutupan tugas (bukan cuma klik tombol).
-  bukaAbsenCepat('selesai', finalizeLogout);
+  bukaAbsenCepat('selesai', prosesSelesaiBertugas);
 };
 
-function finalizeLogout() {
+// ════════════════════════════════════════════════════════
+// GERBANG SINKRONISASI SEBELUM SELESAI BERTUGAS
+// Selfie+GPS "Selesai" (di atas) bisa saja gagal terkirim & masuk antrean
+// offline (safeSet -> enqueueOffline), begitu juga data lain sepanjang shift
+// (GPS berkala, laporan, absensi lain) yang sempat gagal kirim karena sinyal
+// jelek. Supaya TIDAK ADA data lapangan yang hilang, shift baru benar-benar
+// ditutup (sesi & cache dihapus) SETELAH seluruh antrean ini kosong —
+// dicoba kirim ulang otomatis di sini, dengan progres ditampilkan ke
+// petugas. Kalau petugas menekan "Kembali ke Tracking", proses dibatalkan
+// dan TIDAK ada apapun yang dihapus — sama seperti kalau petugas cuma
+// kehilangan koneksi biasa, aman untuk dilanjutkan/ditutup lagi nanti.
+// ════════════════════════════════════════════════════════
+let syncSelesaiTimer = null;
+let syncSelesaiAktif = false;
+
+function updateSyncSelesaiUI() {
+  const n = getOfflineQueue().length;
+  const countEl = document.getElementById('sync-selesai-count');
+  const descEl  = document.getElementById('sync-selesai-desc');
+  if (countEl) countEl.textContent = n + ' data tersisa';
+  if (descEl)  descEl.textContent = isOnline
+    ? 'Mengirim data yang tertunda ke server...'
+    : 'Menunggu sinyal internet untuk mengirim data...';
+  return n;
+}
+
+window.prosesSelesaiBertugas = async function() {
+  syncSelesaiAktif = true;
+  document.getElementById('modal-sync-selesai').classList.add('active');
+  await jalankanSiklusSyncSelesai();
+};
+
+async function jalankanSiklusSyncSelesai() {
+  if (!syncSelesaiAktif) return;
+  await flushOfflineQueue();
+  const sisa = updateSyncSelesaiUI();
+  clearTimeout(syncSelesaiTimer);
+  if (sisa === 0) {
+    syncSelesaiAktif = false;
+    document.getElementById('modal-sync-selesai').classList.remove('active');
+    await finalizeLogout();
+    return;
+  }
+  // masih ada sisa (kemungkinan besar masih offline) — coba lagi tiap 5 detik
+  syncSelesaiTimer = setTimeout(jalankanSiklusSyncSelesai, 5000);
+}
+
+window.retryProsesSelesaiBertugas = function() {
+  clearTimeout(syncSelesaiTimer);
+  jalankanSiklusSyncSelesai();
+};
+
+window.batalProsesSelesaiBertugas = function() {
+  syncSelesaiAktif = false;
+  clearTimeout(syncSelesaiTimer);
+  document.getElementById('modal-sync-selesai').classList.remove('active');
+  addLog('Selesai Bertugas dibatalkan — masih ada data belum terkirim, sesi tetap dilanjutkan', 'warn');
+};
+
+async function finalizeLogout() {
   stopGPS();
+  // PENTING — perbaikan bug "status masih 'Tidak Terhubung' padahal sudah
+  // Selesai Bertugas": setiap pushLocation() sukses, kita mendaftarkan hook
+  // onDisconnect(petugasRef) di server Firebase (lihat pushLocation()) yang
+  // akan menimpa status jadi 'Tidak Terhubung' begitu koneksi realtime putus.
+  // Hook itu TETAP tersimpan di server sampai dibatalkan — sekadar menutup
+  // tab/app (tanpa cancel) akan memicunya dan menimpa status 'Offline' yang
+  // kita set di bawah. Jadi wajib dibatalkan dulu di sini SEBELUM set status
+  // Offline, supaya saat koneksi benar-benar putus setelah ini, tidak ada
+  // hook lama yang menimpanya kembali jadi 'Tidak Terhubung'.
+  if (db && currentUser) {
+    try {
+      await onDisconnect(ref(db, 'petugas/' + currentUser.id)).cancel();
+    } catch (e) {
+      addLog('Gagal membatalkan hook onDisconnect: ' + e.message, 'warn');
+      // tetap lanjut — status Offline manual di bawah tetap dicoba dikirim
+    }
+  }
   // Selesai bertugas (laporan & absensi terakhir sudah dikirim) → status
   // otomatis berubah ke Offline, bukan aksi pilihan manual petugas.
   currentStatus = 'Offline';
   pushStatus('Offline');
   currentUser = null;
   sendCount = 0;
-  tugasTarget = 0;
   tugasSelesai = 0;
   laporTugasList = [];
   absenAktifBekerjaDone = false;
   absenPerjalananDone = false;
   resetAbsensiTerakhir();
   clearSession(); // shift resmi selesai — hapus sesi tersimpan supaya TIDAK auto-login lagi saat app dibuka berikutnya
+  clearLaporDraft(); // buang draft foto Sebelum/Progres/Sesudah laporan lama (kalau ada) — supaya TIDAK muncul lagi nyangkut di shift berikutnya
+  laporFoto = { before: null, progres: null, after: null };
   document.getElementById('send-count').textContent = '0';
   document.getElementById('bottom-nav').style.display = 'none';
   // reset form login supaya shift berikutnya mulai dari kosong lagi
   document.getElementById('in-anggota').value = '';
-  document.getElementById('in-regu-select').value = '';
+  document.getElementById('in-ulp').value = '';
+  document.getElementById('in-ulp-manual').value = '';
+  document.getElementById('in-ulp-manual').style.display = 'none';
+  document.getElementById('in-regu-select').innerHTML = '<option value="">— Pilih unit kerja dulu —</option>';
+  document.getElementById('in-regu-select').disabled = true;
   document.getElementById('in-regu-manual').value = '';
   document.getElementById('in-regu-manual').style.display = 'none';
-  document.getElementById('in-ulp').value = '';
+  document.getElementById('in-regu-hint').style.display = 'none';
   showScreen('login');
   addLog('Logout — tracking dihentikan', 'info');
 }
@@ -2014,6 +2392,13 @@ function applyOfflineOverride(isOff) {
     if (currentStatus === 'Offline') return;
     currentStatus = 'Offline';
     renderStatusUI('Offline');
+    // FIX: sebelumnya cabang ini tidak memberi tahu NativeLocationSyncService,
+    // jadi service native (yang jalan independen di background) tetap
+    // mengirim status lama (mis. "Aktif Bekerja") ke Firebase walau
+    // tampilan aplikasi sudah menunjukkan "Offline" — bikin data di
+    // dashboard supervisor bisa beda antara status & yang sebenarnya
+    // terkirim. Disamakan dengan cabang else di bawah yang sudah benar.
+    updateNativeSyncStatus('Offline');
     addLog('Status otomatis: Offline (koneksi/teknis bermasalah)', 'warn');
   } else {
     if (currentStatus !== 'Offline') return;
@@ -2278,7 +2663,7 @@ function cekStatusIzinLokasi() {
     const finish = (result) => { if (selesai) return; selesai = true; bereskan(); resolve(result); };
 
     BG.addWatcher(
-      { backgroundMessage: 'Mengecek izin lokasi…', backgroundTitle: 'FFM Petugas', requestPermissions: true, stale: true },
+      { backgroundMessage: 'Mengecek izin lokasi…', backgroundTitle: 'NUMBAY Petugas', requestPermissions: true, stale: true },
       (location, error) => {
         if (error) finish({ ok: false, reason: error.code === 'NOT_AUTHORIZED' ? 'not-authorized' : 'error', detail: error.message });
         else finish({ ok: true });
@@ -2489,7 +2874,7 @@ async function startGPS() {
       bgWatcherId = await BG.addWatcher(
         {
           backgroundMessage: 'Tracking lokasi petugas sedang aktif',
-          backgroundTitle: 'FFM Petugas — GPS Aktif',
+          backgroundTitle: 'NUMBAY Petugas — GPS Aktif',
           requestPermissions: true,
           stale: false,
           distanceFilter: 15 // meter — update tiap petugas bergerak >=15m
@@ -2497,7 +2882,7 @@ async function startGPS() {
         (location, error) => {
           if (error) {
             if (error.code === 'NOT_AUTHORIZED') {
-              addLog('Izin GPS "Selalu Izinkan" belum aktif. Buka Setelan HP > Aplikasi > FFM Petugas > Izin > Lokasi > pilih "Izinkan sepanjang waktu"', 'err');
+              addLog('Izin GPS "Selalu Izinkan" belum aktif. Buka Setelan HP > Aplikasi > NUMBAY Petugas > Izin > Lokasi > pilih "Izinkan sepanjang waktu"', 'err');
               document.getElementById('gps-status').textContent = 'Izin GPS background ditolak';
             } else {
               addLog('GPS error: ' + (error.message || error.code), 'err');
@@ -2576,6 +2961,7 @@ function onPos(pos) {
   document.getElementById('gps-acc').textContent = Math.round(acc) + ' m';
   document.getElementById('gps-status').textContent = acc < 20 ? '✓ Akurasi sangat baik' : acc < 50 ? '✓ Akurasi baik' : '⚠ Akurasi rendah';
   pushLocation(pos);
+  perbaruiAlamatDariPosisi(lat, lng); // isi ulang cache alamat untuk watermark foto (throttled, tidak menunggu)
 }
 
 function onPosErr(err) {
@@ -2687,6 +3073,7 @@ function startAbsensiGPS() {
     document.getElementById('absen-gps-badge').style.display = 'block';
     document.getElementById('absen-gps-badge').textContent = 'GPS: ' + lat.toFixed(4) + ', ' + lng.toFixed(4);
     document.getElementById('absen-time').textContent = new Date().toLocaleString('id-ID');
+    perbaruiAlamatDariPosisi(lat, lng); // siapkan alamat untuk watermark selfie absen awal
     advanceStep(4);
   }, (err) => {
     document.getElementById('absen-gps-status').textContent = 'Gagal ambil GPS: ' + err.message;
@@ -3002,21 +3389,24 @@ window.submitAbsenCepat = async function() {
 
 // ════════════════════════════════════════════════════════
 let laporTugasList = [];
-let laporFotoBefore = null, laporFotoAfter = null;
+let laporFoto = { before: null, progres: null, after: null };
+const LAPOR_FASE_ORDER = ['before', 'progres', 'after'];
+const LAPOR_FASE_LABEL = { before: 'Sebelum', progres: 'Progres', after: 'Sesudah' };
 let laporKameraTarget = null;
 let laporStream = null;
 let laporFotoSementara = null;
 
 window.bukaModalLapor = function() {
-  document.getElementById('lapor-tiket').value = '';
+  populateLaporPekerjaanDropdowns();
+  populateLaporTiketSelect('');
   document.getElementById('tiket-info-box').style.display = 'none';
+  document.getElementById('lapor-jenis-pekerjaan').value = '';
   document.getElementById('lapor-rincian').value = '';
   document.getElementById('lapor-material').value = '';
-  document.getElementById('lapor-target').value = '';
   document.getElementById('lapor-realisasi').value = '';
-  laporFotoBefore = null; laporFotoAfter = null;
-  resetSlotFoto('before'); resetSlotFoto('after');
-  restoreLaporDraft(); // pulihkan foto Before/After yang tersimpan sebelumnya, kalau ada
+  laporFoto = { before: null, progres: null, after: null };
+  LAPOR_FASE_ORDER.forEach(resetSlotFoto);
+  restoreLaporDraft(); // pulihkan foto Sebelum/Progres/Sesudah yang tersimpan sebelumnya, kalau ada
   document.getElementById('lapor-err').style.display = 'none';
   document.getElementById('modal-lapor').classList.add('active');
 };
@@ -3025,16 +3415,16 @@ window.tutupModalLapor = function() {
   document.getElementById('modal-lapor').classList.remove('active');
 };
 
-// Buka form Lapor dengan Nomor Tiket sudah terisi — dipakai dari banner
-// "Perlu Direvisi" (#4) dan card "Tugas Ditugaskan" (#5), supaya petugas
-// tidak perlu ketik ulang nomor tiket secara manual.
+// Buka form Lapor dengan Nomor Penugasan sudah terpilih di dropdown — dipakai
+// dari banner "Perlu Direvisi" (#4) dan card "Tugas Ditugaskan" (#5), supaya
+// petugas tidak perlu cari-cari sendiri, tinggal klik tombolnya.
 // revisiAsalId diisi kalau ini alur "Lapor Ulang" dari revisi, supaya laporan
 // lama otomatis ditandai "sudah ditindaklanjuti" setelah submit berhasil.
 window.bukaModalLaporUntuk = function(nomorTiket, revisiAsalId) {
   bukaModalLapor();
   if (nomorTiket) {
-    document.getElementById('lapor-tiket').value = nomorTiket;
-    cariTiket();
+    populateLaporTiketSelect(nomorTiket);
+    onLaporTiketSelectChange();
   }
   window._revisiAsalId = revisiAsalId || null;
 };
@@ -3064,24 +3454,24 @@ window.listenRevisiDanTugas = function() {
     `).join('');
   });
 
-  onValue(ref(db, 'tiket'), snap => {
+  onValue(ref(db, 'penugasan'), snap => {
     const data = snap.val() || {};
     const tugasSaya = Object.entries(data).filter(([, t]) =>
       t.assignedRegu === currentUser.regu && t.statusTiket !== 'Selesai'
     );
+    window._tugasAktifCache = tugasSaya;
+    populateLaporTiketSelect(); // jaga dropdown tetap sinkron kalau modal Lapor sedang terbuka
     const card = document.getElementById('tugas-ditugaskan-card');
     const list = document.getElementById('tugas-ditugaskan-list');
     if (tugasSaya.length === 0) { card.style.display = 'none'; return; }
     card.style.display = 'block';
-    const prioColor = { P0: '#C0293C', P1: '#D97B0A', P2: 'var(--pln-blue)' };
-    list.innerHTML = tugasSaya.sort((a,b) => (a[1].prioritas||'').localeCompare(b[1].prioritas||'')).map(([id, t]) => `
+    list.innerHTML = tugasSaya.sort((a,b) => (b[1].waktu||0) - (a[1].waktu||0)).map(([id, t]) => `
       <div style="background:var(--surface2);border:1px solid var(--border-str);border-radius:12px;padding:10px 12px">
-        <div style="display:flex;align-items:center;gap:6px">
-          <span style="background:${prioColor[t.prioritas]||'#888'};color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:99px">${t.prioritas||'—'}</span>
-          <span style="font-family:'SF Mono','Fira Code',monospace;font-size:11px;color:var(--text-muted)">${t.nomor||''}</span>
-        </div>
+        <div style="font-family:'SF Mono','Fira Code',monospace;font-size:11px;color:var(--text-muted)">${t.nomor||''}</div>
         <div style="font-size:12.5px;font-weight:700;color:var(--text);margin-top:5px">${t.jenis || '—'}</div>
         <div style="font-size:11px;color:var(--text-sec);margin-top:2px">${t.lokasi || '—'}</div>
+        ${t.targetVolume != null ? `<div style="font-size:11px;color:var(--text-sec);margin-top:2px">🎯 Target: <b>${t.targetVolume}</b>${t.periodeKey ? ' · ' + t.periodeKey : ''}</div>` : ''}
+        ${(t.koordinatAwal || t.koordinatAkhir) ? `<div style="font-size:10.5px;color:var(--text-muted);margin-top:2px;font-family:'SF Mono','Fira Code',monospace">📍 ${t.koordinatAwal||'—'} → ${t.koordinatAkhir||'—'}</div>` : ''}
         <button type="button" onclick="bukaModalLaporUntuk('${t.nomor||''}')" style="margin-top:8px;background:var(--pln-blue);color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;width:100%">📋 Kerjakan Tugas Ini</button>
       </div>
     `).join('');
@@ -3089,51 +3479,97 @@ window.listenRevisiDanTugas = function() {
 };
 
 
-window.cariTiket = async function() {
-  const nomor = document.getElementById('lapor-tiket').value.trim().toUpperCase();
+// Isi ulang dropdown Nomor Penugasan dari daftar tugas aktif regu ini
+// (window._tugasAktifCache, diisi listenRevisiDanTugas). selectedNomor
+// (opsional) dipakai untuk langsung memilih salah satu opsi setelahnya —
+// dipakai saat buka form lewat tombol "Kerjakan Tugas Ini"/"Lapor Ulang".
+window.populateLaporTiketSelect = function(selectedNomor) {
+  const sel = document.getElementById('lapor-tiket-select');
+  if (!sel) return;
+  const current = selectedNomor !== undefined ? selectedNomor : sel.value;
+  const list = (window._tugasAktifCache || []).map(([, t]) => t);
+  sel.innerHTML = '<option value="">— Tanpa Penugasan (laporan bebas) —</option>' +
+    list.map(t => `<option value="${t.nomor}">${t.nomor} — ${t.jenis}${t.targetVolume != null ? ' (Target ' + t.targetVolume + ')' : ''}</option>`).join('');
+  if (current && list.some(t => t.nomor === current)) sel.value = current;
+};
+
+// Dipanggil saat petugas ganti pilihan di dropdown Nomor Penugasan —
+// menampilkan detail penugasan itu & auto-isi Rincian Pekerjaan kalau kosong.
+window.onLaporTiketSelectChange = function() {
+  const nomor = document.getElementById('lapor-tiket-select').value;
   const infoBox = document.getElementById('tiket-info-box');
   if (!nomor) { infoBox.style.display = 'none'; return; }
-  if (!db) { infoBox.textContent = '⚠️ Firebase belum terhubung.'; infoBox.style.display = 'block'; return; }
-  infoBox.innerHTML = '🔍 Mencari tiket <b>' + nomor + '</b>...';
+  const found = (window._tugasAktifCache || []).map(([, t]) => t).find(t => t.nomor === nomor);
+  if (!found) { infoBox.style.display = 'none'; return; }
+  let extra = '';
+  if (found.targetVolume != null) extra += '<div>🎯 Target: <b>' + found.targetVolume + '</b>' + (found.periodeKey ? ' · ' + found.periodeKey : '') + '</div>';
+  if (found.koordinatAwal || found.koordinatAkhir) {
+    extra += '<div>📍 Rute: ' + (found.koordinatAwal || '—') + ' → ' + (found.koordinatAkhir || '—') + '</div>';
+  }
+  infoBox.innerHTML = '✅ <b>' + (found.jenis || '—') + '</b> · ' + (found.ulp || '—') + extra;
   infoBox.style.display = 'block';
-  try {
-    const snap = await get(ref(db, 'tiket'));
-    const data = snap.val() || {};
-    const found = Object.values(data).find(t => (t.nomor || '').toUpperCase() === nomor);
-    if (!found) {
-      infoBox.innerHTML = '❌ Tiket <b>' + nomor + '</b> tidak ditemukan.';
-    } else {
-      infoBox.innerHTML = '✅ <b>' + (found.jenis || '—') + '</b> · ' + (found.ulp || '—') + '<br>Target: ' + (found.target || '—');
-      if (found.jenis && !document.getElementById('lapor-rincian').value) document.getElementById('lapor-rincian').value = found.jenis;
-      if (found.target && !document.getElementById('lapor-target').value) document.getElementById('lapor-target').value = found.target;
-      if (found.target) { tugasTarget = (+found.target) || 0; persistSession(); }
+
+  // Auto-isi Jenis & Rincian Pekerjaan dari data penugasan (RKM), kalau ada dan
+  // field-nya masih kosong — supaya petugas tidak perlu pilih ulang secara manual.
+  const jenisSel   = document.getElementById('lapor-jenis-pekerjaan');
+  const rincianSel = document.getElementById('lapor-rincian');
+  if (!jenisSel.value) {
+    if (found.rpJenisPekerjaan && [...jenisSel.options].some(o => o.value === found.rpJenisPekerjaan)) {
+      jenisSel.value = found.rpJenisPekerjaan;
     }
-  } catch (e) {
-    infoBox.textContent = '⚠️ Error: ' + e.message;
+  }
+  if (!rincianSel.value) {
+    if (found.rpRincian && [...rincianSel.options].some(o => o.value === found.rpRincian)) {
+      rincianSel.value = found.rpRincian;
+    } else if (found.jenis && [...rincianSel.options].some(o => o.value === found.jenis)) {
+      // Fallback: judul penugasan bebas ternyata persis sama dengan salah satu opsi Rincian Pekerjaan
+      rincianSel.value = found.jenis;
+    }
   }
 };
 
-function galleryBtnHTML(target) {
-  return '<button type="button" class="slot-gallery-btn" onclick="event.stopPropagation(); document.getElementById(\'file-' + target + '\').click()">🖼️</button>';
-}
 function resetSlotFoto(target) {
   const slot = document.getElementById('slot-' + target);
   slot.classList.remove('filled');
-  slot.innerHTML = galleryBtnHTML(target) + '<span class="slot-icon">📷</span><span class="slot-label">' + (target === 'before' ? 'Sebelum (Before)' : 'Sesudah (After)') + '</span>';
+  slot.innerHTML = '<span class="slot-icon">📷</span><span class="slot-label">' + LAPOR_FASE_LABEL[target] + '</span>';
+}
+
+// Menentukan foto fase sebelumnya yang dipakai sebagai "panduan angle" (bayangan
+// transparan) supaya petugas mengambil foto Progres & Sesudah dari sudut yang
+// sama persis dengan foto Sebelum — supaya hasilnya bisa dibandingkan apple-to-apple
+// saat diverifikasi supervisor.
+function fotoAcuanAngle(target) {
+  if (target === 'progres') return laporFoto.before || null;
+  if (target === 'after')   return laporFoto.progres || laporFoto.before || null;
+  return null; // 'before' adalah foto pertama, tidak ada acuan
 }
 
 window.bukaKameraLapor = async function(target) {
   laporKameraTarget = target;
-  document.getElementById('kamera-lapor-title').textContent = target === 'before' ? 'Foto Kondisi Sebelum' : 'Foto Kondisi Sesudah';
+  const titleMap = { before: 'Foto Kondisi Sebelum', progres: 'Foto Kondisi Progres', after: 'Foto Kondisi Sesudah' };
+  document.getElementById('kamera-lapor-title').textContent = titleMap[target];
   document.getElementById('lapor-time-badge').textContent = new Date().toLocaleTimeString('id-ID');
   laporFotoSementara = null;
 
   const video = document.getElementById('lapor-video');
   const img   = document.getElementById('lapor-photo-preview');
+  const guideImg   = document.getElementById('lapor-angle-guide');
+  const guideBadge = document.getElementById('lapor-angle-badge');
   video.style.display = 'block'; img.style.display = 'none';
   document.getElementById('lapor-btn-shoot').style.display = 'block';
   document.getElementById('lapor-btn-retake').style.display = 'none';
   document.getElementById('lapor-btn-pakai').style.display = 'none';
+
+  // Tampilkan bayangan foto fase sebelumnya sebagai panduan angle (kalau ada)
+  const acuan = fotoAcuanAngle(target);
+  if (acuan) {
+    guideImg.src = acuan;
+    guideImg.style.display = 'block';
+    guideBadge.style.display = 'flex';
+  } else {
+    guideImg.style.display = 'none';
+    guideBadge.style.display = 'none';
+  }
 
   document.getElementById('modal-kamera-lapor').classList.add('active');
 
@@ -3172,6 +3608,8 @@ window.ambilFotoLapor = function() {
   document.getElementById('lapor-photo-preview').src = laporFotoSementara;
   document.getElementById('lapor-photo-preview').style.display = 'block';
   video.style.display = 'none';
+  document.getElementById('lapor-angle-guide').style.display = 'none';
+  document.getElementById('lapor-angle-badge').style.display = 'none';
   if (laporStream) { laporStream.getTracks().forEach(t => t.stop()); laporStream = null; }
 
   document.getElementById('lapor-btn-shoot').style.display = 'none';
@@ -3185,56 +3623,28 @@ window.ulangFotoLapor = function() {
 };
 
 window.pakaiFotoLapor = function() {
-  if (laporKameraTarget === 'before') laporFotoBefore = laporFotoSementara;
-  else laporFotoAfter = laporFotoSementara;
+  laporFoto[laporKameraTarget] = laporFotoSementara;
 
   const slot = document.getElementById('slot-' + laporKameraTarget);
   slot.classList.add('filled');
-  slot.innerHTML = galleryBtnHTML(laporKameraTarget) + '<img src="' + laporFotoSementara + '"><span class="slot-label">' +
-    (laporKameraTarget === 'before' ? 'Sebelum ✓' : 'Sesudah ✓') + '</span>';
+  slot.innerHTML = '<img src="' + laporFotoSementara + '"><span class="slot-label">' +
+    LAPOR_FASE_LABEL[laporKameraTarget] + ' ✓</span>';
 
   document.getElementById('modal-kamera-lapor').classList.remove('active');
   saveLaporDraft();
 };
 
-// Ambil foto dari galeri HP sebagai alternatif kamera langsung — berguna
-// kalau petugas mau lanjut kerja dulu baru upload foto Before/After belakangan.
-// PENTING: foto galeri dikompres LANGSUNG saat dipilih — bukan disimpan mentah — karena file
-// asli dari kamera HP bisa 3-12MB. Kalau disimpan mentah ke localStorage (via saveLaporDraft),
-// itu gampang melebihi kuota localStorage (~5-10MB) dan gagal tersimpan tanpa pemberitahuan.
-// Kompresi di sini juga otomatis mengoreksi rotasi EXIF, jadi foto tidak lagi muncul miring/terbalik.
-window.pilihFileLapor = async function(target, inputEl) {
-  const file = inputEl.files && inputEl.files[0];
-  inputEl.value = ''; // reset supaya bisa pilih file yang sama lagi kalau perlu
-  if (!file) return;
+// Foto Sebelum/Progres/Sesudah WAJIB diambil langsung dengan kamera (bukan pilih
+// dari galeri) supaya watermark waktu & GPS terjamin sesuai kondisi nyata di
+// lapangan saat itu, dan tidak bisa disusupi foto lama/dari HP lain.
 
-  const slot = document.getElementById('slot-' + target);
-  const prevHTML = slot.innerHTML;
-  slot.innerHTML = '<span class="slot-label">⏳ Memproses foto...</span>';
-
-  try {
-    const dataUrl = await compressFileToBase64(file, 800, 0.7);
-    if (target === 'before') laporFotoBefore = dataUrl;
-    else laporFotoAfter = dataUrl;
-
-    slot.classList.add('filled');
-    slot.innerHTML = galleryBtnHTML(target) + '<img src="' + dataUrl + '"><span class="slot-label">' +
-      (target === 'before' ? 'Sebelum ✓' : 'Sesudah ✓') + '</span>';
-    saveLaporDraft();
-    addLog('Foto ' + (target === 'before' ? 'Before' : 'After') + ' dipilih dari galeri', 'ok');
-  } catch (e) {
-    slot.innerHTML = prevHTML;
-    addLog('Gagal membaca foto dari galeri: ' + e.message, 'err');
-  }
-};
-
-// ── Draft foto laporan (before/after) — simpan ke localStorage supaya TIDAK
-// hilang walau aplikasi/HP ditutup di antara ambil foto Before dan After
-// (mis. petugas ambil Before, lalu kerja berjam-jam, baru sempat ambil After) ──
+// ── Draft foto laporan (before/progres/after) — simpan ke localStorage supaya
+// TIDAK hilang walau aplikasi/HP ditutup di antara ambil tiap fase foto
+// (mis. petugas ambil Sebelum, lalu kerja berjam-jam, baru sempat ambil Progres/Sesudah) ──
 const LAPOR_DRAFT_KEY = 'ffm_lapor_draft_v1';
 function saveLaporDraft() {
   try {
-    localStorage.setItem(LAPOR_DRAFT_KEY, JSON.stringify({ before: laporFotoBefore, after: laporFotoAfter, ts: Date.now() }));
+    localStorage.setItem(LAPOR_DRAFT_KEY, JSON.stringify({ ...laporFoto, ts: Date.now() }));
   } catch (e) { /* storage penuh, abaikan */ }
 }
 function clearLaporDraft() {
@@ -3244,33 +3654,39 @@ function restoreLaporDraft() {
   let draft = null;
   try { draft = JSON.parse(localStorage.getItem(LAPOR_DRAFT_KEY) || 'null'); } catch (e) {}
   if (!draft) return;
-  if (draft.before) {
-    laporFotoBefore = draft.before;
-    const slot = document.getElementById('slot-before');
-    slot.classList.add('filled');
-    slot.innerHTML = galleryBtnHTML('before') + '<img src="' + draft.before + '"><span class="slot-label">Sebelum ✓</span>';
-  }
-  if (draft.after) {
-    laporFotoAfter = draft.after;
-    const slot = document.getElementById('slot-after');
-    slot.classList.add('filled');
-    slot.innerHTML = galleryBtnHTML('after') + '<img src="' + draft.after + '"><span class="slot-label">Sesudah ✓</span>';
-  }
-  if (draft.before || draft.after) addLog('Foto laporan tersimpan sebelumnya berhasil dipulihkan', 'info');
+  let adaYangDipulihkan = false;
+  LAPOR_FASE_ORDER.forEach(fase => {
+    if (draft[fase]) {
+      laporFoto[fase] = draft[fase];
+      adaYangDipulihkan = true;
+      const slot = document.getElementById('slot-' + fase);
+      slot.classList.add('filled');
+      slot.innerHTML = '<img src="' + draft[fase] + '"><span class="slot-label">' + LAPOR_FASE_LABEL[fase] + ' ✓</span>';
+    }
+  });
+  if (adaYangDipulihkan) addLog('Foto laporan tersimpan sebelumnya berhasil dipulihkan', 'info');
 }
 
 window.submitLaporan = async function() {
   const errEl  = document.getElementById('lapor-err');
   const progEl = document.getElementById('lapor-progress');
   const btn    = document.getElementById('lapor-btn-submit');
+  const jenisPekerjaan = document.getElementById('lapor-jenis-pekerjaan').value;
   const rincian   = document.getElementById('lapor-rincian').value.trim();
   const material  = document.getElementById('lapor-material').value.trim();
-  const target    = document.getElementById('lapor-target').value;
-  const realisasi = document.getElementById('lapor-realisasi').value;
-  const nomorTiket = (document.getElementById('lapor-tiket')?.value || '').trim().toUpperCase() || null;
+  const realisasiEl = document.getElementById('lapor-realisasi');
+  const realisasi = realisasiEl.value;
+  const nomorTiket = document.getElementById('lapor-tiket-select')?.value || null;
 
-  if (!rincian) { errEl.textContent = 'Rincian pekerjaan wajib diisi.'; errEl.style.display = 'block'; return; }
-  if (!laporFotoBefore || !laporFotoAfter) { errEl.textContent = 'Foto Before dan After wajib diambil keduanya.'; errEl.style.display = 'block'; return; }
+  if (!rincian) { errEl.textContent = 'Rincian pekerjaan wajib dipilih.'; errEl.style.display = 'block'; return; }
+  // Realisasi wajib diisi (boleh 0), target sudah tidak diisi petugas —
+  // ditentukan supervisor lewat menu Kelola Penugasan Pekerjaan (bagian Target Kerja Regu) di dashboard.
+  if (realisasi === '') { errEl.textContent = 'Realisasi Volume wajib diisi (boleh 0).'; errEl.style.display = 'block'; realisasiEl.focus(); return; }
+  if (!laporFoto.before || !laporFoto.progres || !laporFoto.after) {
+    errEl.textContent = 'Foto Sebelum, Progres, dan Sesudah wajib diambil ketiganya (angle harus sama).';
+    errEl.style.display = 'block';
+    return;
+  }
   errEl.style.display = 'none';
 
   const waktu  = Date.now();
@@ -3279,16 +3695,17 @@ window.submitLaporan = async function() {
   btn.disabled = true;
   progEl.style.display = 'block';
 
-  let fotoBeforeResult = null, fotoAfterResult = null;
+  let fotoResult = { before: null, progres: null, after: null };
   try {
-    progEl.textContent = 'Mengunggah foto before ke cloud...';
-    btn.innerHTML = '<span>⏳</span> Memproses...';
     const namaSlug    = slugifyForCloudinary(currentUser ? currentUser.regu : uid);
     const rincianSlug = slugifyForCloudinary(rincian);
     const publicIdHint = namaSlug + '_' + rincianSlug + '_' + waktu;
-    fotoBeforeResult = await uploadFotoAman(laporFotoBefore, 'ffm/laporan-before', publicIdHint, { quality: 0.6 });
-    progEl.textContent = 'Mengunggah foto after ke cloud...';
-    fotoAfterResult  = await uploadFotoAman(laporFotoAfter, 'ffm/laporan-after', publicIdHint, { quality: 0.6 });
+    const progressLabel = { before: 'sebelum', progres: 'progres', after: 'sesudah' };
+    for (const fase of LAPOR_FASE_ORDER) {
+      progEl.textContent = 'Mengunggah foto ' + progressLabel[fase] + ' ke cloud...';
+      btn.innerHTML = '<span>⏳</span> Memproses...';
+      fotoResult[fase] = await uploadFotoAman(laporFoto[fase], 'ffm/laporan-' + fase, publicIdHint, { quality: 0.6 });
+    }
   } catch (e) {
     addLog('Gagal memproses foto laporan: ' + e.message, 'err');
     errEl.textContent = 'Gagal memproses foto. Coba lagi.';
@@ -3303,15 +3720,17 @@ window.submitLaporan = async function() {
     regu: currentUser ? currentUser.regu : '—',
     ulp:  currentUser ? currentUser.ulp  : '—',
     anggotaHadir: currentUser ? (currentUser.anggotaHadir || '') : '',
+    jenisPekerjaan: jenisPekerjaan || null,
     rincian, material,
-    target: target || null, realisasi: realisasi || null,
+    realisasi: realisasi || '0',
     nomorTiket: nomorTiket || null,
     lat: lastPos ? lastPos.coords.latitude  : null,
     lng: lastPos ? lastPos.coords.longitude : null,
     waktu,
     status: 'Selesai diverifikasi oleh Supervisor',
-    fotoBeforeUrl: fotoBeforeResult.fotoUrl || null, fotoBeforeBase64: fotoBeforeResult.fotoBase64 || null,
-    fotoAfterUrl:  fotoAfterResult.fotoUrl  || null, fotoAfterBase64:  fotoAfterResult.fotoBase64  || null
+    fotoBeforeUrl:  fotoResult.before.fotoUrl  || null, fotoBeforeBase64:  fotoResult.before.fotoBase64  || null,
+    fotoProgresUrl: fotoResult.progres.fotoUrl || null, fotoProgresBase64: fotoResult.progres.fotoBase64 || null,
+    fotoAfterUrl:   fotoResult.after.fotoUrl   || null, fotoAfterBase64:   fotoResult.after.fotoBase64   || null
   };
 
   let laporTersinkron = false;
@@ -3338,8 +3757,9 @@ window.submitLaporan = async function() {
   btn.disabled = false;
   btn.innerHTML = origLabel;
 
-  laporan.fotoBefore = fotoBeforeResult.fotoUrl || fotoBeforeResult.fotoBase64;
-  laporan.fotoAfter  = fotoAfterResult.fotoUrl  || fotoAfterResult.fotoBase64;
+  laporan.fotoBefore  = fotoResult.before.fotoUrl  || fotoResult.before.fotoBase64;
+  laporan.fotoProgres = fotoResult.progres.fotoUrl || fotoResult.progres.fotoBase64;
+  laporan.fotoAfter   = fotoResult.after.fotoUrl   || fotoResult.after.fotoBase64;
   laporTugasList.unshift(laporan);
   clearLaporDraft();
   updateProgres();
@@ -3351,24 +3771,20 @@ window.submitLaporan = async function() {
   // laporannya benar-benar masuk. Sekarang selalu tampil, baik tersinkron
   // maupun (untuk sementara) tersimpan offline.
   showKonfirmasiBesar(laporTersinkron, 'Laporan Terkirim',
-    'Laporan & foto before/after sudah tersimpan di server.',
+    'Laporan & foto sebelum/progres/sesudah sudah tersimpan di server.',
     'Laporan tersimpan di HP — akan otomatis terkirim saat sinyal kembali.');
 };
 
-// Update tampilan progres tugas: jumlah laporan terkirim hari ini vs target
-// (target bisa terisi otomatis lewat pencarian nomor tiket).
+// Update tampilan progres tugas: jumlah laporan terkirim hari ini
+// (tanpa target individual — target sekarang dikelola per regu/periode
+// oleh supervisor lewat menu Kelola Penugasan Pekerjaan (bagian Target
+// Kerja Regu) di dashboard).
 function updateProgres() {
   tugasSelesai = laporTugasList.length;
   const countEl = document.getElementById('tugas-selesai-count');
   if (countEl) countEl.textContent = tugasSelesai;
-  const target = Math.max(tugasTarget, 1);
-  const pct = Math.min(100, Math.round(tugasSelesai / target * 100));
-  const fillEl = document.getElementById('progres-fill');
-  const pctEl  = document.getElementById('progres-pct');
-  const subEl  = document.getElementById('progres-sub');
-  if (fillEl) fillEl.style.width = pct + '%';
-  if (pctEl)  pctEl.textContent = pct + '%';
-  if (subEl)  subEl.textContent = tugasSelesai + ' dari ' + (tugasTarget || '?') + ' tugas terpenuhi';
+  const progresCountEl = document.getElementById('progres-count');
+  if (progresCountEl) progresCountEl.textContent = tugasSelesai;
 }
 window.updateProgres = updateProgres;
 
@@ -3380,12 +3796,14 @@ function renderTaskList() {
   }
   list.innerHTML = laporTugasList.map(t => {
     const jam    = new Date(t.waktu).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
-    const before = t.fotoBefore || t.fotoBeforeBase64 || t.fotoBeforeUrl || '';
-    const after  = t.fotoAfter  || t.fotoAfterBase64  || t.fotoAfterUrl  || '';
-    const thumbs = (before && after)
+    const before  = t.fotoBefore  || t.fotoBeforeBase64  || t.fotoBeforeUrl  || '';
+    const progres = t.fotoProgres || t.fotoProgresBase64 || t.fotoProgresUrl || '';
+    const after   = t.fotoAfter   || t.fotoAfterBase64   || t.fotoAfterUrl   || '';
+    const thumbs = (before || progres || after)
       ? '<div style="display:flex;gap:6px;margin-top:8px">' +
-          '<img src="' + before + '" style="width:50%;aspect-ratio:1;object-fit:cover;border-radius:8px;border:1px solid var(--border)">' +
-          '<img src="' + after  + '" style="width:50%;aspect-ratio:1;object-fit:cover;border-radius:8px;border:1px solid var(--border)">' +
+          [before, progres, after].filter(Boolean).map(src =>
+            '<img src="' + src + '" style="width:' + (100/[before,progres,after].filter(Boolean).length) + '%;aspect-ratio:1;object-fit:cover;border-radius:8px;border:1px solid var(--border)">'
+          ).join('') +
         '</div>'
       : '';
     return '<div class="task-item">' +
@@ -3425,7 +3843,6 @@ async function restoreSessionIfAny() {
   currentUser            = s.currentUser;
   currentStatus           = s.currentStatus || 'Standby';
   manualStatus            = s.manualStatus  || 'Standby';
-  tugasTarget             = s.tugasTarget   || 0;
   tugasSelesai            = s.tugasSelesai  || 0;
   laporTugasList          = s.laporTugasList || [];
   absenAktifBekerjaDone   = !!s.absenAktifBekerjaDone;
@@ -3465,6 +3882,8 @@ async function restoreSessionIfAny() {
   listenRevisiDanTugas();
   return true;
 }
+populateUlpDropdown();
+populateLaporPekerjaanDropdowns();
 restoreSessionIfAny();
 
 // ══════════════════════════════════════════════════════════════
