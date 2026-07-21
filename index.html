@@ -1658,12 +1658,15 @@ td.truncate  { max-width: 160px; overflow: hidden; text-overflow: ellipsis; whit
 
             <div style="margin-bottom:12px">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2)">Gardu</label>
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2)">Gardu <span style="font-weight:400;color:var(--text-3);text-transform:none">(bisa pilih lebih dari 1)</span></label>
                 <button type="button" onclick="tambahGarduBaru()" style="background:none;border:none;color:var(--pln-blue-light,#0057b8);font-size:11px;font-weight:700;cursor:pointer;padding:0">+ Tambah Gardu</button>
               </div>
-              <select id="rp-gardu" style="width:100%;border:1px solid var(--line);border-radius:var(--radius-xs);padding:9px 12px;font-size:13px;outline:none;height:38px;background:var(--surface)">
-                <option value="">— Pilih Gardu —</option>
-              </select>
+              <div style="position:relative">
+                <div id="rp-gardu-box" onclick="toggleRpGarduDropdown()" style="width:100%;min-height:38px;border:1px solid var(--line);border-radius:var(--radius-xs);padding:6px 10px;font-size:13px;background:var(--surface);cursor:pointer;display:flex;align-items:center;flex-wrap:wrap;gap:5px">
+                  <span style="color:var(--text-3)">— Pilih Gardu —</span>
+                </div>
+                <div id="rp-gardu-dropdown" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--radius-xs);box-shadow:var(--shadow);max-height:200px;overflow-y:auto;z-index:50;padding:4px"></div>
+              </div>
             </div>
 
             <div style="margin-bottom:12px">
@@ -1701,20 +1704,14 @@ td.truncate  { max-width: 160px; overflow: hidden; text-overflow: ellipsis; whit
                 <input id="rp-vol" type="number" min="0" step="any" placeholder="0" style="width:100%;border:1px solid var(--line);border-radius:var(--radius-xs);padding:9px 12px;font-size:13px;font-family:var(--mono);outline:none">
               </div>
               <div>
-                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);display:block;margin-bottom:6px">Satuan</label>
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);display:block;margin-bottom:6px">Satuan *</label>
                 <input id="rp-satuan" type="text" list="rp-satuan-list" placeholder="cth: kms, btng, titik" style="width:100%;border:1px solid var(--line);border-radius:var(--radius-xs);padding:9px 12px;font-size:13px;outline:none">
-                <datalist id="rp-satuan-list"><option value="kms"><option value="btng"><option value="titik"><option value="unit"><option value="phasa"></datalist>
+                <datalist id="rp-satuan-list"><option value="kms"><option value="btng"><option value="titik"><option value="unit"><option value="fasa"></datalist>
               </div>
             </div>
 
-            <div style="margin-bottom:12px">
-              <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);display:block;margin-bottom:6px">Pelaksana</label>
-              <input id="rp-pelaksana" type="text" list="rp-pelaksana-list" placeholder="cth: PT PLN Nusa Daya" style="width:100%;border:1px solid var(--line);border-radius:var(--radius-xs);padding:9px 12px;font-size:13px;outline:none">
-              <datalist id="rp-pelaksana-list"><option value="PT PLN Nusa Daya"><option value="PT Akbar Papua"></datalist>
-            </div>
-
             <div style="margin-bottom:12px;background:var(--surface-2);border-radius:var(--radius-xs);padding:12px">
-              <div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);margin-bottom:10px">📌 Tugaskan ke Tim (langsung pilih, bukan berdasarkan GPS)</div>
+              <div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);margin-bottom:10px">📌 Pelaksana (langsung pilih tim, bukan berdasarkan GPS)</div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px">
                 <div>
                   <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);display:block;margin-bottom:6px">Unit Kerja (ULP) *</label>
@@ -3013,32 +3010,49 @@ const ROSTER_ULP_TEAMS = {
   'ULP Jayapura': [
     'Tim Pemeliharaan PLN ND', 'Tim Inspeksi JTM Tier 1 Jayapura', 'Tim Inspeksi JTM Tier 2 Jayapura',
     'Tim Inspeksi Gardu', 'Tim ROW PT APP Jayapura', 'Tim ROW PT Lau Daling',
-    'Tim Mitra Konstruksi', 'Tim PDKB SL 1', 'Tim PDKB SL 2'
+    'Tim Mitra Konstruksi', 'Tim PDKB SL 1', 'Tim PDKB SL 2',
+    'Tim Yantek Jayapura 11', 'Tim Yantek Jayapura 12', 'Tim Yantek Jayapura 21'
   ],
   'ULP Abepura': [
     'Tim Pemeliharaan PLN ND', 'Tim Inspeksi JTM Tier 1 Abepura', 'Tim Inspeksi Gardu',
     'Tim ROW PT AKA Rifki Papua', 'Tim ROW PT Intrabes Abepura', 'Tim ROW PLN ND Abepura',
-    'Tim Mitra Konstruksi', 'Tim PDKB SL 1', 'Tim PDKB SL 2'
+    'Tim Mitra Konstruksi', 'Tim PDKB SL 1', 'Tim PDKB SL 2',
+    'Tim Yantek Abepura 11', 'Tim Yantek Abepura 12', 'Tim Yantek Abepura 13', 'Tim Yantek Abepura 21'
   ],
   'ULP Sentani': [
     'Tim Pemeliharaan PLN ND', 'Tim Inspeksi JTM Tier 1 Sentani', 'Tim Inspeksi Gardu',
     'Tim ROW PT APP Sentani', 'Tim ROW PT Dasha Gauri', 'Tim ROW PT Intrabes Sentani',
-    'Tim Mitra Konstruksi', 'Tim PDKB SL 1', 'Tim PDKB SL 2'
+    'Tim Mitra Konstruksi', 'Tim PDKB SL 1', 'Tim PDKB SL 2',
+    'Tim Yantek Sentani 11', 'Tim Yantek Sentani 12', 'Tim Yantek Sentani 21'
   ],
   'ULP Arso': [
     'Tim Pemeliharaan PLN ND', 'Tim Inspeksi JTM Tier 1 Arso', 'Tim Inspeksi Gardu',
     'Tim ROW PT APP Arso', 'Tim ROW PT Intrabes Arso', 'Tim ROW PLN ND Arso',
-    'Tim Mitra Konstruksi', 'Tim PDKB SL 1', 'Tim PDKB SL 2'
+    'Tim Mitra Konstruksi', 'Tim PDKB SL 1', 'Tim PDKB SL 2',
+    'Tim Yantek Arso 11', 'Tim Yantek Arso 21'
   ],
   'ULP Genyem': [
     'Tim Pemeliharaan PLN ND', 'Tim Inspeksi JTM Tier 1 Genyem', 'Tim Inspeksi Gardu',
     'Tim ROW PT APP Genyem', 'Tim ROW PLN ND Genyem',
-    'Tim Mitra Konstruksi', 'Tim PDKB SL 1', 'Tim PDKB SL 2'
+    'Tim Mitra Konstruksi', 'Tim PDKB SL 1', 'Tim PDKB SL 2',
+    'Tim Yantek Genyem 11', 'Tim Yantek Genyem 12'
   ],
   'ULP Sarmi': [
     'Tim Pemeliharaan PLN ND', 'Tim Inspeksi JTM Tier 1 Sarmi', 'Tim Inspeksi Gardu',
     'Tim ROW PT APP Sarmi', 'Tim ROW PLN ND Sarmi',
-    'Tim Mitra Konstruksi', 'Tim PDKB SL 1', 'Tim PDKB SL 2'
+    'Tim Mitra Konstruksi', 'Tim PDKB SL 1', 'Tim PDKB SL 2',
+    'Tim Yantek Sarmi 11', 'Tim Yantek Sarmi 12'
+  ],
+  // "PT MITRA" diperlakukan sebagai Unit Kerja tersendiri (setara ULP),
+  // dengan tiap nama PT di bawah ini berperan sebagai Regu/Tim-nya —
+  // permintaan supervisor: strukturnya sama seperti ULP+Tim di atas.
+  'PT MITRA': [
+    'PT URSULA ABADI', 'PT HARAPAN PAPUA SEJAHTERA', 'PT TIGA RIZKY JAYA',
+    'PT KALIAGA NINER PERSADA', 'PT RAJAWALI PERKASA RAYA', 'PT PLN NUSA DAYA',
+    'PT AKA RIFKI PAPUA', 'PT AKBAR PAPUA PERKASA', 'PT INTRABES SELARA',
+    'PT LAU DALING', 'PT DASHA GAURI PAPUA', 'PT PUTRA SENTANI JAYA',
+    'PT BUBUN BUSU', 'PT KASITAMMUAN AMAN SEJAHTERA', 'PT LAKAWAN',
+    'PT MATA ALLO PAPUA', 'PT PARDAME BINTANG UTARA', 'PT IRIANA KARYA UTAMA'
   ]
 };
 
@@ -3051,7 +3065,8 @@ const KODE_ULP = {
   'ULP Sentani':  'SEN',
   'ULP Arso':     'ARS',
   'ULP Genyem':   'GYM',
-  'ULP Sarmi':    'SRM'
+  'ULP Sarmi':    'SRM',
+  'PT MITRA':     'MTR'
 };
 
 // ══════════════════════════════════════════════════════════════
@@ -4824,21 +4839,79 @@ function populateTiketUlpSelect() {
   });
 }
 
-// Isi dropdown Gardu. Beda dari dropdown lain di bawah — ini BOLEH diisi
-// ulang (bukan cuma sekali) karena tombol "+ Tambah Gardu" bisa nambah opsi
-// baru kapan saja selagi modal masih terbuka.
+// ── Gardu — MULTI-SELECT ──
+// Field Gardu bisa diisi lebih dari 1 (rencana pekerjaan sering mencakup
+// beberapa gardu sekaligus). Diganti dari <select> tunggal menjadi kotak
+// chip + dropdown checklist. Nilai yang disimpan tetap STRING dipisah koma
+// (field "rpGardu") supaya semua kode lama yang membaca t.rpGardu sebagai
+// teks (tabel, popup peta, lokasi default, dsb) tetap jalan tanpa diubah.
+let rpGarduSelected = [];
+
+function renderRpGarduBox() {
+  const box = document.getElementById('rp-gardu-box');
+  if (!box) return;
+  box.innerHTML = rpGarduSelected.length
+    ? rpGarduSelected.map(g => `<span style="background:var(--info-bg);color:var(--info);border-radius:999px;padding:3px 9px;font-size:11.5px;font-weight:600;display:inline-flex;align-items:center;gap:5px">${g}<span onclick="event.stopPropagation();hapusRpGardu('${g.replace(/'/g,"\\'")}')" style="cursor:pointer;font-weight:800;line-height:1">×</span></span>`).join('')
+    : '<span style="color:var(--text-3)">— Pilih Gardu —</span>';
+}
+
+function renderRpGarduDropdown() {
+  const dd = document.getElementById('rp-gardu-dropdown');
+  if (!dd) return;
+  const list = daftarGarduGabungan();
+  dd.innerHTML = list.length
+    ? list.map(v => `<label style="display:flex;align-items:center;gap:8px;padding:7px 8px;font-size:12.5px;cursor:pointer;border-radius:6px" onmouseover="this.style.background='var(--surface-2)'" onmouseout="this.style.background=''"><input type="checkbox" ${rpGarduSelected.includes(v)?'checked':''} onchange="toggleRpGarduPilih('${v.replace(/'/g,"\\'")}', this.checked)">${v}</label>`).join('')
+    : '<div style="padding:8px;font-size:12px;color:var(--text-3)">Belum ada data Gardu. Pakai "+ Tambah Gardu".</div>';
+}
+
+window.toggleRpGarduDropdown = function() {
+  const dd = document.getElementById('rp-gardu-dropdown');
+  if (!dd) return;
+  const isOpen = dd.style.display === 'block';
+  if (isOpen) { dd.style.display = 'none'; return; }
+  renderRpGarduDropdown();
+  dd.style.display = 'block';
+};
+
+window.toggleRpGarduPilih = function(nama, checked) {
+  if (checked) { if (!rpGarduSelected.includes(nama)) rpGarduSelected.push(nama); }
+  else { rpGarduSelected = rpGarduSelected.filter(g => g !== nama); }
+  renderRpGarduBox();
+};
+
+window.hapusRpGardu = function(nama) {
+  rpGarduSelected = rpGarduSelected.filter(g => g !== nama);
+  renderRpGarduBox();
+  const dd = document.getElementById('rp-gardu-dropdown');
+  if (dd && dd.style.display === 'block') renderRpGarduDropdown();
+};
+
+// Tutup dropdown Gardu kalau klik di luar kotaknya.
+document.addEventListener('click', (e) => {
+  const dd = document.getElementById('rp-gardu-dropdown');
+  const box = document.getElementById('rp-gardu-box');
+  if (dd && dd.style.display === 'block' && !dd.contains(e.target) && !box.contains(e.target)) dd.style.display = 'none';
+});
+
+// Isi ulang pilihan Gardu. selectedValue boleh berupa string "GarduA, GarduB"
+// (format tersimpan di Firebase) ATAU array. Beda dari dropdown lain di bawah
+// — daftar opsinya BOLEH diisi ulang kapan saja karena tombol "+ Tambah
+// Gardu" bisa nambah opsi baru selagi modal masih terbuka.
 function populateRpGarduSelect(selectedValue) {
-  const sel = document.getElementById('rp-gardu');
-  if (!sel) return;
-  const current = selectedValue !== undefined ? selectedValue : sel.value;
-  sel.innerHTML = '<option value="">— Pilih Gardu —</option>' +
-    daftarGarduGabungan().map(v => `<option value="${v}">${v}</option>`).join('');
-  if (current && [...sel.options].some(o => o.value === current)) sel.value = current;
+  if (selectedValue !== undefined) {
+    if (Array.isArray(selectedValue)) rpGarduSelected = selectedValue.filter(Boolean);
+    else if (typeof selectedValue === 'string' && selectedValue.trim()) rpGarduSelected = selectedValue.split(',').map(s => s.trim()).filter(Boolean);
+    else rpGarduSelected = [];
+  }
+  renderRpGarduBox();
+  const dd = document.getElementById('rp-gardu-dropdown');
+  if (dd && dd.style.display === 'block') renderRpGarduDropdown();
 }
 
 // Tombol "+ Tambah Gardu" — nambah 1 nama Gardu baru ke daftar lokal
 // (localStorage) sampai data resmi master Gardu dikirim & dipasang di
-// RP_GARDU_LIST. Gardu yang baru ditambah langsung terpilih di dropdown.
+// RP_GARDU_LIST. Gardu yang baru ditambah langsung ikut terpilih (menambah
+// ke pilihan yang sudah ada, bukan menggantikannya).
 window.tambahGarduBaru = async function() {
   const nama = await promptDialog('Nama / kode Gardu baru:', { title: 'Tambah Gardu', okLabel: 'Tambah', inputType: 'text', placeholder: 'cth: Gardu GH-024' });
   if (!nama || !nama.trim()) return;
@@ -4848,7 +4921,9 @@ window.tambahGarduBaru = async function() {
     daftarLokal.push(namaBersih);
     localStorage.setItem(RP_GARDU_LOCAL_KEY, JSON.stringify(daftarLokal));
   }
-  populateRpGarduSelect(namaBersih);
+  if (!rpGarduSelected.includes(namaBersih)) rpGarduSelected.push(namaBersih);
+  renderRpGarduBox();
+  renderRpGarduDropdown();
 };
 
 // Isi semua dropdown "Detail Rencana Pekerjaan" (Kategori, Jenis, Rincian, Health Index, dst) sekali saja.
@@ -4997,7 +5072,6 @@ window.bukaModalTiket = function(id, data) {
   document.getElementById('rp-rincian').value            = data?.rpRincian        || '';
   document.getElementById('rp-vol').value                = data?.rpVol ?? '';
   document.getElementById('rp-satuan').value             = data?.rpSatuan         || '';
-  document.getElementById('rp-pelaksana').value           = data?.rpPelaksana      || '';
   document.getElementById('rp-pdkb').value               = data?.rpPdkb           || 'TIDAK';
   document.getElementById('rp-metode').value              = data?.rpMetode         || 'OFFLINE';
   document.getElementById('rp-daerah-padam').value        = data?.rpDaerahPadam    || '';
@@ -5057,14 +5131,13 @@ window.simpanTiket = async function() {
   const rpWaktu            = document.getElementById('rp-waktu').value.trim() || null;
   const rpPenyulang         = document.getElementById('rp-penyulang').value.trim() || null;
   const rpSection           = document.getElementById('rp-section').value.trim() || null;
-  const rpGardu             = document.getElementById('rp-gardu').value || null;
+  const rpGardu             = rpGarduSelected.length ? rpGarduSelected.join(', ') : null;
   const rpHealthIndex      = document.getElementById('rp-health-index').value || null;
   const rpKategori          = document.getElementById('rp-kategori').value;
   const rpJenisPekerjaan   = document.getElementById('rp-jenis-pekerjaan').value || null;
   const rpRincian           = document.getElementById('rp-rincian').value;
   const rpVolRaw            = document.getElementById('rp-vol').value;
   const rpSatuan            = document.getElementById('rp-satuan').value.trim() || null;
-  const rpPelaksana         = document.getElementById('rp-pelaksana').value.trim() || null;
   const rpPdkb              = document.getElementById('rp-pdkb').value;
   const rpMetode            = document.getElementById('rp-metode').value;
   const rpDaerahPadam       = document.getElementById('rp-daerah-padam').value.trim() || null;
@@ -5099,6 +5172,11 @@ window.simpanTiket = async function() {
     errEl.style.display = 'block';
     return;
   }
+  if (!rpSatuan) {
+    errEl.textContent = 'Satuan wajib diisi (cth: kms, btng, titik, unit, fasa).';
+    errEl.style.display = 'block';
+    return;
+  }
   if (!ulp || !regu) {
     errEl.textContent = 'Pilih Unit Kerja (ULP) dan Tim/Regu yang ditugaskan.';
     errEl.style.display = 'block';
@@ -5126,7 +5204,7 @@ window.simpanTiket = async function() {
     dibuatOleh: 'Supervisor',
     rpTanggal, rpWaktu, rpPenyulang, rpSection, rpGardu, rpHealthIndex,
     rpKategori, rpJenisPekerjaan, rpRincian,
-    rpVol: +rpVolRaw, rpSatuan, rpPelaksana,
+    rpVol: +rpVolRaw, rpSatuan,
     rpPdkb, rpMetode, rpDaerahPadam, rpJenisPemadaman, rpPic, rpKeterangan,
     tipePeriode: 'harian', periodeKey: rpTanggal, targetVolume: +rpVolRaw
   };
