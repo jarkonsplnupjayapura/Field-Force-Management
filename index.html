@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#003D82">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="NUMBAY Supervisor">
+<meta name="apple-mobile-web-app-title" content="NUMBAY TL/Admin">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
@@ -22,6 +22,7 @@
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+<script src="master-data.js"></script>
 <style>
 /* ════════════════════════════════════════════════════════════
    DESIGN TOKENS — "Grid Operasional"
@@ -991,12 +992,12 @@ td.truncate  { max-width: 160px; overflow: hidden; text-overflow: ellipsis; whit
     </div>
     <div class="login-field">
       <label for="login-password">Password</label>
-      <input id="login-password" type="password" placeholder="••••" autocomplete="current-password" onkeydown="if(event.key==='Enter') doLoginSupervisor();">
+      <input id="login-password" type="password" placeholder="••••" autocomplete="current-password" onkeydown="if(event.key==='Enter') doLoginTLAdmin();">
     </div>
 
     <div id="login-err"></div>
 
-    <button id="login-submit-btn" onclick="doLoginSupervisor()">Masuk</button>
+    <button id="login-submit-btn" onclick="doLoginTLAdmin()">Masuk</button>
 
     <div class="login-hint">Superadmin dapat mengakses seluruh ULP &amp; PT MITRA.<br>Admin ULP hanya mengakses data petugas ULP-nya sendiri.</div>
   </div>
@@ -1051,7 +1052,7 @@ td.truncate  { max-width: 160px; overflow: hidden; text-overflow: ellipsis; whit
       </a>
     </div>
     <div class="nav-group">
-      <div class="nav-group-label">Supervisor</div>
+      <div class="nav-group-label">TL/Admin</div>
       <a class="nav-item" id="nav-tiket" href="#" title="Rencana Pekerjaan" onclick="switchView('tiket');return false;">
         <span class="nav-icon">🎫</span> <span class="nav-label">Rencana Pekerjaan</span>
       </a>
@@ -1078,12 +1079,12 @@ td.truncate  { max-width: 160px; overflow: hidden; text-overflow: ellipsis; whit
     <div class="user-chip" id="user-chip" onclick="toggleAdminMode()" title="Klik untuk masuk/keluar Mode Admin" style="flex:1;min-width:0">
       <div class="user-avatar" id="user-avatar">SP</div>
       <div class="user-text">
-        <div class="user-name" id="user-name">Supervisor NUMBAY</div>
+        <div class="user-name" id="user-name">TL/Admin NUMBAY</div>
         <div class="user-role" id="user-role">UP3 Jayapura</div>
       </div>
       <div class="user-live"></div>
     </div>
-    <button id="logout-btn" onclick="doLogoutSupervisor()" title="Keluar (Logout)" style="flex-shrink:0;background:rgba(255,255,255,0.06);border:none;color:rgba(255,255,255,0.65);width:34px;height:34px;border-radius:9px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:background 0.15s var(--ease),color 0.15s var(--ease)" onmouseover="this.style.background='var(--crit)';this.style.color='#fff'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.color='rgba(255,255,255,0.65)'">⏻</button>
+    <button id="logout-btn" onclick="doLogoutTLAdmin()" title="Keluar (Logout)" style="flex-shrink:0;background:rgba(255,255,255,0.06);border:none;color:rgba(255,255,255,0.65);width:34px;height:34px;border-radius:9px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:background 0.15s var(--ease),color 0.15s var(--ease)" onmouseover="this.style.background='var(--crit)';this.style.color='#fff'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.color='rgba(255,255,255,0.65)'">⏻</button>
   </div>
 </aside>
 
@@ -1575,7 +1576,7 @@ td.truncate  { max-width: 160px; overflow: hidden; text-overflow: ellipsis; whit
         </div>
         <div id="el-info" style="font-size:12px;color:var(--text-2);margin-bottom:12px;padding:10px 13px;background:var(--surface-2);border-radius:var(--radius-xs)"></div>
         <div id="el-warn-verified" style="display:none;font-size:12px;color:var(--warn);background:var(--warn-bg);border:1px solid rgba(217,123,10,0.3);padding:10px 13px;border-radius:var(--radius-xs);margin-bottom:16px">
-          ⚠️ Laporan ini <b>sudah diverifikasi</b>. Menyimpan perubahan akan mengembalikan status ke <b>"Menunggu Verifikasi"</b> — perlu diverifikasi ulang oleh supervisor.
+          ⚠️ Laporan ini <b>sudah diverifikasi</b>. Menyimpan perubahan akan mengembalikan status ke <b>"Menunggu Verifikasi"</b> — perlu diverifikasi ulang oleh TL/Admin.
         </div>
         <div style="display:flex;flex-direction:column;gap:14px">
           <div>
@@ -1633,7 +1634,7 @@ td.truncate  { max-width: 160px; overflow: hidden; text-overflow: ellipsis; whit
         <div class="kpi-card green">
           <div class="kpi-label"><div class="kpi-dot" style="background:var(--ok)"></div>Terverifikasi</div>
           <div class="kpi-value" id="rekap-verif">—</div>
-          <div class="kpi-meta">Disetujui supervisor</div>
+          <div class="kpi-meta">Disetujui TL/Admin</div>
         </div>
         <div class="kpi-card amber">
           <div class="kpi-label"><div class="kpi-dot" style="background:var(--warn)"></div>Menunggu</div>
@@ -1785,7 +1786,7 @@ td.truncate  { max-width: 160px; overflow: hidden; text-overflow: ellipsis; whit
 
             <div style="margin-bottom:12px">
               <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);display:block;margin-bottom:6px">Rincian Pekerjaan *</label>
-              <select id="rp-rincian" style="width:100%;border:1px solid var(--line);border-radius:var(--radius-xs);padding:9px 12px;font-size:13px;outline:none;height:38px;background:var(--surface)">
+              <select id="rp-rincian" onchange="applyRpSatuanOtomatis()" style="width:100%;border:1px solid var(--line);border-radius:var(--radius-xs);padding:9px 12px;font-size:13px;outline:none;height:38px;background:var(--surface)">
                 <option value="">— Pilih Rincian Pekerjaan —</option>
               </select>
             </div>
@@ -1797,7 +1798,7 @@ td.truncate  { max-width: 160px; overflow: hidden; text-overflow: ellipsis; whit
               </div>
               <div>
                 <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);display:block;margin-bottom:6px">Satuan *</label>
-                <input id="rp-satuan" type="text" list="rp-satuan-list" placeholder="cth: kms, btng, titik" style="width:100%;border:1px solid var(--line);border-radius:var(--radius-xs);padding:9px 12px;font-size:13px;outline:none">
+                <input id="rp-satuan" type="text" list="rp-satuan-list" placeholder="Otomatis mengikuti Rincian Pekerjaan..." oninput="window._rpSatuanManual = true" style="width:100%;border:1px solid var(--line);border-radius:var(--radius-xs);padding:9px 12px;font-size:13px;outline:none">
                 <datalist id="rp-satuan-list"><option value="kms"><option value="btng"><option value="titik"><option value="unit"><option value="fasa"></datalist>
               </div>
             </div>
@@ -1943,12 +1944,12 @@ td.truncate  { max-width: 160px; overflow: hidden; text-overflow: ellipsis; whit
       </div>
     </div>
 
-    <!-- ══ VERIFIKASI SUPERVISOR VIEW ══ -->
+    <!-- ══ VERIFIKASI TL/ADMIN VIEW ══ -->
     <div id="viewVerifikasi" style="display:none;" class="firebase-view">
       <div class="fb-header">
         <div>
           <div class="card-title" style="font-size:16px">✅ Verifikasi Laporan Pekerjaan</div>
-          <div style="font-size:12px;color:var(--text-secondary);margin-top:3px">Close-loop · Supervisor verifikasi hasil pekerjaan petugas lapangan hari ini</div>
+          <div style="font-size:12px;color:var(--text-secondary);margin-top:3px">Close-loop · TL/Admin verifikasi hasil pekerjaan petugas lapangan hari ini</div>
         </div>
         <span id="verifikasiCount" class="card-count">0 menunggu</span>
       </div>
@@ -1985,16 +1986,87 @@ td.truncate  { max-width: 160px; overflow: hidden; text-overflow: ellipsis; whit
         </div>
       </div>
 
+      <div id="verifikasiGrid" style="margin-top:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;">
+        <div style="text-align:center;color:var(--text-muted);padding:40px;font-size:13px;grid-column:1/-1">Menunggu data Firebase...</div>
+      </div>
+    </div>
+
+
       <!-- Modal Verifikasi -->
       <div id="modal-verifikasi" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(10,20,36,0.6);align-items:center;justify-content:center;">
         <div style="background:var(--surface);border-radius:var(--radius-lg);padding:28px;width:100%;max-width:560px;box-shadow:var(--shadow-lg);margin:16px;max-height:90vh;overflow-y:auto;">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-            <div style="font-family:var(--font-display);font-size:16px;font-weight:800">Verifikasi Laporan</div>
+            <div id="modal-verifikasi-title" style="font-family:var(--font-display);font-size:16px;font-weight:800">Verifikasi Laporan</div>
             <button onclick="tutupModalVerifikasi()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-3);padding:4px">✕</button>
           </div>
           <div id="verif-detail-body"></div>
-          <div style="margin-top:16px;border-top:1px solid var(--line);padding-top:16px">
-            <div style="font-family:var(--font-display);font-size:13px;font-weight:800;margin-bottom:12px">Form Verifikasi Supervisor</div>
+
+          <div style="margin-top:14px;border-top:1px dashed var(--line);padding-top:14px">
+            <div style="font-family:var(--font-display);font-size:13px;font-weight:800;margin-bottom:12px">📋 Rincian Laporan <span style="font-weight:400;color:var(--text-3);font-size:11px;text-transform:none">(bisa diubah bila ada kesalahan input)</span></div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+              <div>
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);display:block;margin-bottom:5px">Kategori Pekerjaan</label>
+                <select id="vf-kategori" style="width:100%;border:1px solid var(--line);border-radius:var(--radius-xs);padding:8px 11px;font-size:13px;outline:none;height:36px;background:var(--surface)"></select>
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);display:block;margin-bottom:5px">Jenis Pekerjaan</label>
+                <select id="vf-jenis" style="width:100%;border:1px solid var(--line);border-radius:var(--radius-xs);padding:8px 11px;font-size:13px;outline:none;height:36px;background:var(--surface)"></select>
+              </div>
+            </div>
+
+            <div style="margin-bottom:10px">
+              <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);display:block;margin-bottom:5px">Rincian Pekerjaan *</label>
+              <select id="vf-rincian" style="width:100%;border:1px solid var(--line);border-radius:var(--radius-xs);padding:8px 11px;font-size:13px;outline:none;height:36px;background:var(--surface)"></select>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px">
+              <div>
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);display:block;margin-bottom:5px">Penyulang</label>
+                <input id="vf-penyulang" type="text" style="width:100%;border:1px solid var(--line);border-radius:var(--radius-xs);padding:8px 11px;font-size:13px;outline:none">
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);display:block;margin-bottom:5px">Section</label>
+                <input id="vf-section" type="text" style="width:100%;border:1px solid var(--line);border-radius:var(--radius-xs);padding:8px 11px;font-size:13px;outline:none">
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);display:block;margin-bottom:5px">Gardu</label>
+                <input id="vf-gardu" type="text" style="width:100%;border:1px solid var(--line);border-radius:var(--radius-xs);padding:8px 11px;font-size:13px;outline:none">
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+              <div>
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);display:block;margin-bottom:5px">Health Index Penyulang</label>
+                <select id="vf-healthindex" style="width:100%;border:1px solid var(--line);border-radius:var(--radius-xs);padding:8px 11px;font-size:13px;outline:none;height:36px;background:var(--surface)"></select>
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);display:block;margin-bottom:5px">Kolaborasi PDKB</label>
+                <select id="vf-pdkb" style="width:100%;border:1px solid var(--line);border-radius:var(--radius-xs);padding:8px 11px;font-size:13px;outline:none;height:36px;background:var(--surface)"></select>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+              <div>
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);display:block;margin-bottom:5px">Metode</label>
+                <select id="vf-metode" style="width:100%;border:1px solid var(--line);border-radius:var(--radius-xs);padding:8px 11px;font-size:13px;outline:none;height:36px;background:var(--surface)"></select>
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);display:block;margin-bottom:5px">Jenis Pemadaman</label>
+                <select id="vf-jenispemadaman" style="width:100%;border:1px solid var(--line);border-radius:var(--radius-xs);padding:8px 11px;font-size:13px;outline:none;height:36px;background:var(--surface)"></select>
+              </div>
+            </div>
+
+            <div style="margin-bottom:10px">
+              <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);display:block;margin-bottom:5px">Daerah Padam <span style="font-weight:400;color:var(--text-3)">(opsional)</span></label>
+              <input id="vf-daerahpadam" type="text" placeholder="cth: Pasar Sentral Mararena" style="width:100%;border:1px solid var(--line);border-radius:var(--radius-xs);padding:8px 11px;font-size:13px;outline:none">
+            </div>
+
+            <div style="margin-bottom:10px">
+              <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);display:block;margin-bottom:5px">PIC <span style="font-weight:400;color:var(--text-3)">(opsional)</span></label>
+              <input id="vf-pic" type="text" placeholder="cth: Benoni Pehupo" style="width:100%;border:1px solid var(--line);border-radius:var(--radius-xs);padding:8px 11px;font-size:13px;outline:none">
+            </div>
+
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
               <div>
                 <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);display:block;margin-bottom:5px">Target Volume</label>
@@ -2002,11 +2074,24 @@ td.truncate  { max-width: 160px; overflow: hidden; text-overflow: ellipsis; whit
               </div>
               <div>
                 <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);display:block;margin-bottom:5px">Realisasi Volume</label>
-                <input id="verif-realisasi" type="number" placeholder="0" style="width:100%;border:1px solid var(--line);border-radius:var(--radius-xs);padding:8px 11px;font-size:13px;outline:none">
+                <div style="display:flex;gap:6px">
+                  <input id="verif-realisasi" type="number" placeholder="0" style="width:100%;border:1px solid var(--line);border-radius:var(--radius-xs);padding:8px 11px;font-size:13px;outline:none">
+                  <input id="vf-satuan" type="text" placeholder="satuan" style="width:90px;border:1px solid var(--line);border-radius:var(--radius-xs);padding:8px 11px;font-size:13px;outline:none">
+                </div>
               </div>
             </div>
+
+            <div style="margin-bottom:0">
+              <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);display:block;margin-bottom:5px">Keterangan <span style="font-weight:400;color:var(--text-3)">(opsional)</span></label>
+              <textarea id="vf-keterangan" rows="2" placeholder="Catatan tambahan..." style="width:100%;border:1px solid var(--line);border-radius:var(--radius-xs);padding:8px 11px;font-size:13px;outline:none;resize:vertical;font-family:inherit"></textarea>
+            </div>
+            <div id="vf-err" style="display:none;background:var(--crit-bg);color:var(--crit);padding:8px 12px;border-radius:var(--radius-xs);font-size:12px;margin-top:10px"></div>
+          </div>
+
+          <div style="margin-top:16px;border-top:1px solid var(--line);padding-top:16px">
+            <div style="font-family:var(--font-display);font-size:13px;font-weight:800;margin-bottom:12px">Form Verifikasi TL/Admin</div>
             <div style="margin-bottom:12px">
-              <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);display:block;margin-bottom:5px">Catatan Supervisor</label>
+              <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-2);display:block;margin-bottom:5px">Catatan TL/Admin</label>
               <textarea id="verif-catatan" rows="3" placeholder="Catatan hasil verifikasi lapangan..." style="width:100%;border:1px solid var(--line);border-radius:var(--radius-xs);padding:9px 12px;font-size:13px;resize:vertical;outline:none;font-family:var(--font)"></textarea>
             </div>
             <div style="display:flex;gap:10px;margin-bottom:10px">
@@ -2028,11 +2113,6 @@ td.truncate  { max-width: 160px; overflow: hidden; text-overflow: ellipsis; whit
           </div>
         </div>
       </div>
-
-      <div id="verifikasiGrid" style="margin-top:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;">
-        <div style="text-align:center;color:var(--text-muted);padding:40px;font-size:13px;grid-column:1/-1">Menunggu data Firebase...</div>
-      </div>
-    </div>
 
     <!-- ══ HASIL VERIFIKASI VIEW — arsip laporan yang sudah diproses ══ -->
     <div id="viewHasilVerifikasi" style="display:none;" class="firebase-view">
@@ -2247,7 +2327,7 @@ function confirmDialog(message, { title = 'Konfirmasi', okLabel = 'Ya, Lanjutkan
 
 // Modal input berbasis Promise, menggantikan prompt() bawaan browser.
 // Pemakaian: const pin = await promptDialog('Masukkan PIN Admin:'); if (pin === null) return; // dibatalkan
-function promptDialog(message, { title = 'Masukkan Data', okLabel = 'OK', inputType = 'password', placeholder = '' } = {}) {
+function promptDialog(message, { title = 'Masukkan Data', okLabel = 'OK', inputType = 'password', placeholder = '', uppercase = false } = {}) {
   return new Promise((resolve) => {
     const overlay  = document.getElementById('confirm-overlay');
     const icon     = document.getElementById('confirm-icon');
@@ -2267,16 +2347,31 @@ function promptDialog(message, { title = 'Masukkan Data', okLabel = 'OK', inputT
     inputEl.placeholder = placeholder;
     inputEl.value = '';
     inputEl.style.display = 'block';
+    // Mode CAPSLOCK otomatis (mis. untuk kode Gardu seperti "ABE123"):
+    // huruf yang diketik langsung dipaksa jadi huruf besar.
+    inputEl.style.textTransform = uppercase ? 'uppercase' : '';
+    const onInputUppercase = () => {
+      const pos = inputEl.selectionStart;
+      inputEl.value = inputEl.value.toUpperCase();
+      try { inputEl.setSelectionRange(pos, pos); } catch (e) {}
+    };
+    if (uppercase) inputEl.addEventListener('input', onInputUppercase);
 
     const cleanup = (result) => {
       overlay.style.display = 'none';
       inputEl.style.display = 'none';
       btnOk.onclick = null; btnCancel.onclick = null;
       inputEl.onkeydown = null;
+      if (uppercase) inputEl.removeEventListener('input', onInputUppercase);
+      inputEl.style.textTransform = '';
       document.removeEventListener('keydown', onKey);
       resolve(result);
     };
-    const submit = () => cleanup(inputEl.value);
+    const submit = () => {
+      let val = inputEl.value;
+      if (uppercase) val = val.toUpperCase();
+      cleanup(val);
+    };
     const onKey = (e) => { if (e.key === 'Escape') cleanup(null); };
     btnOk.onclick = submit;
     btnCancel.onclick = () => cleanup(null);
@@ -2836,7 +2931,7 @@ function switchTab(tab) { switchView(tab); }
 // (ADMIN_PIN di bawah) yang tetap dipertahankan sebagai gerbang khusus
 // tombol hapus data — dua lapis ini sengaja tidak digabung.
 //
-// Password sama untuk semua akun (1111) sesuai permintaan supervisor —
+// Password sama untuk semua akun (1111) sesuai permintaan TL/Admin —
 // disimpan plain di sini karena ini kredensial internal level-role
 // (bukan per-orang), sama semangatnya dengan ADMIN_PIN yang sudah ada.
 const AUTH_ACCOUNTS = {
@@ -2883,7 +2978,7 @@ function scopeFilterEntries(entries) {
   return entries.filter(([, v]) => normalizeUlp(v && v.ulp) === scopeKey);
 }
 
-window.doLoginSupervisor = function() {
+window.doLoginTLAdmin = function() {
   const usernameRaw = document.getElementById('login-username').value;
   const password     = document.getElementById('login-password').value;
   const errEl        = document.getElementById('login-err');
@@ -2899,7 +2994,7 @@ window.doLoginSupervisor = function() {
   showAppAfterLogin();
 };
 
-window.doLogoutSupervisor = async function() {
+window.doLogoutTLAdmin = async function() {
   if (!(await confirmDialog('Keluar dari akun ini? Anda perlu login ulang untuk membuka dashboard lagi.', { title: 'Logout', okLabel: 'Ya, Keluar' }))) return;
   localStorage.removeItem(AUTH_SESSION_KEY);
   location.reload(); // cara paling aman untuk reset semua listener/cache Firebase di memori
@@ -2946,23 +3041,36 @@ let checkpointMarkers = {};        // laporanId -> leaflet marker checkpoint
 // oleh sembarang pengguna. Kalau nanti sudah ada halaman login sungguhan,
 // ganti isAdminMode di sini agar mengikuti status login user (role === 'admin'),
 // dan hapus prompt PIN ini.
+//
+// PENTING: Mode Admin SENGAJA TIDAK dipertahankan lewat sessionStorage lagi.
+// Sebelumnya status "aktif" tersimpan di sessionStorage dan otomatis menyala
+// kembali tiap kali halaman dibuka ulang/di-refresh TANPA perlu PIN lagi —
+// ini yang menyebabkan bug "bisa hapus data padahal merasa tidak sedang
+// membuka Mode Admin" (nyala dari sesi sebelumnya, lupa dimatikan). Sekarang
+// Mode Admin SELALU dimulai OFF setiap kali halaman dimuat/di-refresh, dan
+// PIN wajib dimasukkan ulang tiap kali mau mengaktifkannya.
 const ADMIN_PIN = '1111'; // ganti PIN ini sesuai keinginan Anda
-let isAdminMode = sessionStorage.getItem('ffm_admin') === '1'; // reset tiap tab/browser ditutup
+let isAdminMode = false;
 
+let _adminToggleBusy = false;
 async function toggleAdminMode() {
-  if (isAdminMode) {
-    if (!(await confirmDialog('Keluar dari Mode Admin?', { title: 'Keluar Mode Admin', okLabel: 'Ya, Keluar', danger: false }))) return;
-    isAdminMode = false;
-    sessionStorage.removeItem('ffm_admin');
-  } else {
-    const pin = await promptDialog('Masukkan PIN Admin untuk mengaktifkan tombol hapus data:', { title: 'Mode Admin', okLabel: 'Masuk', placeholder: '••••' });
-    if (pin === null) return; // dibatalkan
-    if (pin !== ADMIN_PIN) { showToast('PIN salah.', 'err'); return; }
-    isAdminMode = true;
-    sessionStorage.setItem('ffm_admin', '1');
-    showToast('Mode Admin aktif.', 'ok');
+  if (_adminToggleBusy) return; // cegah klik ganda saat dialog konfirmasi/PIN masih terbuka
+  _adminToggleBusy = true;
+  try {
+    if (isAdminMode) {
+      if (!(await confirmDialog('Keluar dari Mode Admin?', { title: 'Keluar Mode Admin', okLabel: 'Ya, Keluar', danger: false }))) return;
+      isAdminMode = false;
+    } else {
+      const pin = await promptDialog('Masukkan PIN Admin untuk mengaktifkan tombol hapus data:', { title: 'Mode Admin', okLabel: 'Masuk', placeholder: '••••' });
+      if (pin === null) return; // dibatalkan
+      if (pin !== ADMIN_PIN) { showToast('PIN salah.', 'err'); return; }
+      isAdminMode = true;
+      showToast('Mode Admin aktif.', 'ok');
+    }
+    applyAdminUI();
+  } finally {
+    _adminToggleBusy = false;
   }
-  applyAdminUI();
 }
 
 function applyAdminUI() {
@@ -2978,10 +3086,17 @@ function applyAdminUI() {
   }
 
   // render ulang daftar yang sudah ada di memori, supaya tombol hapus langsung
-  // muncul/hilang saat ini juga, tanpa perlu menunggu data Firebase berubah
+  // muncul/hilang saat ini juga, tanpa perlu menunggu data Firebase berubah.
+  // PENTING: sebelumnya hanya 3 daftar ini yang di-render ulang — Tiket
+  // (Rencana Pekerjaan) & Verifikasi Laporan TIDAK ikut, jadi tombol hapus
+  // di kedua tampilan itu bisa nyangkut menampilkan status Mode Admin yang
+  // lama sampai data Firebase-nya berubah sendiri (bug: tombol hapus masih
+  // terlihat/tertekan padahal Mode Admin sudah dimatikan, atau sebaliknya).
   if (lastPetugasEntries) renderPetugasList(lastPetugasEntries);
   if (lastAbsensiEntries) renderAbsensiTable(lastAbsensiEntries);
   if (lastLaporanEntries) renderLaporanGrid(lastLaporanEntries);
+  if (lastTiketEntries) renderTiketTable(lastTiketEntries);
+  if (verifikasiRawEntries && verifikasiRawEntries.length) renderVerifikasiGrid();
 }
 
 // ══════════════════════════════════════
@@ -3132,7 +3247,7 @@ async function initFirebase() {
   try {
     const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
     const { getDatabase, ref, onValue, remove, update, query, orderByChild, startAt, endAt, runTransaction } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js');
-    fbApp = initializeApp(FB_CONFIG, 'supervisor');
+    fbApp = initializeApp(FB_CONFIG, 'tladmin');
     fbDb  = getDatabase(fbApp);
     window._fbRef = ref; window._fbOnValue = onValue; window._fbRemove = remove; window._fbUpdate = update;
     window._fbQuery = query; window._fbOrderByChild = orderByChild; window._fbStartAt = startAt; window._fbEndAt = endAt;
@@ -3190,6 +3305,22 @@ function getUlpColor(ulp) {
   const key = String(ulp).toUpperCase().replace(/^UP3\s+/, '').replace(/^ULP\s+/, '').trim();
   return ULP_COLOR_MAP[key] || '#64748B';
 }
+// ── Pembersih teks (HTML-escape) ──
+// Semua data isian bebas dari petugas (Keterangan, Anggota Hadir, PIC, Daerah
+// Padam, ULP/Regu manual, No. Tiket, dsb.) HARUS lewat fungsi ini sebelum
+// disisipkan ke innerHTML/popup. Tanpa ini, teks berisi tag HTML/skrip yang
+// diketik di form Lapor akan ikut dieksekusi di layar TL/Admin saat
+// laporan dibuka (celah XSS). Dipakai di setiap render kartu/tabel/popup
+// yang menampilkan data dari petugas.
+function esc(v) {
+  if (v === null || v === undefined) return '';
+  return String(v)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 function hexToRgba(hex, alpha) {
   const h = String(hex || '').replace('#', '');
   const full = h.length === 3 ? h.split('').map(c => c + c).join('') : h;
@@ -3217,64 +3348,6 @@ function getTeamIcon(regu) {
   return { icon: '👷', badge: null }; // fallback kategori "Umum"
 }
 
-// ══════════════════════════════════════════════════════════════
-// ROSTER Unit Kerja → Tim (NUMBAY v2) — SAMA PERSIS dengan yang dipakai
-// di index.html/petugas.html untuk dropdown login. Diduplikasi di sini
-// (bukan file bersama) karena dashboard & petugas app 2 file HTML
-// terpisah. PENTING: kalau roster diubah/nambah tim di salah satu file,
-// WAJIB disamakan di file satunya juga, supaya dropdown target di "Kelola Penugasan Pekerjaan"
-// di dashboard tetap sinkron dengan pilihan Tim yang bisa dipilih petugas
-// saat login.
-// ══════════════════════════════════════════════════════════════
-const ROSTER_ULP_TEAMS = {
-  'ULP Jayapura': [
-    'Tim Pemeliharaan PLN ND', 'Tim Inspeksi JTM Tier 1 Jayapura', 'Tim Inspeksi JTM Tier 2 Jayapura',
-    'Tim Inspeksi Gardu', 'Tim ROW PT APP Jayapura', 'Tim ROW PT Lau Daling',
-    'Tim Mitra Konstruksi', 'Tim PDKB SL 1', 'Tim PDKB SL 2',
-    'Tim Yantek Jayapura 11', 'Tim Yantek Jayapura 12', 'Tim Yantek Jayapura 21'
-  ],
-  'ULP Abepura': [
-    'Tim Pemeliharaan PLN ND', 'Tim Inspeksi JTM Tier 1 Abepura', 'Tim Inspeksi Gardu',
-    'Tim ROW PT AKA Rifki Papua', 'Tim ROW PT Intrabes Abepura', 'Tim ROW PLN ND Abepura',
-    'Tim Mitra Konstruksi', 'Tim PDKB SL 1', 'Tim PDKB SL 2',
-    'Tim Yantek Abepura 11', 'Tim Yantek Abepura 12', 'Tim Yantek Abepura 13', 'Tim Yantek Abepura 21'
-  ],
-  'ULP Sentani': [
-    'Tim Pemeliharaan PLN ND', 'Tim Inspeksi JTM Tier 1 Sentani', 'Tim Inspeksi Gardu',
-    'Tim ROW PT APP Sentani', 'Tim ROW PT Dasha Gauri', 'Tim ROW PT Intrabes Sentani',
-    'Tim Mitra Konstruksi', 'Tim PDKB SL 1', 'Tim PDKB SL 2',
-    'Tim Yantek Sentani 11', 'Tim Yantek Sentani 12', 'Tim Yantek Sentani 21'
-  ],
-  'ULP Arso': [
-    'Tim Pemeliharaan PLN ND', 'Tim Inspeksi JTM Tier 1 Arso', 'Tim Inspeksi Gardu',
-    'Tim ROW PT APP Arso', 'Tim ROW PT Intrabes Arso', 'Tim ROW PLN ND Arso',
-    'Tim Mitra Konstruksi', 'Tim PDKB SL 1', 'Tim PDKB SL 2',
-    'Tim Yantek Arso 11', 'Tim Yantek Arso 21'
-  ],
-  'ULP Genyem': [
-    'Tim Pemeliharaan PLN ND', 'Tim Inspeksi JTM Tier 1 Genyem', 'Tim Inspeksi Gardu',
-    'Tim ROW PT APP Genyem', 'Tim ROW PLN ND Genyem',
-    'Tim Mitra Konstruksi', 'Tim PDKB SL 1', 'Tim PDKB SL 2',
-    'Tim Yantek Genyem 11', 'Tim Yantek Genyem 12'
-  ],
-  'ULP Sarmi': [
-    'Tim Pemeliharaan PLN ND', 'Tim Inspeksi JTM Tier 1 Sarmi', 'Tim Inspeksi Gardu',
-    'Tim ROW PT APP Sarmi', 'Tim ROW PLN ND Sarmi',
-    'Tim Mitra Konstruksi', 'Tim PDKB SL 1', 'Tim PDKB SL 2',
-    'Tim Yantek Sarmi 11', 'Tim Yantek Sarmi 12'
-  ],
-  // "PT MITRA" diperlakukan sebagai Unit Kerja tersendiri (setara ULP),
-  // dengan tiap nama PT di bawah ini berperan sebagai Regu/Tim-nya —
-  // permintaan supervisor: strukturnya sama seperti ULP+Tim di atas.
-  'PT MITRA': [
-    'PT URSULA ABADI', 'PT HARAPAN PAPUA SEJAHTERA', 'PT TIGA RIZKY JAYA',
-    'PT KALIAGA NINER PERSADA', 'PT RAJAWALI PERKASA RAYA', 'PT PLN NUSA DAYA',
-    'PT AKA RIFKI PAPUA', 'PT AKBAR PAPUA PERKASA', 'PT INTRABES SELARA',
-    'PT LAU DALING', 'PT DASHA GAURI PAPUA', 'PT PUTRA SENTANI JAYA',
-    'PT BUBUN BUSU', 'PT KASITAMMUAN AMAN SEJAHTERA', 'PT LAKAWAN',
-    'PT MATA ALLO PAPUA', 'PT PARDAME BINTANG UTARA', 'PT IRIANA KARYA UTAMA'
-  ]
-};
 
 // Kode singkat per ULP — dipakai untuk generate Nomor Penugasan otomatis
 // (format KODE-0001, urut per ULP via Firebase transaction, tidak pernah
@@ -3289,20 +3362,6 @@ const KODE_ULP = {
   'PT MITRA':     'MTR'
 };
 
-// ══════════════════════════════════════════════════════════════
-// RENCANA PEKERJAAN — daftar master dropdown (sesuai format RKM/RAB UP3 Jayapura)
-// ══════════════════════════════════════════════════════════════
-const RP_KATEGORI_LIST = ['KONTRAK AO', 'KONTRAK AI', 'KONTRAK VARCOST', 'EMERGENCY', 'GREBEK'];
-
-const RP_JENIS_PEKERJAAN_LIST = [
-  'Sempurna Proteksi', 'Sempurna Material', 'Sempurna Pembebanan',
-  'Sempurna Inspeksi', 'Sempurna Konstruksi', 'Sempurna ROW', 'Sempurna Gardu'
-];
-
-const RP_HEALTH_INDEX_LIST = ['SEMPURNA', 'SEHAT', 'SAKIT', 'KRONIS'];
-const RP_PDKB_LIST = ['TIDAK', 'YA'];
-const RP_METODE_LIST = ['OFFLINE', 'ONLINE'];
-const RP_JENIS_PEMADAMAN_LIST = ['TM', 'TR', 'Tanpa Pemadaman'];
 
 // Data resmi master Penyulang → Section → Nomor Gardu. Sumber: FORMAT
 // PEMADAMAN ULP, sheet GARDU SECTION (kolom PENYULANG, SECTION, NOMOR
@@ -3366,56 +3425,6 @@ window.onRpSectionChange = function() {
   populateRpGarduSelect();
 };
 
-// Rincian Pekerjaan dikelompokkan per kategori aset supaya dropdown ~130 item
-// tetap mudah dicari (sesuai daftar kerja UP3 Jayapura).
-const RP_RINCIAN_GROUPS = {
-  'Umum / Bangunan / JTM Dasar': [
-    'Perbaikan Andongan', 'Perbaikan Andongan (JTR)', 'Inspeksi Kubikel', 'Pemeliharaan Kubikel',
-    'Pembersihan Halaman Bangunan', 'Pengecatan Bangunan', 'SLO PHBTM', 'Inspeksi Tier 1 JTM',
-    'Inspeksi Tier 2 JTM', 'Pengukuran Tahanan Isolasi JTM/SKTM', 'Rabas Pohon', 'Rabas Pohon Kriteria-1', 'Rabas Pohon Kriteria-2', 
-    'Rabas Pohon Kriteria-3', 'Rabas Pohon Kriteria-4', 'Rabas Pohon Kriteria-5', 'Rabas Pohon Tuntas', 'Pembersihan Terminasi',
-    'Tebang Pohon', 'Tebang Pohon Kriteria-1','Tebang Pohon Kriteria-2','Tebang Pohon Kriteria-3','Tebang Pohon Kriteria-4','Tebang Pohon Kriteria-5',
-    'Pemasangan Westpex', 'Pemasangan Cover Isolator Tarik', 'Pemasangan Cover Isolator Tumpu',
-    'Pemasangan Cover LA', 'Pemasangan Cover FCO Bawah', 'Pemasangan Cover FCO Atas', 'Pemasangan IJUK',
-    'Pembersihan Corong', 'Pembersihan Jaring Layang-layang', 'Sisip Tiang', 'Perbaikan Konstruksi Schoor',
-    'Perbaikan Tiang Miring', 'Penggantian Traves', 'Penggantian Tiang Keropos/Rusak TM',
-    'Pemasangan Pondasi Tiang', 'Pemasangan Top Ties', 'Konsul Phasa S', 'Perubahan Konstruksi Segitiga',
-    'Pengecatan Tiang', 'Perbaikan Sambungan SUTM'
-  ],
-  'Switching / Proteksi / Kubikel': [
-    'Perbaikan Kawat Rantas', 'Penggantian Isolator Tarik', 'Penggantian Isolator Tumpu',
-    'Penggantian Pin Insulator menjadi Pin Post', 'Pemasangan LA Jaringan', 'Pemasangan Fault Indikator',
-    'Penggantian Baterai LBS Motorized', 'Penggantian LBS', 'Penggantian Baterai Recloser', 'Penggantian FCO',
-    'Pemeliharaan LBS', 'Pemeliharaan Recloser', 'Pemasangan Cover LBS', 'Pemasangan Cover Recloser',
-    'Relokasi LBS', 'Relokasi Recloser', 'Pemasangan DS', 'Penggantian Rectifier Rusak',
-    'Penggantian Relay Rusak (Peremajaan)', 'Integrasi Keypoint ke SCADA', 'Assesment Keypoint',
-    'Pemeliharaan berbasis PDKB', 'SLO JTM', 'Perbaikan Tiang (las tiang/dll)', 'Pemasangan Klem H'
-  ],
-  'Gardu & Trafo': [
-    'Inspeksi Tier 1', 'Inspeksi Tier 2', 'Pengukuran Beban', 'Penyeimbangan Beban', 'Manajemen/Mutasi Trafo',
-    'Menaikkan Tap Changer Trafo Distribusi', 'Penggantian PHBTR Rusak', 'Penggantian Dudukan PHBTR',
-    'Pembersihan Halaman Gardu Distribusi', 'Pengecatan Gardu', 'Penggantian In / Out Gardu',
-    'Penggantian Tiang Keropos/Rusak Gardu', 'Perbaikan LA Gardu', 'Perbaikan Grounding Gardu',
-    'Penyesuaian Rating (Fuse Link)', 'Pemasangan Cover LA & Bushing Gardu', 'Penyesuaian tegangan drop',
-    'Downrating trafo', 'Uprating Trafo', 'Pemasangan Cover Cut Out Gardu', 'SLO Gardu Distribusi',
-    'Pengecekan Pintu PHBTR', 'Pengecekan trafo rembes', 'Manuver beban gardu', 'Rehabilitasi Gardu',
-    'Pengisian Minyak trafo pada Trafo'
-  ],
-  'Jaringan JTR': [
-    'Inspeksi (JTR)', 'Perampalan Pohon (JTR)', 'Joinisasi/Perbaikan Sambungan (JTR)',
-    'Penggantian Aksesoris Tarikan (JTR)', 'Perbaikan Tiang Miring (JTR)', 'Pemasangan Grounding (JTR)',
-    'Pemasangan Schoor (JTR)', 'Pengecatan Tiang (JTR)', 'Pemasangan Kumis (JTR)',
-    'Penggantian Tiang Keropos/Rusak (JTR)', 'Penggantian Kabel Incoming/Outgoing (JTR)',
-    'Penggantian Pipa Incoming/Outgoing (JTR)', 'Penarikan Kabel JTR', 'Rekonektorisasi JTR', 'SLO JTR',
-    'Pemasangan Kabel JTR', 'Pembongkaran Kabel JTR', 'Pembongkaran tiang JTR', 'Perbaikan SR Deret',
-    'Penggantian Tap Konektor Menjadi Konektor Press', 'Pemasangan Service Wedge Clamp'
-  ],
-  'Pembangunan / Uprating': [
-    'Pembangunan Konstruksi Tiang JTM', 'Uprating SUTM', 'Uprating MVTIC', 'Uprating SKTM',
-    'Pembangunan Gardu Sisip', 'Pembangunan Gardu portal', 'Pembangunan Gardu Hubung',
-    'Pembangunan Konstruksi Tiang JTR', 'Uprating SUTR', 'Pembangunan LBS Threeway', 'Pembangunan Recloser'
-  ]
-};
 
 // ══════════════════════════════════════════════════════════════
 // KELOLA TARGET (poin 2b) — target volume per Regu per periode.
@@ -3431,7 +3440,7 @@ let targetKerjaCache = []; // [{ulp, regu, periodeKey, tipePeriode, targetVolume
 
 // CATATAN MIGRASI: field terpisah "Target Volume & Periode" (Harian/Mingguan/
 // Bulanan + rentang tanggal) sudah dihapus dari form Rencana Pekerjaan atas
-// permintaan supervisor — dianggap dobel dengan field Vol (Detail RKM) dan
+// permintaan TL/Admin — dianggap dobel dengan field Vol (Detail RKM) dan
 // Tanggal (Hari/Tanggal). Mulai sekarang setiap penugasan baru/edit SELALU
 // tersimpan sebagai tipePeriode:'harian' dengan periodeKey = Hari/Tanggal dan
 // targetVolume = Vol (lihat simpanTiket). Ini supaya fitur % capaian, grafik
@@ -3710,7 +3719,7 @@ function renderPetugasCardHtml(id, p) {
   const avatarBadge  = (!isTerputus && teamIcon.badge) ? `<span class="team-icon-badge">${teamIcon.badge}</span>` : '';
   // "Tidak Terhubung" berarti koneksi realtime terputus otomatis (app ditutup/
   // di-kill, HP mati, atau lama tidak dibuka) — BUKAN petugas sengaja selesai
-  // tugas (itu baru jadi 'Offline'). Jadi pesannya dibedakan supaya supervisor
+  // tugas (itu baru jadi 'Offline'). Jadi pesannya dibedakan supaya TL/Admin
   // tidak salah kira "sudah selesai" padahal cuma HP-nya yang tidak merespons.
   const peringatan = isTerputus
     ? `<div style="font-size:10.5px;color:var(--done);font-weight:700;margin-top:3px">📴 Tidak terhubung — terakhir terlihat ${ago}, belum tentu selesai tugas</div>`
@@ -3723,8 +3732,8 @@ function renderPetugasCardHtml(id, p) {
         ${avatarBadge}
       </div>
       <div style="flex:1;min-width:0">
-        <div class="petugas-name">${p.regu||'—'}</div>
-        <div class="petugas-meta">${p.ulp||'—'}${p.anggotaHadir ? ' · ' + p.anggotaHadir : ''}</div>
+        <div class="petugas-name">${esc(p.regu)||'—'}</div>
+        <div class="petugas-meta">${esc(p.ulp)||'—'}${p.anggotaHadir ? ' · ' + esc(p.anggotaHadir) : ''}</div>
         <div class="petugas-meta" style="margin-top:3px">📡 ${ago} · ${p.lat ? p.lat.toFixed(4)+', '+p.lng.toFixed(4) : 'GPS —'}</div>
         ${peringatan}
       </div>
@@ -3858,10 +3867,10 @@ function buildPetugasPopup(p) {
   return `
     <div class="popup-card" style="border-left:4px solid ${ulpColor}">
       <div class="popup-head" style="background:${hexToRgba(ulpColor,0.08)}">
-        <div class="popup-title">${teamIcon.icon} ${p.regu||'—'}${badgeTxt}</div>
-        <span class="popup-jenis" style="background:${ulpColor};color:#fff">${p.ulp||'—'}</span>
+        <div class="popup-title">${teamIcon.icon} ${esc(p.regu)||'—'}${badgeTxt}</div>
+        <span class="popup-jenis" style="background:${ulpColor};color:#fff">${esc(p.ulp)||'—'}</span>
       </div>
-      <div class="popup-row"><span class="popup-key">Anggota Hadir</span><span class="popup-val">${p.anggotaHadir||'—'}</span></div>
+      <div class="popup-row"><span class="popup-key">Anggota Hadir</span><span class="popup-val">${esc(p.anggotaHadir)||'—'}</span></div>
       <div class="popup-row"><span class="popup-key">Status</span><span class="popup-val"><span class="popup-urgensi" style="background:${statusColor(p.status)}">${p.status||'—'}</span></span></div>
       <div class="popup-row"><span class="popup-key">Akurasi</span><span class="popup-val">${p.acc||'—'} m</span></div>
       <div class="popup-row"><span class="popup-key">Update Terakhir</span><span class="popup-val">${p.ts ? new Date(p.ts).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}) : '—'}</span></div>
@@ -3955,12 +3964,12 @@ function buildCheckpointPopup(l) {
   return `
     <div class="popup-card">
       <div class="popup-head">
-        <div class="popup-title">📋 ${l.regu||'—'}</div>
-        <span class="popup-jenis jtm">${l.ulp||'—'}</span>
+        <div class="popup-title">📋 ${esc(l.regu)||'—'}</div>
+        <span class="popup-jenis jtm">${esc(l.ulp)||'—'}</span>
       </div>
       <div class="popup-row"><span class="popup-key">Waktu</span><span class="popup-val">${waktu}</span></div>
-      <div class="popup-row"><span class="popup-key">Pekerjaan</span><span class="popup-val">${l.rincian||'—'}</span></div>
-      <div class="popup-row"><span class="popup-key">Material</span><span class="popup-val">${l.material||'—'}</span></div>
+      <div class="popup-row"><span class="popup-key">Pekerjaan</span><span class="popup-val">${esc(l.rincian)||'—'}</span></div>
+      <div class="popup-row"><span class="popup-key">Material</span><span class="popup-val">${esc(l.material)||'—'}</span></div>
       <div class="popup-row"><span class="popup-key">Target/Realisasi</span><span class="popup-val">${l.target||'—'} / ${l.realisasi||'—'}</span></div>
       <div class="popup-row"><span class="popup-key">Status</span><span class="popup-val"><span class="popup-urgensi" style="background:${checkpointColor(l)}">${statusLabel}</span></span></div>
       ${thumbs}
@@ -4089,9 +4098,9 @@ function renderAbsensiDetailRowHtml(id, a) {
     : '';
   return `<tr>
     <td style="font-family:var(--mono);font-size:11px;white-space:nowrap">${waktu}</td>
-    <td style="font-weight:600">${a.regu||'—'}</td>
-    <td>${a.ulp||'—'}</td>
-    <td>${a.anggotaHadir||'—'}</td>
+    <td style="font-weight:600">${esc(a.regu)||'—'}</td>
+    <td>${esc(a.ulp)||'—'}</td>
+    <td>${esc(a.anggotaHadir)||'—'}</td>
     <td>${faseBadge}</td>
     <td style="font-family:var(--mono);font-size:10px;color:var(--text-secondary)">${gps}</td>
     <td>${foto}</td>
@@ -4282,8 +4291,8 @@ function renderAbsensiCardHtml(p) {
         ${avatarBadge}
       </div>
       <div style="flex:1">
-        <div style="font-size:13px;font-weight:700;color:var(--text-1)">${p.regu}</div>
-        <div style="font-size:11px;color:var(--text-2);margin-top:1px">${p.ulp}${p.anggotaHadir && p.anggotaHadir !== '—' ? ' · Anggota: ' + p.anggotaHadir : ''}</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text-1)">${esc(p.regu)}</div>
+        <div style="font-size:11px;color:var(--text-2);margin-top:1px">${esc(p.ulp)}${p.anggotaHadir && p.anggotaHadir !== '—' ? ' · Anggota: ' + esc(p.anggotaHadir) : ''}</div>
         ${hitungJamKerja(p)}
       </div>
       <span class="badge" style="background:${lc.bg};color:${lc.color};border:1px solid ${lc.border}">${lc.icon} ${lastFase}</span>
@@ -4640,8 +4649,8 @@ function renderLogAbsensiCardHtml(p, todayKey) {
         ${avatarBadge}
       </div>
       <div style="flex:1">
-        <div style="font-size:13px;font-weight:700;color:var(--text-1)">${p.regu} <span style="font-weight:500;color:var(--text-3);font-size:11px">· ${tanggalLabel}</span></div>
-        <div style="font-size:11px;color:var(--text-2);margin-top:1px">${p.ulp}${p.anggotaHadir && p.anggotaHadir !== '—' ? ' · Anggota: ' + p.anggotaHadir : ''}</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text-1)">${esc(p.regu)} <span style="font-weight:500;color:var(--text-3);font-size:11px">· ${tanggalLabel}</span></div>
+        <div style="font-size:11px;color:var(--text-2);margin-top:1px">${esc(p.ulp)}${p.anggotaHadir && p.anggotaHadir !== '—' ? ' · Anggota: ' + esc(p.anggotaHadir) : ''}</div>
         ${durasiHtml}
       </div>
       <span class="badge" style="background:${lc.bg};color:${lc.color};border:1px solid ${lc.border}">${lc.icon} ${statusLabel}</span>
@@ -4803,26 +4812,38 @@ window.onLaporanPageSizeChange = function() {
 // Health Index, Kategori, PDKB, Metode, Data Pemadaman, PIC & Keterangan
 // (field lapPenyulang / lapSection / lapGardu / lapHealthIndex / lapKategori /
 // lapPdkb / lapMetode / lapDaerahPadam / lapJenisPemadaman / lapPic /
-// lapKeterangan). Fungsi ini menyusun baris-baris itu, dan HANYA
-// menampilkan baris yang datanya memang terisi supaya kartu tidak penuh
-// baris kosong untuk laporan lama yang belum punya field ini.
+// lapKeterangan). Section "Khusus Konstruksi" di petugas.html (toggle
+// opsional di form Laporan) mengirim 3 field kalau petugas mengaktifkannya:
+// lapKonstruksiMaterialMitra, lapKonstruksiPasang, lapKonstruksiBongkar
+// (null kalau togglenya tidak ditekan / bukan pekerjaan konstruksi). Field
+// lama lapKonstruksiSatuan sudah tidak dikirim lagi (satuan konstruksi sudah
+// digabung ke field Satuan utama / realisasiSatuan) — tapi baris di bawah
+// tetap menampilkannya kalau ada di data laporan LAMA. Fungsi ini menyusun
+// baris-baris detail laporan, dan HANYA menampilkan baris yang datanya
+// memang terisi supaya kartu tidak penuh baris kosong.
 function laporanDetailFieldsHtml(l) {
-  const lokasi = [l.lapPenyulang, l.lapSection, l.lapGardu].filter(Boolean).join(' / ');
-  const pemadaman = [l.lapJenisPemadaman, l.lapDaerahPadam].filter(Boolean).join(' — ');
-  const realisasiTxt = (l.realisasi || l.realisasi === 0) ? (l.realisasi + (l.realisasiSatuan ? ' ' + l.realisasiSatuan : '')) : '—';
-  const targetTxt    = (l.target    || l.target    === 0) ? (l.target    + (l.targetSatuan    ? ' ' + l.targetSatuan    : '')) : '—';
+  const lokasi = [l.lapPenyulang, l.lapSection, l.lapGardu].filter(Boolean).map(esc).join(' / ');
+  const pemadaman = [l.lapJenisPemadaman, l.lapDaerahPadam].filter(Boolean).map(esc).join(' — ');
+  const realisasiTxt = (l.realisasi || l.realisasi === 0) ? (esc(l.realisasi) + (l.realisasiSatuan ? ' ' + esc(l.realisasiSatuan) : '')) : '—';
+  const targetTxt    = (l.target    || l.target    === 0) ? (esc(l.target)    + (l.targetSatuan    ? ' ' + esc(l.targetSatuan)    : '')) : '—';
   return `
-      <b>Pekerjaan:</b> ${l.rincian || '—'}${l.jenisPekerjaan ? ` <span style="color:var(--text-3);font-weight:400">(${l.jenisPekerjaan})</span>` : ''}<br>
+      <b>Pekerjaan:</b> ${esc(l.rincian) || '—'}${l.jenisPekerjaan ? ` <span style="color:var(--text-3);font-weight:400">(${esc(l.jenisPekerjaan)})</span>` : ''}<br>
       <b>Target:</b> ${targetTxt} &nbsp;|&nbsp; <b>Realisasi:</b> ${realisasiTxt}
       ${lokasi ? `<br><b>Lokasi JTM/Gardu:</b> ${lokasi}` : ''}
-      ${l.lapHealthIndex ? `<br><b>Health Index:</b> ${l.lapHealthIndex}` : ''}
-      ${l.lapKategori ? `<br><b>Kategori:</b> ${l.lapKategori}` : ''}
-      ${l.lapPdkb ? `<br><b>PDKB:</b> ${l.lapPdkb}` : ''}
-      ${l.lapMetode ? `<br><b>Metode:</b> ${l.lapMetode}` : ''}
+      ${l.lapHealthIndex ? `<br><b>Health Index:</b> ${esc(l.lapHealthIndex)}` : ''}
+      ${l.lapKategori ? `<br><b>Kategori:</b> ${esc(l.lapKategori)}` : ''}
+      ${l.lapPdkb ? `<br><b>PDKB:</b> ${esc(l.lapPdkb)}` : ''}
+      ${l.lapMetode ? `<br><b>Metode:</b> ${esc(l.lapMetode)}` : ''}
+      ${(l.lapKonstruksiMaterialMitra || l.lapKonstruksiPasang || l.lapKonstruksiBongkar) ? `<br><b>🏗️ Khusus Konstruksi:</b> ${[
+        l.lapKonstruksiMaterialMitra ? `Material Mitra ${esc(l.lapKonstruksiMaterialMitra)}` : '',
+        l.lapKonstruksiPasang ? `Pasang ${esc(l.lapKonstruksiPasang)}` : '',
+        l.lapKonstruksiBongkar ? `Bongkar ${esc(l.lapKonstruksiBongkar)}` : ''
+      ].filter(Boolean).join(' · ')}` : ''}
+      ${l.lapKonstruksiSatuan ? `<br><b>Satuan Konstruksi:</b> ${esc(l.lapKonstruksiSatuan)}` : ''}
       ${pemadaman ? `<br><b>Pemadaman:</b> ${pemadaman}` : ''}
-      ${l.lapPic ? `<br><b>PIC:</b> ${l.lapPic}` : ''}
-      ${l.material ? `<br><b>Material:</b> ${l.material}` : ''}
-      ${l.lapKeterangan ? `<br><b>Keterangan:</b> ${l.lapKeterangan}` : ''}
+      ${l.lapPic ? `<br><b>PIC:</b> ${esc(l.lapPic)}` : ''}
+      ${l.material ? `<br><b>Material:</b> ${esc(l.material)}` : ''}
+      ${l.lapKeterangan ? `<br><b>Keterangan:</b> ${esc(l.lapKeterangan)}` : ''}
   `;
 }
 
@@ -4841,11 +4862,11 @@ function renderLaporanCardHtml(id, l) {
     </div>` : '';
   const editBtn = isAdminMode ? `<button class="btn-edit" title="Edit laporan ini" onclick="bukaModalEditLaporan('${id}')">✏️</button>` : '';
   const delBtn  = isAdminMode ? `<button class="btn-del" title="Hapus laporan ini" onclick="hapusLaporan('${id}')">🗑</button>` : '';
-  const editedBadge = l.editedAt ? `<div style="font-size:10.5px;color:var(--warn);margin-top:4px">✏️ Diedit ${l.statusVerifikasi ? '' : '— menunggu verifikasi ulang '}oleh ${l.editedBy||'Supervisor'} · ${new Date(l.editedAt).toLocaleString('id-ID')}</div>` : '';
+  const editedBadge = l.editedAt ? `<div style="font-size:10.5px;color:var(--warn);margin-top:4px">✏️ Diedit ${l.statusVerifikasi ? '' : '— menunggu verifikasi ulang '}oleh ${esc(l.editedBy)||'TL/Admin'} · ${new Date(l.editedAt).toLocaleString('id-ID')}</div>` : '';
   return `<div class="laporan-card">
     <div class="laporan-card-header">
       <div>
-        <div class="laporan-card-name">👷 ${l.regu||'—'} <span style="font-weight:400;color:var(--text-secondary);font-size:11px">${l.ulp||''}${l.anggotaHadir ? ' · ' + l.anggotaHadir : ''}</span></div>
+        <div class="laporan-card-name">👷 ${esc(l.regu)||'—'} <span style="font-weight:400;color:var(--text-secondary);font-size:11px">${esc(l.ulp)||''}${l.anggotaHadir ? ' · ' + esc(l.anggotaHadir) : ''}</span></div>
         <div class="laporan-card-meta">${waktu}</div>
         ${editedBadge}
       </div>
@@ -5040,7 +5061,7 @@ window.exportLaporanPDF = function() {
   }
 };
 
-// ── Edit Laporan (Supervisor/Admin) — #8: edit pasca-verifikasi wajib verifikasi ulang ──
+// ── Edit Laporan (TL/Admin/Admin) — #8: edit pasca-verifikasi wajib verifikasi ulang ──
 let currentEditLaporanId = null;
 let currentEditLaporanData = null;
 let editLaporanWasVerified = false;
@@ -5096,11 +5117,11 @@ window.simpanEditLaporan = async function() {
 
   const payload = {
     rincian, material, target, realisasi,
-    editedAt: Date.now(), editedBy: 'Supervisor'
+    editedAt: Date.now(), editedBy: 'TL/Admin'
   };
 
   // #8: kalau laporan ini sebelumnya sudah Terverifikasi, reset ke "menunggu verifikasi"
-  // supaya perubahan data tidak "menyelinap" tanpa dicek ulang oleh supervisor.
+  // supaya perubahan data tidak "menyelinap" tanpa dicek ulang oleh TL/Admin.
   // Data verifikasi lama disimpan di verifSebelumnya sebagai jejak audit, bukan dihapus.
   if (editLaporanWasVerified) {
     const old = currentEditLaporanData || {};
@@ -5131,7 +5152,7 @@ window.simpanEditLaporan = async function() {
 };
 
 // ══════════════════════════════════════
-// TIKET P0/P1 — SUPERVISOR
+// TIKET P0/P1 — TL/ADMIN
 // ══════════════════════════════════════
 let currentEditTiketId = null;
 let lastTiketEntries = null;
@@ -5246,19 +5267,19 @@ function populateRpGarduSelect(selectedValue) {
   if (dd && dd.style.display === 'block') renderRpGarduDropdown();
 }
 
-// Tombol "+ Tambah Gardu" — nambah 1 nama Gardu baru ke daftar lokal
-// (localStorage), untuk Gardu di luar data resmi Penyulang/Section. Gardu
-// yang baru ditambah langsung ikut terpilih (menambah ke pilihan yang
-// sudah ada, bukan menggantikannya).
+// Tombol "+ Tambah Gardu" — Gardu yang ditambahkan TL/Admin/petugas di sini
+// HANYA berlaku untuk laporan yang sedang diisi saat ini (langsung masuk ke
+// pilihan Gardu terpilih). Item ini SENGAJA TIDAK disimpan ke localStorage /
+// daftar dropdown, supaya tidak otomatis muncul lagi jadi opsi permanen di
+// pencarian Gardu untuk laporan-laporan berikutnya.
+// Penulisan kode Gardu otomatis dipaksa huruf besar (CAPSLOCK), cth: "ABE123".
 window.tambahGarduBaru = async function() {
-  const nama = await promptDialog('Nama / kode Gardu baru:', { title: 'Tambah Gardu', okLabel: 'Tambah', inputType: 'text', placeholder: 'cth: Gardu GH-024' });
-  if (!nama || !nama.trim()) return;
-  const namaBersih = nama.trim();
-  const daftarLokal = getGarduTambahanLokal();
-  if (!daftarGarduGabungan().includes(namaBersih)) {
-    daftarLokal.push(namaBersih);
-    localStorage.setItem(RP_GARDU_LOCAL_KEY, JSON.stringify(daftarLokal));
-  }
+  const nama = await promptDialog('Nama / kode Gardu baru:', { title: 'Tambah Gardu', okLabel: 'Tambah', inputType: 'text', placeholder: 'cth: ABE123', uppercase: true });
+  if (!nama) return;
+  const namaBersih = nama.trim().toUpperCase();
+  if (!namaBersih) return;
+  // Tidak disimpan ke RP_GARDU_LOCAL_KEY / localStorage — hanya dipakai
+  // untuk laporan yang sedang berjalan ini saja, bukan jadi dropdown permanen.
   if (!rpGarduSelected.includes(namaBersih)) rpGarduSelected.push(namaBersih);
   renderRpGarduBox();
   renderRpGarduDropdown();
@@ -5352,6 +5373,147 @@ function enhanceSearchableSelect(selectId) {
   refreshInput();
 }
 
+// RINCIAN_SATUAN_MAP — pemetaan Rincian Pekerjaan ("LEAD MEASURE") ke Satuan
+// ("STN") sesuai master FORMAT PEMADAMAN ULP - TARGET. SAMA PERSIS dengan
+// master di petugas.html (RINCIAN_SATUAN_MAP di sana) — dipakai di sini untuk
+// mengisi otomatis field Satuan (#rp-satuan) begitu supervisor memilih
+// Rincian Pekerjaan saat membuat/mengedit Rencana Pekerjaan, supaya satuan
+// yang diinput sinkron dengan yang nanti otomatis muncul di form Laporan
+// petugas. TL/Admin tetap bisa mengetik/mengubah manual kalau perlu (lihat
+// window._rpSatuanManual, di-set oleh oninput pada #rp-satuan).
+const RINCIAN_SATUAN_MAP = {
+  'Perbaikan Andongan': 'kms',
+  'Perbaikan Andongan (JTR)': 'kms',
+  'Inspeksi Kubikel': 'cell',
+  'Pemeliharaan Kubikel': 'cell',
+  'Pembersihan Halaman Bangunan': 'unit',
+  'Pengecatan Bangunan': 'unit',
+  'SLO PHBTM': 'cell',
+  'Inspeksi Tier 1 JTM': 'kms',
+  'Inspeksi Tier 2 JTM': 'kms',
+  'Pengukuran Tahanan Isolasi JTM/SKTM': 'kms',
+  'Rabas Pohon': 'gwg',
+  'Pembersihan Terminasi': 'kms',
+  'Tebang Pohon': 'btng',
+  'Pemasangan Westpex': 'titik',
+  'Pemasangan Cover Isolator Tarik': 'bh',
+  'Pemasangan Cover Isolator Tumpu': 'bh',
+  'Pemasangan Cover LA': 'bh',
+  'Pemasangan Cover FCO Bawah': 'bh',
+  'Pemasangan Cover FCO Atas': 'bh',
+  'Pemasangan IJUK': 'bh',
+  'Pembersihan Corong': 'titik',
+  'Pembersihan Jaring Layang-layang': 'titik',
+  'Sisip Tiang': 'btng',
+  'Perbaikan Konstruksi Schoor': 'titik',
+  'Perbaikan Tiang Miring': 'btg',
+  'Penggantian Traves': 'titik',
+  'Penggantian Tiang Keropos/Rusak TM': 'btg',
+  'Pemasangan Pondasi Tiang': 'btg',
+  'Pemasangan Top Ties': 'bh',
+  'Konsul Phasa S': 'titik',
+  'Perubahan Konstruksi Segitiga': 'titik',
+  'Pengecatan Tiang': 'btg',
+  'Perbaikan Sambungan SUTM': 'titik',
+  'Perbaikan Kawat Rantas': 'titik',
+  'Penggantian Isolator Tarik': 'bh',
+  'Penggantian Isolator Tumpu': 'bh',
+  'Penggantian Pin Insulator menjadi Pin Post': 'bh',
+  'Pemasangan LA Jaringan': 'bh',
+  'Pemasangan Fault Indikator': 'bh',
+  'Penggantian Baterai LBS Motorized': 'bh',
+  'Penggantian LBS': 'bh',
+  'Penggantian Baterai Recloser': 'bh',
+  'Penggantian FCO': 'bh',
+  'Pemeliharaan LBS': 'unit',
+  'Pemeliharaan Recloser': 'unit',
+  'Pemasangan Cover LBS': 'unit',
+  'Pemasangan Cover Recloser': 'unit',
+  'Relokasi LBS': 'unit',
+  'Relokasi Recloser': 'unit',
+  'Pemasangan DS': 'titik',
+  'Penggantian Rectifier Rusak': 'bh',
+  'Penggantian Relay Rusak (Peremajaan)': 'bh',
+  'Integrasi Keypoint ke SCADA': 'titik',
+  'Assesment Keypoint': 'unit',
+  'Pemeliharaan berbasis PDKB': 'titik',
+  'SLO JTM': 'kms',
+  'Perbaikan Tiang (las tiang/dll)': 'btg',
+  'Pemasangan Klem H': 'bh',
+  'Inspeksi Tier 1': 'unit',
+  'Inspeksi Tier 2': 'unit',
+  'Pengukuran Beban': 'unit',
+  'Penyeimbangan Beban': 'unit',
+  'Manajemen/Mutasi Trafo': 'unit',
+  'Menaikkan Tap Changer Trafo Distribusi': 'unit',
+  'Penggantian PHBTR Rusak': 'unit',
+  'Penggantian Dudukan PHBTR': 'unit',
+  'Pembersihan Halaman Gardu Distribusi': 'unit',
+  'Pengecatan Gardu': 'unit',
+  'Penggantian In / Out Gardu': 'unit',
+  'Penggantian Tiang Keropos/Rusak Gardu': 'btg',
+  'Perbaikan LA Gardu': 'bh',
+  'Perbaikan Grounding Gardu': 'unit',
+  'Penyesuaian Rating (Fuse Link)': 'unit',
+  'Pemasangan Cover LA & Bushing Gardu': 'unit',
+  'Penyesuaian tegangan drop': 'unit',
+  'Downrating trafo': 'unit',
+  'Uprating Trafo': 'unit',
+  'Pemasangan Cover Cut Out Gardu': 'unit',
+  'SLO Gardu Distribusi': 'unit',
+  'Pengecekan Pintu PHBTR': 'unit',
+  'Pengecekan trafo rembes': 'unit',
+  'Manuver beban gardu': 'unit',
+  'Rehabilitasi Gardu': 'unit',
+  'Pengisian Minyak trafo pada Trafo': 'unit',
+  'Inspeksi (JTR)': 'kms',
+  'Perampalan Pohon (JTR)': 'kms',
+  'Joinisasi/Perbaikan Sambungan (JTR)': 'bh',
+  'Penggantian Aksesoris Tarikan (JTR)': 'bh',
+  'Perbaikan Tiang Miring (JTR)': 'btg',
+  'Pemasangan Grounding (JTR)': 'titik',
+  'Pemasangan Schoor (JTR)': 'btg',
+  'Pengecatan Tiang (JTR)': 'btg',
+  'Pemasangan Kumis (JTR)': 'titik',
+  'Penggantian Tiang Keropos/Rusak (JTR)': 'btg',
+  'Penggantian Kabel Incoming/Outgoing (JTR)': 'mtr',
+  'Penggantian Pipa Incoming/Outgoing (JTR)': 'mtr',
+  'Penarikan Kabel JTR': 'mtr',
+  'Rekonektorisasi JTR': 'titik',
+  'SLO JTR': 'kms',
+  'Pemasangan Kabel JTR': 'kms',
+  'Pembongkaran Kabel JTR': 'btg',
+  'Pembongkaran tiang JTR': 'kms',
+  'Perbaikan SR Deret': 'kms',
+  'Penggantian Tap Konektor Menjadi Konektor Press': 'bh',
+  'Pemasangan Service Wedge Clamp': 'bh',
+  'Pembangunan Konstruksi Tiang JTM': 'titik',
+  'Uprating SUTM': 'kms',
+  'Uprating MVTIC': 'kms',
+  'Uprating SKTM': 'kms',
+  'Pembangunan Gardu Sisip': 'unit',
+  'Pembangunan Gardu portal': 'unit',
+  'Pembangunan Gardu Hubung': 'unit',
+  'Pembangunan Konstruksi Tiang JTR': 'titik',
+  'Uprating SUTR': 'kms',
+  'Pembangunan LBS Threeway': 'titik',
+  'Pembangunan Recloser': 'titik',
+};
+
+// Isi otomatis field Satuan (#rp-satuan) berdasarkan Rincian Pekerjaan yang
+// sedang dipilih (RINCIAN_SATUAN_MAP). Dipanggil setiap kali Rincian
+// Pekerjaan berganti (onchange #rp-rincian). TIDAK menimpa isian kalau
+// supervisor sudah pernah mengetik manual di field Satuan tsb, atau kalau
+// sedang membuka data lama yang satuannya sudah terisi (lihat
+// window._rpSatuanManual, di-set di oninput #rp-satuan & bukaModalTiket).
+function applyRpSatuanOtomatis() {
+  const satuanEl = document.getElementById('rp-satuan');
+  if (!satuanEl || window._rpSatuanManual) return;
+  const rincianVal = document.getElementById('rp-rincian')?.value || '';
+  satuanEl.value = RINCIAN_SATUAN_MAP[rincianVal] || '';
+}
+window.applyRpSatuanOtomatis = applyRpSatuanOtomatis;
+
 // Isi semua dropdown "Detail Rencana Pekerjaan" (Kategori, Jenis, Rincian, Health Index, dst) sekali saja.
 function populateRpDropdowns() {
   const fillSimple = (id, list, withBlank) => {
@@ -5385,7 +5547,7 @@ function populateRpDropdowns() {
 }
 
 // Saat ULP dipilih, isi dropdown Tim/Regu sesuai roster ULP tsb.
-// Ini yang menggantikan mekanisme "tim terdekat via GPS" — supervisor
+// Ini yang menggantikan mekanisme "tim terdekat via GPS" — TL/Admin
 // menugaskan LANGSUNG ke tim tertentu di ULP tertentu, bukan hasil hitung jarak.
 window.onTiketUlpChange = function() {
   const ulp = document.getElementById('tiket-ulp').value;
@@ -5417,7 +5579,7 @@ function updateAssignedChip() {
 }
 
 // ── Ringkasan tim yang sedang aktif hari ini (chip list), ditampilkan di
-// dalam modal Kelola Penugasan sebagai INFO untuk supervisor — bukan lagi
+// dalam modal Kelola Penugasan sebagai INFO untuk TL/Admin — bukan lagi
 // dasar penugasan (dasarnya sekarang dropdown ULP → Tim di atas). Dipakai
 // dari data realtime node "petugas" (sama sumbernya dgn peta & absensi).
 window.renderTimAktif = function() {
@@ -5503,6 +5665,10 @@ window.bukaModalTiket = function(id, data) {
   document.getElementById('rp-jenis-pekerjaan').value    = data?.rpJenisPekerjaan || '';
   document.getElementById('rp-rincian').value            = data?.rpRincian        || '';
   document.getElementById('rp-vol').value                = data?.rpVol ?? '';
+  // Data lama yang satuannya sudah terisi dianggap "manual" (tidak ditimpa
+  // otomatis kalau nanti Rincian Pekerjaan-nya diganti); form baru (kosong)
+  // biarkan auto-fill aktif begitu Rincian Pekerjaan dipilih.
+  window._rpSatuanManual = !!(data?.rpSatuan);
   document.getElementById('rp-satuan').value             = data?.rpSatuan         || '';
   document.getElementById('rp-pdkb').value               = data?.rpPdkb           || 'TIDAK';
   document.getElementById('rp-metode').value              = data?.rpMetode         || 'OFFLINE';
@@ -5524,7 +5690,7 @@ window.bukaModalTiket = function(id, data) {
   renderTimAktif();
 
   // Pastikan data posisi/status tim (node "petugas") sudah ditarik walau
-  // supervisor belum pernah buka menu Peta — supaya list "Tim Aktif" terisi.
+  // TL/Admin belum pernah buka menu Peta — supaya list "Tim Aktif" terisi.
   initFirebase().then(ok => { if (ok) listenPetugas(); });
 };
 
@@ -5542,7 +5708,7 @@ function koordinatValidOrEmpty(raw) {
 
 // Generate Nomor Penugasan otomatis & atomik: KODE_ULP-0001, urut per ULP,
 // tidak pernah reset. Pakai Firebase transaction supaya aman walau 2
-// supervisor menyimpan penugasan di ULP yang sama pada saat bersamaan.
+// TL/Admin menyimpan penugasan di ULP yang sama pada saat bersamaan.
 async function generateNomorPenugasan(ulp) {
   const kode = KODE_ULP[ulp] || 'GEN';
   const counterRef = window._fbRef(fbDb, 'penugasanCounter/' + kode);
@@ -5628,7 +5794,7 @@ window.simpanTiket = async function() {
     koordinatAkhir: koordinatAkhir || null,
     assignedRegu: regu,
     statusTiket: 'Aktif',
-    dibuatOleh: 'Supervisor',
+    dibuatOleh: 'TL/Admin',
     rpTanggal, rpWaktu, rpPenyulang, rpSection, rpGardu, rpHealthIndex,
     rpKategori, rpJenisPekerjaan, rpRincian,
     rpVol: +rpVolRaw, rpSatuan,
@@ -5791,16 +5957,102 @@ function renderTiketProgres() {
 }
 
 // ══════════════════════════════════════
-// VERIFIKASI SUPERVISOR
+// VERIFIKASI TL/ADMIN
 // ══════════════════════════════════════
 let currentVerifId = null;
 let currentVerifLaporan = null;
+let currentVerifMode = 'verifikasi'; // 'verifikasi' atau 'hasil' — lihat bukaModalVerifikasi()
 let lastVerifEntries = null;
 let verifikasiRawEntries = [];
 
-window.bukaModalVerifikasi = function(id, laporan) {
+// Isi dropdown "Rincian Laporan" di modal Verifikasi (Kategori, Jenis, Rincian, Health
+// Index, dst) dengan daftar pilihan yang sama persis dengan form Rencana Pekerjaan,
+// supaya format field laporan konsisten di seluruh aplikasi. Sekali isi saja (cache
+// via dataset.filled) karena daftar pilihannya statis.
+function populateVerifRincianDropdowns() {
+  const fillSimple = (id, list, withBlank) => {
+    const sel = document.getElementById(id);
+    if (!sel || sel.dataset.filled) return;
+    sel.innerHTML = (withBlank ? '<option value="">— Pilih —</option>' : '') +
+      list.map(v => `<option value="${v}">${v}</option>`).join('');
+    sel.dataset.filled = '1';
+  };
+  fillSimple('vf-healthindex', RP_HEALTH_INDEX_LIST, true);
+  fillSimple('vf-kategori', RP_KATEGORI_LIST, true);
+  fillSimple('vf-jenis', RP_JENIS_PEKERJAAN_LIST, true);
+  fillSimple('vf-pdkb', RP_PDKB_LIST, false);
+  fillSimple('vf-metode', RP_METODE_LIST, false);
+  fillSimple('vf-jenispemadaman', RP_JENIS_PEMADAMAN_LIST, false);
+
+  const rincianSel = document.getElementById('vf-rincian');
+  if (rincianSel && !rincianSel.dataset.filled) {
+    rincianSel.innerHTML = '<option value="">— Pilih Rincian Pekerjaan —</option>' +
+      Object.entries(RP_RINCIAN_GROUPS).map(([grup, items]) =>
+        `<optgroup label="${grup}">${items.map(v => `<option value="${v}">${v}</option>`).join('')}</optgroup>`
+      ).join('');
+    rincianSel.dataset.filled = '1';
+    enhanceSearchableSelect('vf-rincian');
+  }
+}
+
+// #12: "Edit Laporan" terpisah sudah dihapus dari layar Hasil Verifikasi — TL/Admin
+// sekarang mengubah ISI laporan (rincian, penyulang, target/realisasi, dst) dan HASIL
+// verifikasinya sekaligus di modal ini ("Ubah Hasil Verifikasi"), tanpa perlu masuk Mode
+// Admin. Fungsi ini karena itu selalu mengisi field rincian laporan sebagai form yang
+// bisa diedit, bukan cuma teks statis seperti sebelumnya.
+// mode: 'verifikasi' (default, dipanggil dari tab "Verifikasi Laporan") atau
+// 'hasil' (dipanggil dari tombol "Ubah Hasil Verifikasi" di tab "Hasil Verifikasi").
+// Sebelumnya modal ini SELALU berjudul & bertombol "Verifikasi Laporan" walau
+// dibuka dari tab "Hasil Verifikasi", sehingga TL/Admin mengira aksinya
+// "pindah"/muncul di tab Verifikasi Laporan — padahal sebenarnya cuma modal
+// overlay yang tetap berada di tab manapun ia dibuka, dan hasilnya memang
+// langsung tersimpan & tampil kembali di tab asalnya. Judul & tombol sekarang
+// disesuaikan supaya jelas konteksnya.
+// BUG FIX: sebelumnya tombol "Verifikasi Sekarang" / "Ubah Verifikasi" / "Ubah Hasil
+// Verifikasi" menyisipkan SELURUH objek laporan (hasil JSON.stringify) langsung ke
+// dalam atribut HTML onclick. Untuk laporan yang fotonya belum sempat ter-upload dan
+// masih tersimpan sebagai base64 lokal (fotoBeforeBase64/fotoProgresBase64/
+// fotoAfterBase64 — bisa beberapa MB per foto), atribut onclick jadi sangat besar
+// sehingga browser gagal mem-parsingnya dan modal tidak pernah terbuka (tombol
+// terlihat seperti tidak merespons sama sekali). Perbaikannya: data laporan
+// disimpan di cache JS (window._verifDataCache, diisi saat grid dirender) dan
+// tombol hanya membawa id — jauh lebih ringan & tidak tergantung isi/ukuran data.
+window.bukaModalVerifikasiById = function(id, mode) {
+  const laporan = window._verifDataCache && window._verifDataCache[id];
+  if (!laporan) {
+    alert('Data laporan tidak ditemukan (mungkin filter/list berubah). Coba refresh data lalu ulangi.');
+    return;
+  }
+  window.bukaModalVerifikasi(id, laporan, mode);
+};
+
+window.bukaModalVerifikasi = function(id, laporan, mode) {
   currentVerifId = id;
   currentVerifLaporan = laporan;
+  currentVerifMode = mode === 'hasil' ? 'hasil' : 'verifikasi';
+  populateVerifRincianDropdowns();
+
+  document.getElementById('modal-verifikasi-title').textContent =
+    currentVerifMode === 'hasil' ? 'Ubah Hasil Verifikasi' : 'Verifikasi Laporan';
+  document.getElementById('verif-btn-submit').textContent =
+    currentVerifMode === 'hasil' ? 'Simpan Perubahan' : 'Kirim Verifikasi';
+
+  document.getElementById('vf-kategori').value        = laporan.lapKategori || '';
+  document.getElementById('vf-jenis').value            = laporan.jenisPekerjaan || '';
+  document.getElementById('vf-rincian').value          = laporan.rincian || '';
+  document.getElementById('vf-penyulang').value        = laporan.lapPenyulang || '';
+  document.getElementById('vf-section').value          = laporan.lapSection || '';
+  document.getElementById('vf-gardu').value            = laporan.lapGardu || '';
+  document.getElementById('vf-healthindex').value      = laporan.lapHealthIndex || '';
+  document.getElementById('vf-pdkb').value             = laporan.lapPdkb || '';
+  document.getElementById('vf-metode').value           = laporan.lapMetode || '';
+  document.getElementById('vf-jenispemadaman').value   = laporan.lapJenisPemadaman || '';
+  document.getElementById('vf-daerahpadam').value      = laporan.lapDaerahPadam || '';
+  document.getElementById('vf-pic').value               = laporan.lapPic || '';
+  document.getElementById('vf-satuan').value            = laporan.realisasiSatuan || laporan.targetSatuan || '';
+  document.getElementById('vf-keterangan').value        = laporan.lapKeterangan || '';
+  document.getElementById('vf-err').style.display       = 'none';
+
   document.getElementById('verif-target').value    = laporan.target    || '';
   document.getElementById('verif-realisasi').value = laporan.realisasi || '';
   document.getElementById('verif-catatan').value   = '';
@@ -5818,10 +6070,9 @@ window.bukaModalVerifikasi = function(id, laporan) {
 
   document.getElementById('verif-detail-body').innerHTML = `
     <div style="background:var(--surface-2);border-radius:var(--radius-sm);padding:14px;margin-bottom:14px;border:1px solid var(--line)">
-      <div style="font-size:13px;font-weight:700;margin-bottom:8px">👷 ${laporan.regu||'—'} <span style="font-weight:400;color:var(--text-3);font-size:11px">${laporan.ulp||''}${laporan.anggotaHadir ? ' · ' + laporan.anggotaHadir : ''}</span></div>
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px">👷 ${esc(laporan.regu)||'—'} <span style="font-weight:400;color:var(--text-3);font-size:11px">${esc(laporan.ulp)||''}${laporan.anggotaHadir ? ' · ' + esc(laporan.anggotaHadir) : ''}</span></div>
       <div style="font-size:12px;color:var(--text-2);line-height:1.8">
-        <b>Penugasan:</b> ${laporan.nomorTiket ? '<span style="font-family:var(--mono);color:var(--pln-blue);font-weight:700">'+laporan.nomorTiket+'</span>' : '—'}<br>
-        ${laporanDetailFieldsHtml(laporan)}<br>
+        <b>Penugasan:</b> ${laporan.nomorTiket ? '<span style="font-family:var(--mono);color:var(--pln-blue);font-weight:700">'+esc(laporan.nomorTiket)+'</span>' : '—'}<br>
         <b>Waktu Laporan:</b> ${waktu}
       </div>
     </div>
@@ -5854,6 +6105,18 @@ window.submitVerifikasi = async function() {
   const realisasi= document.getElementById('verif-realisasi').value;
   const catatan  = document.getElementById('verif-catatan').value.trim();
   const errEl    = document.getElementById('verif-err');
+  const vfErrEl  = document.getElementById('vf-err');
+
+  // Rincian laporan (dulu ada di modal "Edit Laporan" terpisah, sekarang jadi satu
+  // dengan form verifikasi ini) — dibaca & divalidasi sebelum hasil verifikasi dikirim.
+  const rincian = document.getElementById('vf-rincian').value.trim();
+  if (!rincian) {
+    vfErrEl.textContent = 'Rincian Pekerjaan wajib diisi.';
+    vfErrEl.style.display = 'block';
+    document.getElementById('vf-rincian').focus();
+    return;
+  }
+  vfErrEl.style.display = 'none';
 
   if (!hasil) { errEl.textContent = 'Pilih hasil verifikasi terlebih dahulu.'; errEl.style.display='block'; return; }
   errEl.style.display = 'none';
@@ -5863,12 +6126,32 @@ window.submitVerifikasi = async function() {
   btn.disabled = true; btn.textContent = 'Menyimpan...';
   try {
     const upd = {
+      // ── Rincian laporan (bisa diubah TL/Admin kalau ada kesalahan input petugas) ──
+      rincian,
+      lapKategori: document.getElementById('vf-kategori').value || null,
+      jenisPekerjaan: document.getElementById('vf-jenis').value || null,
+      lapPenyulang: document.getElementById('vf-penyulang').value.trim() || null,
+      lapSection: document.getElementById('vf-section').value.trim() || null,
+      lapGardu: document.getElementById('vf-gardu').value.trim() || null,
+      lapHealthIndex: document.getElementById('vf-healthindex').value || null,
+      lapPdkb: document.getElementById('vf-pdkb').value || null,
+      lapMetode: document.getElementById('vf-metode').value || null,
+      lapJenisPemadaman: document.getElementById('vf-jenispemadaman').value || null,
+      lapDaerahPadam: document.getElementById('vf-daerahpadam').value.trim() || null,
+      lapPic: document.getElementById('vf-pic').value.trim() || null,
+      lapKeterangan: document.getElementById('vf-keterangan').value.trim() || null,
+      target: target || null,
+      realisasi: realisasi || null,
+      realisasiSatuan: document.getElementById('vf-satuan').value.trim() || null,
+      editedAt: Date.now(),
+      editedBy: 'TL/Admin',
+      // ── Hasil verifikasi ──
       statusVerifikasi: hasil,
       verifTarget: target || null,
       verifRealisasi: realisasi || null,
       verifCatatan: catatan || null,
       verifWaktu: Date.now(),
-      verifOleh: 'Supervisor NUMBAY'
+      verifOleh: 'TL/Admin NUMBAY'
     };
     const { update, get } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js');
     await update(window._fbRef(fbDb, 'laporan/' + currentVerifId), upd);
@@ -5898,17 +6181,18 @@ window.submitVerifikasi = async function() {
     errEl.textContent = 'Gagal menyimpan: ' + e.message;
     errEl.style.display = 'block';
   } finally {
-    btn.disabled = false; btn.textContent = 'Kirim Verifikasi';
+    btn.disabled = false;
+    btn.textContent = currentVerifMode === 'hasil' ? 'Simpan Perubahan' : 'Kirim Verifikasi';
   }
 };
 
-// Tombol manual untuk supervisor menutup tiket sendiri (cadangan, kalau tidak tertaut/tidak ke-auto-close)
+// Tombol manual untuk TL/Admin menutup tiket sendiri (cadangan, kalau tidak tertaut/tidak ke-auto-close)
 window.tutupTiketManual = async function(tiketId) {
   if (!fbDb) return;
   if (!(await confirmDialog('Tutup penugasan ini? Status akan diubah menjadi "Selesai".', { title: 'Tutup Penugasan', danger: false }))) return;
   try {
     const { update } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js');
-    await update(window._fbRef(fbDb, 'penugasan/' + tiketId), { statusTiket: 'Selesai', selesaiOtomatisPada: Date.now(), selesaiOtomatisDari: 'manual-supervisor' });
+    await update(window._fbRef(fbDb, 'penugasan/' + tiketId), { statusTiket: 'Selesai', selesaiOtomatisPada: Date.now(), selesaiOtomatisDari: 'manual-TL/Admin' });
     showToast('Penugasan ditutup.', 'ok');
   } catch(e) { showToast('Gagal menutup penugasan: ' + e.message, 'err'); }
 };
@@ -5976,6 +6260,12 @@ function renderVerifikasiGrid() {
   if (menunggu > 0) { badge.textContent = menunggu; badge.style.display = ''; }
   else badge.style.display = 'none';
 
+  // Cache data laporan per id supaya tombol Verifikasi tidak perlu menyisipkan
+  // seluruh objek laporan (termasuk foto base64 yang bisa berukuran besar kalau
+  // belum sempat ter-upload) ke dalam atribut HTML onclick — lihat bukaModalVerifikasiById().
+  window._verifDataCache = window._verifDataCache || {};
+  entries.forEach(([id, l]) => { window._verifDataCache[id] = l; });
+
   const grid = document.getElementById('verifikasiGrid');
   if (entries.length === 0) {
     const msg = (verifikasiRawEntries && verifikasiRawEntries.length > 0)
@@ -6000,28 +6290,28 @@ function renderVerifikasiGrid() {
     const sv = l.statusVerifikasi;
     const svColor = sv === 'Terverifikasi' ? 'var(--ok)' : sv === 'Perlu Revisi' ? 'var(--warn)' : sv === 'Ditolak' ? 'var(--crit)' : 'var(--text-3)';
     const svBg    = sv === 'Terverifikasi' ? 'var(--ok-bg)' : sv === 'Perlu Revisi' ? 'var(--warn-bg)' : sv === 'Ditolak' ? 'var(--crit-bg)' : 'var(--surface-2)';
-    const tiketBadge = l.nomorTiket ? `<span style="font-family:var(--mono);font-size:10px;background:var(--info-bg);color:var(--info);padding:2px 8px;border-radius:99px;font-weight:700">${l.nomorTiket}</span>` : '';
+    const tiketBadge = l.nomorTiket ? `<span style="font-family:var(--mono);font-size:10px;background:var(--info-bg);color:var(--info);padding:2px 8px;border-radius:99px;font-weight:700">${esc(l.nomorTiket)}</span>` : '';
     const statusBadge = sv
       ? `<span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;background:${svBg};color:${svColor}">${sv === 'Terverifikasi' ? '✓ Terverifikasi' : sv === 'Ditolak' ? '✕ Ditolak' : '⚠ Perlu Revisi'}</span>`
       : `<span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;background:var(--warn-bg);color:var(--warn)">⏳ Menunggu Verifikasi</span>`;
 
     const verifInfo = sv ? `
       <div style="padding:10px 15px;border-top:1px solid var(--line);background:${svBg};font-size:11.5px;color:var(--text-2)">
-        <b>Verifikasi oleh:</b> ${l.verifOleh||'Supervisor'} · ${l.verifWaktu ? new Date(l.verifWaktu).toLocaleString('id-ID') : '—'}<br>
+        <b>Verifikasi oleh:</b> ${esc(l.verifOleh)||'TL/Admin'} · ${l.verifWaktu ? new Date(l.verifWaktu).toLocaleString('id-ID') : '—'}<br>
         <b>Target:</b> ${l.verifTarget||l.target||'—'} &nbsp;|&nbsp; <b>Realisasi:</b> ${l.verifRealisasi||l.realisasi||'—'}<br>
-        ${l.verifCatatan ? `<b>Catatan:</b> ${l.verifCatatan}` : ''}
+        ${l.verifCatatan ? `<b>Catatan:</b> ${esc(l.verifCatatan)}` : ''}
       </div>` : '';
 
     const btnVerif = !sv
-      ? `<button onclick="bukaModalVerifikasi('${id}',${JSON.stringify(l).replace(/"/g,'&quot;')})" style="background:var(--pln-blue);color:#fff;border:none;border-radius:var(--radius-xs);padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;width:100%;margin-top:10px">✅ Verifikasi Sekarang</button>`
-      : `<button onclick="bukaModalVerifikasi('${id}',${JSON.stringify(l).replace(/"/g,'&quot;')})" style="background:none;color:var(--text-2);border:1px solid var(--line);border-radius:var(--radius-xs);padding:6px 14px;font-size:11px;font-weight:600;cursor:pointer;width:100%;margin-top:8px">Ubah Verifikasi</button>`;
+      ? `<button onclick="bukaModalVerifikasiById('${id}')" style="background:var(--pln-blue);color:#fff;border:none;border-radius:var(--radius-xs);padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;width:100%;margin-top:10px">✅ Verifikasi Sekarang</button>`
+      : `<button onclick="bukaModalVerifikasiById('${id}')" style="background:none;color:var(--text-2);border:1px solid var(--line);border-radius:var(--radius-xs);padding:6px 14px;font-size:11px;font-weight:600;cursor:pointer;width:100%;margin-top:8px">Ubah Verifikasi</button>`;
 
     const delBtn = isAdminMode ? `<button class="btn-del" title="Hapus laporan" onclick="hapusLaporan('${id}')">🗑</button>` : '';
 
     return `<div class="laporan-card">
       <div class="laporan-card-header">
         <div style="flex:1;min-width:0">
-          <div class="laporan-card-name">👷 ${l.regu||'—'} <span style="font-weight:400;color:var(--text-3);font-size:11px">${l.ulp||''}${l.anggotaHadir ? ' · ' + l.anggotaHadir : ''}</span></div>
+          <div class="laporan-card-name">👷 ${esc(l.regu)||'—'} <span style="font-weight:400;color:var(--text-3);font-size:11px">${esc(l.ulp)||''}${l.anggotaHadir ? ' · ' + esc(l.anggotaHadir) : ''}</span></div>
           <div class="laporan-card-meta" style="margin-top:4px;display:flex;gap:6px;align-items:center;flex-wrap:wrap">${tiketBadge} ${statusBadge}</div>
           <div class="laporan-card-meta">${waktu}</div>
         </div>
@@ -6103,29 +6393,24 @@ function renderHasilVerifikasiCard(id, l) {
   const before = l.fotoBeforeUrl || l.fotoBeforeBase64 || '';
   const progres = l.fotoProgresUrl || l.fotoProgresBase64 || '';
   const after  = l.fotoAfterUrl  || l.fotoAfterBase64  || '';
-  const tiketBadge = l.nomorTiket ? `<span style="font-family:var(--mono);font-size:10px;background:var(--info-bg);color:var(--info);padding:2px 8px;border-radius:99px;font-weight:700">${l.nomorTiket}</span>` : '';
+  const tiketBadge = l.nomorTiket ? `<span style="font-family:var(--mono);font-size:10px;background:var(--info-bg);color:var(--info);padding:2px 8px;border-radius:99px;font-weight:700">${esc(l.nomorTiket)}</span>` : '';
   const fotoCols = [['SEBELUM', before], ['PROGRES', progres], ['SESUDAH', after]].filter(([,src]) => src || true);
   const photosHtml = (before || progres || after) ? `<div class="laporan-photos" style="grid-template-columns:repeat(3,1fr)">
       ${fotoCols.map(([label, src]) => `<div>${src ? `<img src="${src}" onclick="bukaFotoFullscreen(this)" style="cursor:pointer">` : '<div style="background:#f1f5f9;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:20px">📷</div>'}<div class="photo-label">${label}</div></div>`).join('')}
     </div>` : '';
 
-  // Supervisor (Mode Admin) bisa mengubah HASIL VERIFIKASI (status/catatan) dan/atau
-  // ISI LAPORANNYA (rincian, target, realisasi, dst) langsung dari kartu ini —
-  // dua tombol terpisah karena mengubah isi laporan mengembalikan status ke
-  // "Menunggu Verifikasi" (wajib diverifikasi ulang), sedangkan mengubah hasil
-  // verifikasi saja tidak perlu.
-  const editLaporanBtn = isAdminMode
-    ? `<button onclick="bukaModalEditLaporan('${id}',${JSON.stringify(l).replace(/"/g,'&quot;')})" style="flex:1;background:none;color:var(--pln-blue);border:1px solid var(--pln-blue);border-radius:var(--radius-xs);padding:8px 12px;font-size:11.5px;font-weight:700;cursor:pointer">✏️ Edit Laporan</button>`
-    : '';
+  // Tombol "Edit Laporan" terpisah (khusus Mode Admin) sudah dihapus — sekarang
+  // mengubah isi laporan (rincian, penyulang, target/realisasi, dst) DAN hasil
+  // verifikasinya dilakukan sekaligus lewat "Ubah Hasil Verifikasi" di bawah ini,
+  // tanpa perlu masuk Mode Admin terlebih dahulu.
   const btnAksi = `<div style="display:flex;gap:8px;margin-top:10px">
-      ${editLaporanBtn}
-      <button onclick="bukaModalVerifikasi('${id}',${JSON.stringify(l).replace(/"/g,'&quot;')})" style="flex:1;background:none;color:var(--text-2);border:1px solid var(--line);border-radius:var(--radius-xs);padding:8px 12px;font-size:11.5px;font-weight:700;cursor:pointer">Ubah Hasil Verifikasi</button>
+      <button onclick="bukaModalVerifikasiById('${id}','hasil')" style="flex:1;background:var(--pln-blue);color:#fff;border:1px solid var(--pln-blue);border-radius:var(--radius-xs);padding:8px 12px;font-size:11.5px;font-weight:700;cursor:pointer">✏️ Ubah Hasil Verifikasi</button>
     </div>`;
 
   return `<div class="laporan-card">
       <div class="laporan-card-header">
         <div style="flex:1;min-width:0">
-          <div class="laporan-card-name">👷 ${l.regu||'—'} <span style="font-weight:400;color:var(--text-3);font-size:11px">${l.ulp||''}${l.anggotaHadir ? ' · ' + l.anggotaHadir : ''}</span></div>
+          <div class="laporan-card-name">👷 ${esc(l.regu)||'—'} <span style="font-weight:400;color:var(--text-3);font-size:11px">${esc(l.ulp)||''}${l.anggotaHadir ? ' · ' + esc(l.anggotaHadir) : ''}</span></div>
           <div class="laporan-card-meta" style="margin-top:4px;display:flex;gap:6px;align-items:center;flex-wrap:wrap">${tiketBadge} ${hvStatusBadge(l.statusVerifikasi)}</div>
           <div class="laporan-card-meta">${waktu}</div>
         </div>
@@ -6136,8 +6421,8 @@ function renderHasilVerifikasiCard(id, l) {
         ${btnAksi}
       </div>
       <div style="padding:10px 15px;border-top:1px solid var(--line);font-size:11.5px;color:var(--text-2)">
-        <b>Diverifikasi oleh:</b> ${l.verifOleh||'Supervisor'} · ${l.verifWaktu ? new Date(l.verifWaktu).toLocaleString('id-ID') : '—'}<br>
-        ${l.verifCatatan ? `<b>Catatan:</b> ${l.verifCatatan}` : '<span style="color:var(--text-3)">Tanpa catatan</span>'}
+        <b>Diverifikasi oleh:</b> ${esc(l.verifOleh)||'TL/Admin'} · ${l.verifWaktu ? new Date(l.verifWaktu).toLocaleString('id-ID') : '—'}<br>
+        ${l.verifCatatan ? `<b>Catatan:</b> ${esc(l.verifCatatan)}` : '<span style="color:var(--text-3)">Tanpa catatan</span>'}
       </div>
     </div>`;
 }
@@ -6168,6 +6453,11 @@ window.renderHasilVerifikasiGrid = function() {
   const groupBy = document.getElementById('hv-groupby')?.value || 'ulp';
   const entries = getHasilVerifikasiFilteredEntries();
 
+  // Sama seperti di renderVerifikasiGrid(): cache laporan per id, jangan sisipkan
+  // objek laporan penuh ke atribut HTML onclick — lihat bukaModalVerifikasiById().
+  window._verifDataCache = window._verifDataCache || {};
+  entries.forEach(([id, l]) => { window._verifDataCache[id] = l; });
+
   if (countEl) countEl.textContent = entries.length + ' laporan';
 
   if (entries.length === 0) {
@@ -6195,7 +6485,7 @@ window.renderHasilVerifikasiGrid = function() {
   wrap.innerHTML = Object.keys(groups).sort().map(key => `
     <div style="margin-bottom:22px">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-        <div style="font-size:13px;font-weight:800;font-family:var(--font-display)">${key}</div>
+        <div style="font-size:13px;font-weight:800;font-family:var(--font-display)">${esc(key)}</div>
         <span style="font-size:11px;color:var(--text-3);background:var(--surface-2);padding:2px 9px;border-radius:99px;font-weight:700">${groups[key].length}</span>
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;">
@@ -6207,7 +6497,7 @@ window.renderHasilVerifikasiGrid = function() {
 
 // ══════════════════════════════════════
 // EXPORT HASIL VERIFIKASI — Excel & PDF (dengan foto Sebelum/Progres/Sesudah)
-// Dipakai supervisor buat tahu laporan mana yang Terverifikasi/Revisi/Ditolak,
+// Dipakai TL/Admin buat tahu laporan mana yang Terverifikasi/Revisi/Ditolak,
 // lalu dikirim ke petugas lewat WA.
 // ══════════════════════════════════════
 
@@ -6265,7 +6555,7 @@ window.exportHasilVerifikasiExcel = function() {
       'Material': l.material || '—',
       'Realisasi': l.realisasi || '—',
       'Waktu Laporan': fmtWaktuFull(l.waktu),
-      'Diverifikasi Oleh': l.verifOleh || 'Supervisor',
+      'Diverifikasi Oleh': l.verifOleh || 'TL/Admin',
       'Waktu Verifikasi': l.verifWaktu ? fmtWaktuFull(l.verifWaktu) : '—',
       'Catatan Verifikasi': l.verifCatatan || '—',
       'Link Foto Sebelum': l.fotoBeforeUrl || (l.fotoBeforeBase64 ? '(tersimpan lokal, tidak ada link)' : '—'),
@@ -6448,7 +6738,7 @@ window.exportHasilVerifikasiPDF = async function() {
       doc.setTextColor(110);
       doc.text(`Waktu Laporan: ${fmtWaktuFull(l.waktu)}`, padCardX, cy);
       cy += 12;
-      doc.text(`Diverifikasi oleh: ${l.verifOleh || 'Supervisor'}  ·  ${l.verifWaktu ? fmtWaktuFull(l.verifWaktu) : '—'}`, padCardX, cy);
+      doc.text(`Diverifikasi oleh: ${l.verifOleh || 'TL/Admin'}  ·  ${l.verifWaktu ? fmtWaktuFull(l.verifWaktu) : '—'}`, padCardX, cy);
       cy += 12;
       if (catatanLines.length) {
         doc.setTextColor(70);
@@ -6539,7 +6829,7 @@ window.toggleSidebar = function() {
 function startAppAfterAuth() {
   loadAll();
   switchView('beranda');
-  applyAdminUI(); // sinkronkan tampilan dengan status Mode Admin (sessionStorage) saat halaman dibuka
+  applyAdminUI(); // pastikan semua tombol hapus/edit tersembunyi di awal (Mode Admin selalu OFF saat halaman dibuka)
   initSidebarState(); // pulihkan status collapse/expand sidebar dari localStorage
 
   // Sambungkan ke Firebase & nyalakan badge "Petugas Aktif" SEJAK HALAMAN DIBUKA
@@ -6555,7 +6845,7 @@ function startAppAfterAuth() {
 
 // Kalau sesi login sudah tersimpan (localStorage, bertahan sampai Logout manual),
 // langsung masuk ke app tanpa perlu login ulang. Kalau belum, layar login (sudah
-// tampil secara default di HTML) yang menunggu submit dari doLoginSupervisor().
+// tampil secara default di HTML) yang menunggu submit dari doLoginTLAdmin().
 //
 // SEMENTARA DINONAKTIFKAN (2026-07-21) atas permintaan — layar login masih ngebug.
 // Kode login TIDAK dihapus, hanya dilewati: langsung auto-login sebagai Superadmin
@@ -6652,7 +6942,7 @@ function renderRekap(entries) {
     : timEntries.map(d => {
         const pctColor = d.belumDiatur ? 'var(--text-3)' : (d.pct >= 100 ? 'var(--ok)' : d.pct >= 70 ? 'var(--warn)' : 'var(--crit)');
         return `<tr>
-          <td style="font-weight:600">${d.regu} <span style="font-weight:400;color:var(--text-3);font-size:11px">(${d.ulp})</span></td>
+          <td style="font-weight:600">${esc(d.regu)} <span style="font-weight:400;color:var(--text-3);font-size:11px">(${esc(d.ulp)})</span></td>
           <td style="font-family:var(--mono)">${d.count}</td>
           <td style="font-family:var(--mono)">${d.belumDiatur ? '—' : d.target}</td>
           <td style="font-family:var(--mono)">${d.realisasi||'—'}</td>
@@ -6683,7 +6973,7 @@ function renderRekap(entries) {
         const pct = d.target > 0 ? Math.round(d.realisasi / d.target * 100) : 0;
         const pctColor = pct >= 100 ? 'var(--ok)' : pct >= 70 ? 'var(--warn)' : 'var(--crit)';
         return `<tr>
-          <td style="font-weight:600">${ulp}</td>
+          <td style="font-weight:600">${esc(ulp)}</td>
           <td style="font-family:var(--mono)">${d.count}</td>
           <td style="font-family:var(--mono)">${d.target||'—'}</td>
           <td style="font-family:var(--mono)">${d.realisasi||'—'}</td>
@@ -6705,11 +6995,11 @@ function renderRekap(entries) {
         const svBadge = svBadgeMap[sv] || '<span class="badge badge-gray"><span class="badge-dot"></span>Menunggu</span>';
         return `<tr>
           <td style="font-size:11px;white-space:nowrap">${waktu}</td>
-          <td style="font-weight:600;font-size:12px">${l.anggotaHadir||'—'}</td>
-          <td style="font-size:12px">${l.regu||'—'}</td>
-          <td style="font-size:12px">${l.ulp||'—'}</td>
-          <td style="font-family:var(--mono);font-size:11px">${l.nomorTiket||'—'}</td>
-          <td class="truncate" style="max-width:160px" title="${l.rincian||''}">${l.rincian||'—'}</td>
+          <td style="font-weight:600;font-size:12px">${esc(l.anggotaHadir)||'—'}</td>
+          <td style="font-size:12px">${esc(l.regu)||'—'}</td>
+          <td style="font-size:12px">${esc(l.ulp)||'—'}</td>
+          <td style="font-family:var(--mono);font-size:11px">${esc(l.nomorTiket)||'—'}</td>
+          <td class="truncate" style="max-width:160px" title="${esc(l.rincian)||''}">${esc(l.rincian)||'—'}</td>
           <td style="font-family:var(--mono)">${l.realisasi||'—'}</td>
           <td>${svBadge}</td>
         </tr>`;
